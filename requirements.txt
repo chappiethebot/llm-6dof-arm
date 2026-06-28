@@ -1,0 +1,7 @@
+mujoco
+gymnasium
+gymnasium-robotics
+faster-whisper
+openai
+ollama
+numpy
