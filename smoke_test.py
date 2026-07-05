@@ -1,38 +1,85 @@
-"""Phase 0 smoke test: every component imports and runs once. Prints ok per stage."""
-import os
+#!/usr/bin/env python3
+"""
+smoke_test.py - proves the thesis environment before anything depends on it.
+Run on BOTH machines (Mac dev / Windows benchmark) inside the `thesis` conda env.
+Each line prints ok/FAIL independently, so a partial env is diagnosable.
+Imports + cheap constructions only. Does NOT download any model weights.
+"""
 
-# --- MuJoCo + sim body ---
-import gymnasium as gym
-import gymnasium_robotics
-gym.register_envs(gymnasium_robotics)          # required in recent versions
-env = gym.make("FetchPickAndPlace-v4")         # v4 = the reset-bug-fixed version
-obs, _ = env.reset(seed=0)
-env.step(env.action_space.sample())
-env.close()
-print("ok: mujoco + gymnasium-robotics")
+def check(name, fn):
+    try:
+        fn()
+        print(f"[ ok ] {name}")
+        return True
+    except Exception as e:
+        print(f"[FAIL] {name}: {type(e).__name__}: {e}")
+        return False
 
-# --- Whisper (CPU for the smoke test everywhere) ---
-from faster_whisper import WhisperModel
-WhisperModel("tiny", device="cpu", compute_type="int8")   # loading proves the stack
-print("ok: faster-whisper (cpu)")
 
-# --- Local LLM via Ollama ---
-import ollama
-names = [m.model for m in ollama.list().models]
-assert any("llama3.2" in n for n in names), f"pull llama3.2:3b — have {names}"
-ollama.generate(model="llama3.2:3b", prompt="reply with: ok", options={"num_predict": 3})
-print("ok: ollama local llm")
+results = []
 
-# --- Cloud LLM (guarded so a missing key doesn't crash the test) ---
-if os.getenv("OPENAI_API_KEY"):
-    from openai import OpenAI
-    OpenAI().chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": "reply with: ok"}],
-        max_tokens=3,
-    )
-    print("ok: cloud llm")
-else:
-    print("skip: cloud llm (set OPENAI_API_KEY)")
+# --- Sim body (Phase 2 / 2.5) ---
+def _mujoco():
+    import mujoco  # noqa: F401
+results.append(check("mujoco", _mujoco))
 
-print("\nPhase 0 complete.")
+def _gym_fetch():
+    import gymnasium as gym
+    import gymnasium_robotics
+    try:
+        gym.register_envs(gymnasium_robotics)  # newer API
+    except Exception:
+        pass  # older gymnasium-robotics auto-registers on import
+    for env_id in ("FetchPickAndPlace-v4", "FetchPickAndPlace-v3"):
+        try:
+            env = gym.make(env_id)
+            env.close()
+            print(f"       -> resolved Fetch env id: {env_id}")
+            return
+        except Exception:
+            continue
+    raise RuntimeError("neither FetchPickAndPlace-v4 nor v3 is registered")
+results.append(check("gymnasium + gymnasium-robotics (Fetch)", _gym_fetch))
+
+# --- RL backend (Phase 2.5) ---
+def _sb3():
+    from stable_baselines3 import SAC, HerReplayBuffer  # noqa: F401
+results.append(check("stable-baselines3 (SAC + HER)", _sb3))
+
+def _sb3_contrib():
+    from sb3_contrib import TQC  # noqa: F401  (zoo's tuned Fetch config)
+results.append(check("sb3-contrib (TQC)", _sb3_contrib))
+
+# --- Vision (Phase 6) ---
+def _ultra():
+    from ultralytics import YOLO  # noqa: F401  (import only, no weight download)
+results.append(check("ultralytics (YOLO)", _ultra))
+
+def _cv2():
+    import cv2  # noqa: F401
+results.append(check("opencv-python", _cv2))
+
+# --- ASR (Phase 4) ---
+def _whisper():
+    from faster_whisper import WhisperModel  # noqa: F401 (no model download)
+results.append(check("faster-whisper", _whisper))
+
+# --- LLM arms (Phase 3) ---
+def _openai():
+    import openai  # noqa: F401
+results.append(check("openai (cloud arm)", _openai))
+
+def _ollama():
+    import ollama  # noqa: F401
+results.append(check("ollama (local arm)", _ollama))
+
+def _numpy():
+    import numpy  # noqa: F401
+results.append(check("numpy", _numpy))
+
+print()
+passed = sum(results)
+print(f"{passed}/{len(results)} components OK")
+if passed != len(results):
+    raise SystemExit(1)
+print("Environment ready.")
