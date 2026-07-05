@@ -5,3 +5,7 @@ faster-whisper
 openai
 ollama
 numpy
+stable-baselines3
+sb3-contrib
+ultralytics
+opencv-python
