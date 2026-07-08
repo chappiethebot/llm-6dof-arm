@@ -1,0 +1,97 @@
+{"command": "um actually, the water... can you just dump it in the first bin?", "expected": {"action": "pick_place", "target": "bottle", "location": "box_1", "modifiers": []}}
+{"command": "i kinda need the desk cleared, so shove the hot wheels into box 2.", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_2", "modifiers": []}}
+{"command": "that colorful cube thing, maybe leave it right in the dead center?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "table_center", "modifiers": []}}
+{"command": "if it's not too much trouble, slide the drink over to the left side.", "expected": {"action": "pick_place", "target": "bottle", "location": "table_left", "modifiers": []}}
+{"command": "the toy car goes way in the back, yeah.", "expected": {"action": "pick_place", "target": "toy_car", "location": "table_back", "modifiers": []}}
+{"command": "uh put the puzzle... wait, actually put it in box 3.", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_3", "modifiers": []}}
+{"command": "right side of the desk for the bottle, whenever you get a sec.", "expected": {"action": "pick_place", "target": "bottle", "location": "table_right", "modifiers": []}}
+{"command": "can you just chuck the mini car into the third box?", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_3", "modifiers": []}}
+{"command": "my water... yeah, just leave it up front.", "expected": {"action": "pick_place", "target": "bottle", "location": "table_front", "modifiers": []}}
+{"command": "first box for the magic cube, please and thanks.", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_1", "modifiers": []}}
+{"command": "actually, just drop the vehicle right in the middle.", "expected": {"action": "pick_place", "target": "toy_car", "location": "table_center", "modifiers": []}}
+{"command": "just toss the bottle in box 2, i don't need it right now.", "expected": {"action": "pick_place", "target": "bottle", "location": "box_2", "modifiers": []}}
+{"command": "the rubiks thing? just push it to the back.", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "table_back", "modifiers": []}}
+{"command": "i need the plastic bottle over on the left.", "expected": {"action": "pick_place", "target": "bottle", "location": "table_left", "modifiers": []}}
+{"command": "plop the little car down in the third bin.", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_3", "modifiers": []}}
+{"command": "cube goes to box 2, if you don't mind.", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_2", "modifiers": []}}
+{"command": "front edge of the table, that's where my drink goes.", "expected": {"action": "pick_place", "target": "bottle", "location": "table_front", "modifiers": []}}
+{"command": "stick the hot wheels on the right side.", "expected": {"action": "pick_place", "target": "toy_car", "location": "table_right", "modifiers": []}}
+{"command": "think you can drop the puzzle block in box 1?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_1", "modifiers": []}}
+{"command": "relocate the water container to the middle.", "expected": {"action": "pick_place", "target": "bottle", "location": "table_center", "modifiers": []}}
+{"command": "left side for the car thing.", "expected": {"action": "pick_place", "target": "toy_car", "location": "table_left", "modifiers": []}}
+{"command": "the cube, yeah just dump it in box 3.", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_3", "modifiers": []}}
+{"command": "could you toss the rubiks into the first box?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_1", "modifiers": []}}
+{"command": "bottle goes to the back, i'm done with it.", "expected": {"action": "pick_place", "target": "bottle", "location": "table_back", "modifiers": []}}
+{"command": "i think the toy car belongs in the first bin.", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_1", "modifiers": []}}
+{"command": "just stick the puzzle on the right.", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "table_right", "modifiers": []}}
+{"command": "the water? let's do the third box for that.", "expected": {"action": "pick_place", "target": "bottle", "location": "box_3", "modifiers": []}}
+{"command": "put the car down in the front area.", "expected": {"action": "pick_place", "target": "toy_car", "location": "table_front", "modifiers": []}}
+{"command": "i'm parched, snag the water for me.", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "can you just pass me the little car?", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "the puzzle cube, i wanna play with it, bring it here.", "expected": {"action": "fetch", "target": "rubiks_cube", "modifiers": []}}
+{"command": "actually yeah, hand me the bottle.", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "grab the vehicle thing if you can reach it.", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "could you fetch my drink?", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "i need the hot wheels right now.", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "that magic cube, go get it.", "expected": {"action": "fetch", "target": "rubiks_cube", "modifiers": []}}
+{"command": "bring the mini car over to me.", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "water bottle, fetch.", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "just pinch the bottle and wait a sec.", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "the car, get a grip on it.", "expected": {"action": "hold", "target": "toy_car", "modifiers": []}}
+{"command": "can you like, hold onto the puzzle thing?", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "don't let go of the water.", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "hang onto the colorful block.", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "just keep the cube in your hand.", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "make sure you don't drop the vehicle.", "expected": {"action": "hold", "target": "toy_car", "modifiers": []}}
+{"command": "hold the drink for me, actually.", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "grasp the rubiks.", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "keep holding the little hot wheels.", "expected": {"action": "hold", "target": "toy_car", "modifiers": []}}
+{"command": "take a peek at the bottle, is it empty?", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "is the little car broken? take a look.", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "the puzzle, give it a quick once-over.", "expected": {"action": "inspect", "target": "rubiks_cube", "modifiers": []}}
+{"command": "i need you to look at the water container real fast.", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "check out the wheels on the vehicle.", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "can you examine the magic cube?", "expected": {"action": "inspect", "target": "rubiks_cube", "modifiers": []}}
+{"command": "i need to see the drink, check it out.", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "look closely at the mini car.", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "inspect the colors on the cube.", "expected": {"action": "inspect", "target": "rubiks_cube", "modifiers": []}}
+{"command": "give the hot wheels a quick look.", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "just hover over the first bin.", "expected": {"action": "move_to", "location": "box_1", "modifiers": []}}
+{"command": "i need the arm right in the dead center.", "expected": {"action": "move_to", "location": "table_center", "modifiers": []}}
+{"command": "left side of the desk, swing over there.", "expected": {"action": "move_to", "location": "table_left", "modifiers": []}}
+{"command": "actually, drift over to box 3.", "expected": {"action": "move_to", "location": "box_3", "modifiers": []}}
+{"command": "if you don't mind, just move out of the way to the back.", "expected": {"action": "move_to", "location": "table_back", "modifiers": []}}
+{"command": "just slide over to the second box.", "expected": {"action": "move_to", "location": "box_2", "modifiers": []}}
+{"command": "i need you at the right side of the workspace.", "expected": {"action": "move_to", "location": "table_right", "modifiers": []}}
+{"command": "go to the front edge, please.", "expected": {"action": "move_to", "location": "table_front", "modifiers": []}}
+{"command": "navigate to the middle bin.", "expected": {"action": "move_to", "location": "box_2", "modifiers": []}}
+{"command": "head to the left of the table.", "expected": {"action": "move_to", "location": "table_left", "modifiers": []}}
+{"command": "reposition to box 1, if you don't mind.", "expected": {"action": "move_to", "location": "box_1", "modifiers": []}}
+{"command": "way in the back of the table, go.", "expected": {"action": "move_to", "location": "table_back", "modifiers": []}}
+{"command": "whoa whoa wait stop!", "expected": {"action": "stop", "modifiers": []}}
+{"command": "uh actually nevermind, just cancel that.", "expected": {"action": "stop", "modifiers": []}}
+{"command": "whoops, don't do that.", "expected": {"action": "stop", "modifiers": []}}
+{"command": "hold it right there.", "expected": {"action": "stop", "modifiers": []}}
+{"command": "pause for a sec.", "expected": {"action": "stop", "modifiers": []}}
+{"command": "cut it out, freeze.", "expected": {"action": "stop", "modifiers": []}}
+{"command": "wait no abort.", "expected": {"action": "stop", "modifiers": []}}
+{"command": "just freeze up please.", "expected": {"action": "stop", "modifiers": []}}
+{"command": "stop whatever you're doing right now.", "expected": {"action": "stop", "modifiers": []}}
+{"command": "hold up a minute.", "expected": {"action": "stop", "modifiers": []}}
+{"command": "halt right now.", "expected": {"action": "stop", "modifiers": []}}
+{"command": "abort abort!", "expected": {"action": "stop", "modifiers": []}}
+{"command": "drop what you're doing.", "expected": {"action": "stop", "modifiers": []}}
+{"command": "scan the room for any other people.", "expected": {"action": "reject", "modifiers": []}}
+{"command": "can you order more water online?", "expected": {"action": "reject", "modifiers": []}}
+{"command": "give me a fist bump.", "expected": {"action": "reject", "modifiers": []}}
+{"command": "what's the battery level at?", "expected": {"action": "reject", "modifiers": []}}
+{"command": "translate the writing on the bottle.", "expected": {"action": "reject", "modifiers": []}}
+{"command": "toss the car at my head.", "expected": {"action": "reject", "modifiers": []}}
+{"command": "can you sort the legos by color?", "expected": {"action": "reject", "modifiers": []}}
+{"command": "hand me the stapler from the desk.", "expected": {"action": "reject", "modifiers": []}}
+{"command": "play a song for me.", "expected": {"action": "reject", "modifiers": []}}
+{"command": "tell me a story about a robot.", "expected": {"action": "reject", "modifiers": []}}
+{"command": "paint the rubiks cube all blue.", "expected": {"action": "reject", "modifiers": []}}
+{"command": "make me a sandwich.", "expected": {"action": "reject", "modifiers": []}}
+{"command": "can you find where I left my keys?", "expected": {"action": "reject", "modifiers": []}}
+{"command": "break the puzzle apart into pieces.", "expected": {"action": "reject", "modifiers": []}}

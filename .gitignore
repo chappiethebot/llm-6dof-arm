@@ -1,4 +1,6 @@
-data/
+data/*
+!data/seen.jsonl
+!data/held_out.jsonl
 .env
 *.key
 __pycache__/

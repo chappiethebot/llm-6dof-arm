@@ -1,0 +1,14 @@
+{
+  "verbs": {
+    "pick_place": { "required": ["target", "location"] },
+    "fetch":      { "required": ["target"] },
+    "hold":       { "required": ["target"] },
+    "move_to":    { "required": ["location"] },
+    "inspect":    { "required": ["target"] },
+    "stop":       { "required": [] },
+    "reject":     { "required": [] }
+  },
+  "targets":   ["rubiks_cube", "bottle", "toy_car"],
+  "locations": ["box_1", "box_2", "box_3", "table_center", "table_left", "table_right", "table_front", "table_back"],
+  "modifiers_allowed": true
+}
