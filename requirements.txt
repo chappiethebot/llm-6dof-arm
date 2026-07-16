@@ -1,11 +1,24 @@
+# Core simulation
 mujoco
 gymnasium
 gymnasium-robotics
-faster-whisper
+
+# LLM backends (Phase 3)
 openai
 ollama
+python-dotenv          # loads OPENAI_API_KEY from .env — was missing, caused dotenv ImportError on both machines
+
+# ASR / voice (Phase 4)
+faster-whisper
+sounddevice            # live microphone capture (Phase 4) — remove if keeping requirements to current-phase deps only
+
+# Utilities
 numpy
+
+# RL (deferred — Future Work, not on critical path)
 stable-baselines3
 sb3-contrib
+
+# Vision (deferred — Future Work, not on critical path)
 ultralytics
 opencv-python
