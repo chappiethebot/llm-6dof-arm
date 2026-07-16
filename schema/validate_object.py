@@ -28,13 +28,16 @@ def validate_object(obj: dict, schema: dict) -> ValidationResult:
     locations = set(schema["locations"])
     reasons = []
 
-    # 0. Must actually be a dict (extractor guarantees this, but step 3 shouldn't assume it).
+    # 0. Must actually be a dict.
     if not isinstance(obj, dict):
         return ValidationResult(False, ["not_a_dict"])
 
     act = obj.get("action")
 
-    # 1. action must be a known verb. If it's not, no point checking fields for a verb we don't know.
+    # 1. action must be a known verb. Must also be a string — a non-string (dict/list)
+    #    would crash the set lookup, so guard it as a clean failure.
+    if not isinstance(act, str):
+        return ValidationResult(False, [f"bad_action_type:{type(act).__name__}"])
     if act not in verbs:
         return ValidationResult(False, [f"unknown_verb:{act!r}"])
 
@@ -43,13 +46,20 @@ def validate_object(obj: dict, schema: dict) -> ValidationResult:
         if req not in obj or obj[req] in (None, "", []):
             reasons.append(f"missing_required:{req}")
 
-    # 3. target, if present, must be legal.
-    if "target" in obj and obj["target"] not in targets:
-        reasons.append(f"bad_target:{obj['target']!r}")
+    # 3. target, if present, must be a legal STRING. A non-string (dict/list) is a
+    #    clean failure, NOT a crash — models sometimes nest structures here.
+    if "target" in obj:
+        if not isinstance(obj["target"], str):
+            reasons.append(f"bad_target_type:{type(obj['target']).__name__}")
+        elif obj["target"] not in targets:
+            reasons.append(f"bad_target:{obj['target']!r}")
 
-    # 4. location, if present, must be legal.
-    if "location" in obj and obj["location"] not in locations:
-        reasons.append(f"bad_location:{obj['location']!r}")
+    # 4. location, same guard.
+    if "location" in obj:
+        if not isinstance(obj["location"], str):
+            reasons.append(f"bad_location_type:{type(obj['location']).__name__}")
+        elif obj["location"] not in locations:
+            reasons.append(f"bad_location:{obj['location']!r}")
 
     # 5. no stray fields. 'modifiers' allowed on every verb (schema modifiers_allowed=true).
     allowed = set(verbs[act]["required"]) | {"action", "modifiers"}
@@ -66,12 +76,14 @@ if __name__ == "__main__":
         "valid_pick_place":   {"action": "pick_place", "target": "bottle", "location": "box_1"},
         "valid_stop":         {"action": "stop"},
         "valid_with_mods":    {"action": "fetch", "target": "toy_car", "modifiers": ["gently"]},
-        "missing_location":   {"action": "pick_place", "target": "bottle"},          # from your prose_wrapped case
+        "missing_location":   {"action": "pick_place", "target": "bottle"},
         "unknown_verb":       {"action": "banana", "target": "bottle"},
         "bad_target":         {"action": "fetch", "target": "banana"},
         "bad_location":       {"action": "move_to", "location": "mars"},
         "stray_field":        {"action": "stop", "target": "bottle"},
         "empty_dict":         {},
+        "nested_target":      {"action": "pick_place", "target": {"x": 1}, "location": "box_1"},   # the crash case
+        "nested_action":      {"action": {"verb": "pick_place"}, "target": "bottle"},              # action is a dict
     }
     for name, obj in cases.items():
         r = validate_object(obj, schema)

@@ -1,11 +1,10 @@
 """llm/pipeline.py — Phase 3: the machine. command -> prompt -> model -> extract -> validate.
 
 Runs ONE command through ONE client with ONE strategy, and reports exactly where it
-landed: got a reply, parsed to JSON, passed schema. Failures are recorded, not raised —
-a failed cell is a data point (invalid/hallucination rate), not a crash.
+landed. Failures are RECORDED, not raised — run_once never throws, so no weird model
+reply or API hiccup can kill a measurement run. A failed cell is a data point.
 
-This is NOT the eval harness (that's Phase 5: many commands, ground-truth scoring,
-variance, seen/held-out). This just proves one command flows end to end.
+This is NOT the eval harness (that's Phase 5).
 """
 import time
 from dataclasses import dataclass, field
@@ -20,39 +19,58 @@ class PipelineResult:
     command: str
     model: str
     strategy: str
-    stage: str            # where it ended: "validated" | "extract_failed" | "schema_failed"
-    ok: bool              # True only if it passed schema validation
+    stage: str            # validated | extract_failed | schema_failed | model_error | prompt_error | pipeline_error
+    ok: bool
     obj: dict | None = None
-    reasons: list[str] = field(default_factory=list)  # extract/validate failure labels
-    raw: str = ""         # raw model text, kept for inspection
+    reasons: list[str] = field(default_factory=list)
+    raw: str = ""
     latency_s: float = 0.0
 
 
 def run_once(command, client, strategy, schema, examples=None) -> PipelineResult:
-    prompt = build_prompt(command, strategy, schema, examples=examples)
+    base = dict(command=command, model=client.name, strategy=strategy)
 
+    # Build the prompt (local, cheap — but guard anyway).
+    try:
+        prompt = build_prompt(command, strategy, schema, examples=examples)
+    except Exception as e:
+        return PipelineResult(stage="prompt_error", ok=False,
+                              reasons=[f"{type(e).__name__}:{e}"], **base)
+
+    # Call the model. Network/API errors (timeout, rate limit) live here and must
+    # never kill the run — they become a recorded model_error.
     t0 = time.perf_counter()
-    raw = client.complete(prompt)
+    try:
+        raw = client.complete(prompt)
+    except Exception as e:
+        return PipelineResult(stage="model_error", ok=False,
+                              reasons=[f"{type(e).__name__}:{e}"],
+                              latency_s=time.perf_counter() - t0, **base)
     latency = time.perf_counter() - t0
 
-    base = dict(command=command, model=client.name, strategy=strategy, raw=raw, latency_s=latency)
+    base = dict(**base, raw=raw, latency_s=latency)
 
-    ext = extract_json(raw)
-    if not ext.ok:
-        return PipelineResult(stage="extract_failed", ok=False, reasons=[ext.reason], **base)
+    # Extract + validate. Guarded so no unexpected reply shape can crash a run.
+    try:
+        ext = extract_json(raw)
+        if not ext.ok:
+            return PipelineResult(stage="extract_failed", ok=False, reasons=[ext.reason], **base)
 
-    val = validate_object(ext.data, schema)
-    if not val.ok:
-        return PipelineResult(stage="schema_failed", ok=False, obj=ext.data, reasons=val.reasons, **base)
+        val = validate_object(ext.data, schema)
+        if not val.ok:
+            return PipelineResult(stage="schema_failed", ok=False, obj=ext.data, reasons=val.reasons, **base)
 
-    return PipelineResult(stage="validated", ok=True, obj=ext.data, **base)
+        return PipelineResult(stage="validated", ok=True, obj=ext.data, **base)
+    except Exception as e:
+        return PipelineResult(stage="pipeline_error", ok=False,
+                              reasons=[f"{type(e).__name__}:{e}"], **base)
 
 
 if __name__ == "__main__":
     from llm.clients import all_clients
 
     schema = load_schema()
-    command = "put the bottle in box 1"   # correct answer: pick_place / bottle / box_1
+    command = "put the bottle in box 1"
     fewshot_examples = [
         {"command": "grab the toy car", "expected": {"action": "fetch", "target": "toy_car"}},
         {"command": "stop now", "expected": {"action": "stop"}},
@@ -65,13 +83,10 @@ if __name__ == "__main__":
     for client in clients:
         for strat in strategies:
             ex = fewshot_examples if strat == "few_shot" else None
-            try:
-                r = run_once(command, client, strat, schema, examples=ex)
-                flag = "PASS" if r.ok else "----"
-                print(f"[{flag}] {client.name:22} {strat:11} "
-                      f"stage={r.stage:14} obj={r.obj} "
-                      f"{'reasons='+str(r.reasons) if r.reasons else ''} "
-                      f"({r.latency_s:.2f}s)")
-            except Exception as e:
-                print(f"[ERR ] {client.name:22} {strat:11} {type(e).__name__}: {e}")
-    print("\nDone. PASS = reached valid schema. ---- = failed at extract or schema (that's data).")
+            r = run_once(command, client, strat, schema, examples=ex)
+            flag = "PASS" if r.ok else "----"
+            print(f"[{flag}] {client.name:22} {strat:11} "
+                  f"stage={r.stage:14} obj={r.obj} "
+                  f"{'reasons='+str(r.reasons) if r.reasons else ''} "
+                  f"({r.latency_s:.2f}s)")
+    print("\nDone. PASS = reached valid schema. ---- = failed (extract/schema/model — that's data).")
