@@ -57,6 +57,7 @@ def all_clients():
         OllamaClient("llama3.2:3b"),
         OllamaClient("qwen2.5:3b"),
         OllamaClient("qwen2.5:0.5b"),
+        OllamaClient("deepseek-r1:7b"),   # reasoning model — 5th model, makes grid 5x4=20
     ]
 
 
