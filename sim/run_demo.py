@@ -5,9 +5,15 @@ is shared, so both modes run identical motion code. llm_demo.py is left untouche
 as the stable typed reference; this is additive.
 
 Model + strategy are flags (voice adds no menu for them):
-  python run_demo.py --model gpt-4o-mini --strategy zero_shot
-  mjpython run_demo.py --model qwen2.5:3b --strategy cot   (Mac)
+  Windows:  python run_demo.py --model gpt-4o-mini --strategy zero_shot
+  Mac:      python run_demo.py --model qwen2.5:3b --strategy cot
 Run from sim/.
+
+macOS note: run under plain `python`, NOT `mjpython`. mjpython runs user code on
+a non-main thread, which makes gymnasium's render_mode="human" window creation
+crash ('NSWindow should only be instantiated on the main thread'). Plain python
+keeps the viewer on the main thread. (The backend is also built before Whisper as
+a belt-and-braces main-thread measure; harmless on Windows.)
 """
 import os
 os.environ["HF_HUB_OFFLINE"] = "1"
@@ -51,7 +57,7 @@ def choose_mode():
         print("  Please type 1 or 2.")
 
 
-# ---------- voice front-end (only built if mode 2 chosen) ----------
+# ---------- voice front-end (only used if mode 2 chosen) ----------
 def resolve_input_device():
     if MIC_NAME_HINT:
         for idx, dev in enumerate(sd.query_devices()):
@@ -72,6 +78,7 @@ def pick_samplerate(device):
 
 
 def record_push_to_talk(device, sr):
+    """Record until Enter. t_mic_stop stamped at Enter = latency clock start."""
     frames = []
     def cb(indata, n, t, status): frames.append(indata.copy())
     input("  Press Enter to START speaking...")
@@ -117,7 +124,18 @@ def main():
     strategy = args.strategy
     examples = None   # few_shot examples: data/seen.jsonl ONLY (seal rule). Wired later.
 
-    # Voice-only setup: import + load Whisper only if mode 2 (keyboard needs neither).
+    # --- BUILD SIM VIEWER FIRST (belt-and-braces main-thread measure) ---
+    # Primary macOS fix is running under plain `python` (see module docstring).
+    # Building the backend before Whisper/sounddevice is an extra safeguard and
+    # is order-independent on Windows.
+    schema_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                               "schema", "schema.json")
+    schema = load_schema(schema_path)
+
+    backend = FullGraspBackend(render=True, gain=3.0)   # opens viewer on main thread
+    backend.set_object([1.30, 0.72, 0.425])
+
+    # --- THEN set up voice (mode 2 only) ---
     asr = device = sr = None
     if mode == "voice":
         global sd
@@ -129,13 +147,6 @@ def main():
         t = time.perf_counter()
         asr = WhisperModel(WHISPER_MODEL, device="cpu", compute_type="int8")
         print(f"Whisper loaded in {time.perf_counter()-t:.2f}s")
-
-    schema_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                               "schema", "schema.json")
-    schema = load_schema(schema_path)
-
-    backend = FullGraspBackend(render=True, gain=3.0)
-    backend.set_object([1.30, 0.72, 0.425])
 
     print(f"\nModel: {client.name} | Strategy: {strategy} | Input: {mode.upper()}")
     print_legend()
