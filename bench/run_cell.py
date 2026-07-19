@@ -1,6 +1,7 @@
 ﻿#!/usr/bin/env python
 """
-bench/run_cell.py -- Phase 5 single-cell measurement runner.
+bench/run_cell.py -- Phase 5 measurement runner (single cell), and the shared
+run_cell() the grid wrapper reuses so there is ONE measurement code path.
 
 Runs ONE (model x strategy) cell over a command dataset, scores each output
 against ground truth, and appends one CSV row PER RUN (not per cell).
@@ -37,6 +38,8 @@ FIELDNAMES = [
     "command_id",       # index into the TEST rows (positional -- see note below)
     "command",          # raw command text (redundant but priceless for debugging)
     "run_index",        # 0..repeats-1  (the >=5-run repeat lives here)
+    "is_warmup",        # True on the cell's first call (cid==0 and run_index==0);
+                        # cold-start inflates latency -- filter on this for clean tails
     "latency_s",        # LLM-call latency ONLY (extract/validate are outside the timer)
     "stage",            # validated | extract_failed | schema_failed | model_error | ...
     "ok",               # pipeline reached a valid schema object
@@ -58,12 +61,107 @@ FIELDNAMES = [
 # Stable as long as seen.jsonl is append-only and k is unchanged. Reorder the
 # file or change k and these ids shift -- treat the dataset as append-only.
 
+# NOTE on is_warmup: flagged per invocation of run_cell(), on the first command's
+# first repeat. The grid wrapper runs each cell start-to-finish in one call, so a
+# cell gets exactly one warmup row. (Resume happens at CELL boundaries, never
+# mid-cell, so this stays true.)
+
 
 def resolve_clients():
     cs = all_clients() if callable(all_clients) else all_clients
     if isinstance(cs, dict):
         cs = list(cs.values())
     return {c.name: c for c in cs}
+
+
+def _load_rows(dataset, k):
+    """Return (rows, fewshot_pool). Splits seen into test rows + exemplar pool.
+    held_out is read raw with no exemplars (few-shot on held_out is banned)."""
+    if dataset == "seen":
+        exemplars, rows = load_seen_split(k=k)
+        return rows, exemplars
+    data_path = Path("data") / f"{dataset}.jsonl"
+    rows = [json.loads(line) for line in data_path.open(encoding="utf-8") if line.strip()]
+    return rows, []
+
+
+def run_cell(client, strategy, out_path, *, dataset="seen", k=DEFAULT_K,
+             limit=0, repeats=1, schema=None, quiet=False):
+    """Run ONE (model x strategy) cell and append rows to out_path.
+    Returns the number of rows written. This is the shared path used by both the
+    CLI below and the grid wrapper -- so there is exactly one scoring/timing code."""
+    if schema is None:
+        try:
+            schema = load_schema()
+        except TypeError:
+            schema = load_schema("schema/schema.json")
+
+    rows, exemplars = _load_rows(dataset, k)
+
+    if strategy == "few_shot" and not exemplars:
+        raise ValueError("few_shot requires seen exemplars; not available for this dataset.")
+    fewshot_examples = exemplars if strategy == "few_shot" else None
+
+    if limit and limit > 0:
+        rows = rows[:limit]
+
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    new_file = not out_path.exists()
+    written = 0
+
+    with out_path.open("a", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        if new_file:
+            w.writeheader()
+
+        for cid, row in enumerate(rows):
+            command = row["command"]
+            truth = row["expected"]
+            for run_index in range(repeats):
+                is_warmup = (cid == 0 and run_index == 0)
+                r = run_once(command, client, strategy, schema, examples=fewshot_examples)
+
+                if r.ok and r.stage == "validated" and r.obj is not None:
+                    sc = score(r.obj, truth)
+                    strict, norm, cat = sc.strict_match, sc.normalized_match, sc.category
+                else:
+                    strict, norm, cat = False, False, f"invalid:{r.stage}"
+
+                lat = getattr(r, "latency_s", None)
+                w.writerow({
+                    "ts_iso": datetime.datetime.now().isoformat(timespec="seconds"),
+                    "model": getattr(r, "model", client.name),
+                    "strategy": strategy,
+                    "dataset": dataset,
+                    "source": "typed",
+                    "command_id": cid,
+                    "command": command,
+                    "run_index": run_index,
+                    "is_warmup": is_warmup,
+                    "latency_s": lat,
+                    "stage": r.stage,
+                    "ok": r.ok,
+                    "strict_match": strict,
+                    "normalized_match": norm,
+                    "category": cat,
+                    "pred_json": json.dumps(r.obj) if r.obj is not None else "",
+                    "truth_json": json.dumps(truth),
+                    "reasons": "; ".join(r.reasons) if getattr(r, "reasons", None) else "",
+                    "raw": getattr(r, "raw", "") or "",
+                    "tokens_in": "", "tokens_out": "", "cost_usd": "",
+                    "temperature": getattr(client, "temperature", ""),
+                })
+                f.flush()  # survive a crash mid-cell (deepseek-r1 is slow + RAM-heavy)
+
+                written += 1
+                if not quiet:
+                    lat_str = f"{lat:.3f}s" if isinstance(lat, (int, float)) else "  n/a"
+                    warm = " [warmup]" if is_warmup else ""
+                    print(f"[{written}] {client.name}/{strategy} cid={cid} "
+                          f"run={run_index} {r.stage} strict={strict} {lat_str}{warm}")
+
+    return written
 
 
 def main():
@@ -86,7 +184,6 @@ def main():
         print("strategies expected:  zero_shot, few_shot, cot, role_based")
         return
 
-    # --- SEAL GUARD: held_out gets read exactly once, at the real sealed pass. ---
     if args.dataset == "held_out" and not args.i_understand_heldout_is_sealed:
         sys.exit("REFUSING: held_out is sealed. This flag is the single sealed pass; "
                  "pass --i-understand-heldout-is-sealed only when you truly mean it.")
@@ -95,85 +192,10 @@ def main():
         sys.exit(f"unknown model '{args.model}'. available: {list(clients.keys())}")
     client = clients[args.model]
 
-    # load_schema() -- try no-arg first, fall back to explicit path.
-    try:
-        schema = load_schema()
-    except TypeError:
-        schema = load_schema("schema/schema.json")
-
-    # --- Dataset split: exemplars are few-shot shots ONLY; test_rows are scored
-    # for ALL strategies (identical denominator = fair comparison). held_out is
-    # not handled by the split helper; if you ever run held_out it reads the raw
-    # file with NO exemplars (few-shot on held_out is banned anyway).
-    if args.dataset == "seen":
-        exemplars, rows = load_seen_split(k=args.k)
-    else:
-        data_path = Path("data") / f"{args.dataset}.jsonl"
-        rows = [json.loads(line) for line in data_path.open(encoding="utf-8") if line.strip()]
-        exemplars = []
-
-    # few_shot needs exemplars, which only exist for seen. On held_out, refuse.
-    if args.strategy == "few_shot" and not exemplars:
-        sys.exit("few_shot requires seen exemplars; not available for this dataset.")
-
-    fewshot_examples = exemplars if args.strategy == "few_shot" else None
-
-    if args.limit and args.limit > 0:
-        rows = rows[:args.limit]
-
-    out_path = Path(args.out)
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    new_file = not out_path.exists()
-    written = 0
-
-    with out_path.open("a", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=FIELDNAMES)
-        if new_file:
-            w.writeheader()
-
-        for cid, row in enumerate(rows):
-            command = row["command"]
-            truth = row["expected"]
-            for run_index in range(args.repeats):
-                r = run_once(command, client, args.strategy, schema, examples=fewshot_examples)
-
-                if r.ok and r.stage == "validated" and r.obj is not None:
-                    sc = score(r.obj, truth)
-                    strict, norm, cat = sc.strict_match, sc.normalized_match, sc.category
-                else:
-                    strict, norm, cat = False, False, f"invalid:{r.stage}"
-
-                lat = getattr(r, "latency_s", None)
-                w.writerow({
-                    "ts_iso": datetime.datetime.now().isoformat(timespec="seconds"),
-                    "model": getattr(r, "model", args.model),
-                    "strategy": args.strategy,
-                    "dataset": args.dataset,
-                    "source": "typed",
-                    "command_id": cid,
-                    "command": command,
-                    "run_index": run_index,
-                    "latency_s": lat,
-                    "stage": r.stage,
-                    "ok": r.ok,
-                    "strict_match": strict,
-                    "normalized_match": norm,
-                    "category": cat,
-                    "pred_json": json.dumps(r.obj) if r.obj is not None else "",
-                    "truth_json": json.dumps(truth),
-                    "reasons": "; ".join(r.reasons) if getattr(r, "reasons", None) else "",
-                    "raw": getattr(r, "raw", "") or "",
-                    "tokens_in": "", "tokens_out": "", "cost_usd": "",
-                    "temperature": getattr(client, "temperature", ""),
-                })
-                f.flush()  # survive a crash mid-grid (deepseek-r1 is slow + RAM-heavy)
-
-                written += 1
-                lat_str = f"{lat:.3f}s" if isinstance(lat, (int, float)) else "  n/a"
-                print(f"[{written}] {args.model}/{args.strategy} cid={cid} "
-                      f"run={run_index} {r.stage} strict={strict} {lat_str}")
-
-    print(f"\nwrote {written} rows -> {out_path}")
+    written = run_cell(client, args.strategy, args.out,
+                       dataset=args.dataset, k=args.k,
+                       limit=args.limit, repeats=args.repeats)
+    print(f"\nwrote {written} rows -> {args.out}")
 
 
 if __name__ == "__main__":
