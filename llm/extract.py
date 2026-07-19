@@ -1,5 +1,5 @@
-"""llm/extract.py — Phase 3, step 2: raw model text -> clean dict, or a loud failure.
-This layer ONLY answers 'is this parseable JSON?'. It does NOT check the schema — that's step 3.
+﻿"""llm/extract.py -- Phase 3, step 2: raw model text -> clean dict, or a loud failure.
+This layer ONLY answers "is this parseable JSON?". It does NOT check the schema -- that's step 3.
 """
 import json
 import re
@@ -17,7 +17,6 @@ class ExtractResult:
 def extract_json(raw: str) -> ExtractResult:
     if raw is None or not raw.strip():
         return ExtractResult(False, None, "empty_output")
-
     text = raw.strip()
 
     # 1) Strip a markdown code fence if the whole thing is wrapped in one (gpt-4o-mini did this).
@@ -31,15 +30,36 @@ def extract_json(raw: str) -> ExtractResult:
     if parsed is not None:
         return _finish(parsed)
 
-    # 3) Fallback: the model wrapped JSON in prose. Grab the first {...} block and try that.
-    #    Non-greedy from the first '{' to the last '}' — good enough for single-object replies.
-    brace = re.search(r"\{.*\}", text, re.DOTALL)
-    if brace:
-        parsed = _try_load(brace.group(0))
-        if parsed is not None:
+    # 3) Fallback: the model wrapped JSON in prose (or reasoned first, then emitted
+    #    the answer -- cot/reasoning models). Scan for ALL balanced {...} objects and
+    #    take the LAST one that parses. The cot prompt puts the answer on the last
+    #    line, so the last valid object is the answer; earlier braces are schema
+    #    echoes or reasoning fragments. On single-object replies the last object IS
+    #    the only object, so the clean strategies are unaffected.
+    for cand in reversed(_find_json_objects(text)):
+        parsed = _try_load(cand)
+        if parsed is not None and isinstance(parsed, dict):
             return _finish(parsed)
 
     return ExtractResult(False, None, "no_valid_json")
+
+
+def _find_json_objects(text: str) -> list[str]:
+    """Return every brace-balanced {...} substring, in order of appearance.
+    Balanced-brace scan (not regex) so nested objects are captured whole."""
+    objs, depth, start = [], 0, None
+    for i, ch in enumerate(text):
+        if ch == "{":
+            if depth == 0:
+                start = i
+            depth += 1
+        elif ch == "}":
+            if depth > 0:
+                depth -= 1
+                if depth == 0 and start is not None:
+                    objs.append(text[start:i + 1])
+                    start = None
+    return objs
 
 
 def _try_load(s: str):
@@ -68,8 +88,9 @@ if __name__ == "__main__":
         "garbage_no_json":   'I cannot help with that.',
         "empty":             '',
         "json_but_a_list":   '[1, 2, 3]',
+        "cot_reasoning":     'Step 1: the verb is {pick_place}. Final answer:\n{"action": "pick_place", "target": "toy_car", "location": "box_2"}',
     }
     for name, raw in cases.items():
         r = extract_json(raw)
         status = "OK  " if r.ok else "FAIL"
-        print(f"[{status}] {name:18} -> ok={r.ok}  data={r.data}  reason='{r.reason}'")
+        print(f"[{status}] {name:18} -> ok={r.ok}  data={r.data}  reason=\x27{r.reason}\x27")
