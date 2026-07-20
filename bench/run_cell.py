@@ -17,8 +17,9 @@ Usage:
     python -m bench.run_cell --model "openai:gpt-4o-mini" --strategy few_shot  --limit 5 --repeats 1
 
 few-shot draws k fixed exemplars from seen.jsonl (via bench/dataset.py); those k
-rows are excluded from the test set for ALL strategies, so every strategy is
-scored on the identical test set. held_out is SEALED and refused without a flag.
+rows are excluded from the seen test set. For held_out, few-shot uses those SAME
+seen exemplars (held_out is never an example, only a test item -- seal intact).
+held_out is SEALED and refused by the CLI without an explicit flag.
 """
 import argparse, csv, json, sys, datetime
 from pathlib import Path
@@ -57,9 +58,9 @@ FIELDNAMES = [
     "temperature",      # recorded from client.temperature -- honest methods chapter
 ]
 
-# NOTE on command_id: 0-based index into the TEST rows (seen minus exemplars).
-# Stable as long as seen.jsonl is append-only and k is unchanged. Reorder the
-# file or change k and these ids shift -- treat the dataset as append-only.
+# NOTE on command_id: 0-based index into the TEST rows (seen minus exemplars, or
+# the full held_out file). Stable as long as the dataset file is append-only and
+# k is unchanged. Reorder the file or change k and these ids shift.
 
 # NOTE on is_warmup: flagged per invocation of run_cell(), on the first command's
 # first repeat. The grid wrapper runs each cell start-to-finish in one call, so a
@@ -75,14 +76,21 @@ def resolve_clients():
 
 
 def _load_rows(dataset, k):
-    """Return (rows, fewshot_pool). Splits seen into test rows + exemplar pool.
-    held_out is read raw with no exemplars (few-shot on held_out is banned)."""
+    """Return (rows, fewshot_pool).
+    seen:     test rows = seen minus k exemplars; exemplar pool = those k.
+    held_out: test rows = the FULL held-out file (sealed, read once); exemplar
+              pool = the SAME k seen exemplars. Few-shot on held-out is allowed
+              and clean: exemplars come from seen ONLY, held-out is never an
+              example -- only a test item -- so the seal and the generalization
+              KPI both stay intact."""
     if dataset == "seen":
         exemplars, rows = load_seen_split(k=k)
         return rows, exemplars
+    # held_out (or any non-seen set): test on all its rows; exemplars from seen.
     data_path = Path("data") / f"{dataset}.jsonl"
     rows = [json.loads(line) for line in data_path.open(encoding="utf-8") if line.strip()]
-    return rows, []
+    seen_exemplars, _ = load_seen_split(k=k)
+    return rows, seen_exemplars
 
 
 def run_cell(client, strategy, out_path, *, dataset="seen", k=DEFAULT_K,

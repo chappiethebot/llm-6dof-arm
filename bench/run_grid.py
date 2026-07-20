@@ -19,14 +19,19 @@ deepseek-r1 is slow + RAM-heavy, so we set OLLAMA_MAX_LOADED_MODELS=1 and
 OLLAMA_KEEP_ALIVE=0 in-process before any Ollama call, so only one model is
 resident at a time.
 
-Grid output goes to bench/results_grid.csv (separate from smoke; gitignored).
+Grid output goes to bench/results_grid.csv by default (separate from smoke;
+gitignored). held_out requires --i-understand-heldout-is-sealed and should be
+written to a SEPARATE file (e.g. --out bench/results_heldout.csv).
 
 Usage:
     # prove the wrapper on a small slice first (2 models x 2 strategies, 5 cmds):
     python -m bench.run_grid --models "openai:gpt-4o-mini,ollama:qwen2.5:3b" --strategies "zero_shot,few_shot" --limit 5 --repeats 1
 
-    # the real run (all 20 cells, full test set, 5 repeats):
+    # the real seen run (all 20 cells, full test set, 5 repeats):
     python -m bench.run_grid --repeats 5
+
+    # the SINGLE sealed held-out pass (all 20 cells, separate output file):
+    python -m bench.run_grid --dataset held_out --repeats 5 --i-understand-heldout-is-sealed --out bench/results_heldout.csv
 """
 import argparse, csv, os, sys
 from collections import Counter
@@ -68,13 +73,18 @@ def main():
                     help="comma-separated model names (default: all 5)")
     ap.add_argument("--strategies", default=",".join(ALL_STRATEGIES),
                     help="comma-separated strategies (default: all 4)")
-    ap.add_argument("--dataset", default="seen", choices=["seen"],
-                    help="grid runs on seen only; held_out is a separate sealed pass")
+    ap.add_argument("--dataset", default="seen", choices=["seen", "held_out"],
+                    help="held_out requires --i-understand-heldout-is-sealed (single sealed pass)")
+    ap.add_argument("--i-understand-heldout-is-sealed", action="store_true")
     ap.add_argument("--limit", type=int, default=0, help="first N commands (0 = full test set)")
     ap.add_argument("--repeats", type=int, default=5)
     ap.add_argument("--k", type=int, default=DEFAULT_K)
     ap.add_argument("--out", default="bench/results_grid.csv")
     args = ap.parse_args()
+
+    if args.dataset == "held_out" and not args.i_understand_heldout_is_sealed:
+        sys.exit("REFUSING: held_out is sealed. This is the SINGLE sealed pass. "
+                 "Pass --i-understand-heldout-is-sealed only when you truly mean it.")
 
     models = [m.strip() for m in args.models.split(",") if m.strip()]
     strategies = [s.strip() for s in args.strategies.split(",") if s.strip()]
@@ -96,9 +106,9 @@ def main():
 
     existing = count_existing(args.out)
     cells = [(m, s) for m in models for s in strategies]
-    print(f"grid: {len(cells)} cells | {n_test} test rows x {args.repeats} repeats = {expected_per_cell} rows/cell | out={args.out}\n")
+    print(f"grid: {len(cells)} cells | dataset={args.dataset} | {n_test} test rows x {args.repeats} repeats = {expected_per_cell} rows/cell | out={args.out}\n")
 
-    done, ran, skipped = 0, 0, 0
+    ran, skipped = 0, 0
     for i, (model, strategy) in enumerate(cells, 1):
         have = existing.get((model, strategy), 0)
         tag = f"cell {i}/{len(cells)}  {model}/{strategy}"
