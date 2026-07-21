@@ -11,3 +11,5 @@ models/
 sim/voice_clip.wav
 
 bench/results_*.csv
+
+bench/figures/
