@@ -1,0 +1,82 @@
+{
+  "schema_version": 2,
+  "generated_by": "schema/gen_schema_v2.py",
+  "generated_from": {
+    "file": "grid_spec.json",
+    "spec_version": 2,
+    "reachability_source": "sim/reachability.py 9x9x3",
+    "enum_restricted_to_legal_cells": false
+  },
+  "verbs": {
+    "pick_place": {
+      "required": [
+        "target",
+        "location"
+      ]
+    },
+    "fetch": {
+      "required": [
+        "target"
+      ]
+    },
+    "hold": {
+      "required": [
+        "target"
+      ]
+    },
+    "move_to": {
+      "required": [
+        "location"
+      ]
+    },
+    "inspect": {
+      "required": [
+        "target"
+      ]
+    },
+    "stop": {
+      "required": []
+    },
+    "reject": {
+      "required": []
+    }
+  },
+  "targets": [
+    "rubiks_cube",
+    "bottle",
+    "toy_car"
+  ],
+  "locations": [
+    "box_1",
+    "box_2",
+    "box_3",
+    "grid_A1",
+    "grid_A2",
+    "grid_A3",
+    "grid_B1",
+    "grid_B2",
+    "grid_B3",
+    "grid_C1",
+    "grid_C2",
+    "grid_C3",
+    "max_reach",
+    "nearest_free_cell"
+  ],
+  "location_classes": {
+    "box_1": "container",
+    "box_2": "container",
+    "box_3": "container",
+    "grid_A1": "corner",
+    "grid_A2": "edge",
+    "grid_A3": "corner",
+    "grid_B1": "edge",
+    "grid_B2": "interior",
+    "grid_B3": "edge",
+    "grid_C1": "corner",
+    "grid_C2": "edge",
+    "grid_C3": "corner",
+    "max_reach": "runtime_symbol",
+    "nearest_free_cell": "runtime_symbol"
+  },
+  "modifiers_allowed": true
+}

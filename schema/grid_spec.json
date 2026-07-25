@@ -1,0 +1,128 @@
+{
+  "spec_version": 2,
+  "_purpose": "Single source of truth for the V2 location space. schema_v2.json is GENERATED from this file by gen_schema_v2.py. Never hand-edit schema_v2.json.",
+  "carried_from_v1": {
+    "_note": "UNCHANGED from schema.json v1. Container semantics ('put it IN box 1') do not survive translation to a flat surface cell, so boxes stay boxes. This also leaves 36 seen rows and 18 held-out rows untouched by the V2 rewrite.",
+    "verbs": {
+      "pick_place": {
+        "required": [
+          "target",
+          "location"
+        ]
+      },
+      "fetch": {
+        "required": [
+          "target"
+        ]
+      },
+      "hold": {
+        "required": [
+          "target"
+        ]
+      },
+      "move_to": {
+        "required": [
+          "location"
+        ]
+      },
+      "inspect": {
+        "required": [
+          "target"
+        ]
+      },
+      "stop": {
+        "required": []
+      },
+      "reject": {
+        "required": []
+      }
+    },
+    "targets": [
+      "rubiks_cube",
+      "bottle",
+      "toy_car"
+    ],
+    "containers": [
+      "box_1",
+      "box_2",
+      "box_3"
+    ],
+    "modifiers_allowed": true
+  },
+  "retired_v1_locations": {
+    "_note": "Replaced by grid cells in V2. Retained only so the V1->V2 worksheet can map them and the demo can alias them. NEVER emitted into the v2 enum.",
+    "table_center": "grid centre cell",
+    "table_left": "mid-row, first-column edge",
+    "table_right": "mid-row, last-column edge",
+    "table_front": "front-row centre",
+    "table_back": "back-row centre"
+  },
+  "grid": {
+    "rows": [
+      "A",
+      "B",
+      "C"
+    ],
+    "cols": [
+      1,
+      2,
+      3
+    ],
+    "_status": "LOCKED at 3x3. Rationale: English has clean names for far/mid/near x left/mid/right and nothing reliable for a 5-wide ring. Naming ambiguity, not reachability, is the binding constraint.",
+    "_row_order": "A = furthest from robot base (largest x), E = nearest (smallest x).",
+    "_col_order": "1 = smallest y, 5 = largest y.",
+    "_why_odd": "Odd x odd so the geometric centre is a real cell (C3). A 4x4 grid has no centre cell, forcing a separate 'table_center' symbol and reintroducing two-correct-answers ambiguity."
+  },
+  "runtime_symbols": [
+    {
+      "symbol": "max_reach",
+      "resolved_by": "backend",
+      "_note": "Furthest legal cell on the commanded bearing. The LLM cannot know the sweep result, so the GOLD LABEL is the symbol itself, never the resolved cell."
+    },
+    {
+      "symbol": "nearest_free_cell",
+      "resolved_by": "backend",
+      "_note": "Resolved against current object occupancy. Gold label is the symbol."
+    }
+  ],
+  "geometry": {
+    "_status": "MEASURED \u2014 sim/reachability.py, 9x9 sweep, 3 trials/candidate, margin 0.03 m. Reproduced identically on Windows (thesis env) and Linux container.",
+    "origin_xy_m": {
+      "row_A_x": 1.52,
+      "row_E_x": 1.08,
+      "col_1_y": 0.43,
+      "col_5_y": 1.07,
+      "row_B_x": 1.3,
+      "col_2_y": 0.75
+    },
+    "cell_pitch_m": {
+      "x_rows": 0.22,
+      "y_cols": 0.32
+    },
+    "usable_span_x_m": 0.44,
+    "usable_span_y_m": 0.64,
+    "table_z_m": 0.4,
+    "backend_frames": {
+      "mujoco_fetch": "world frame, FetchPickAndPlace-v4, table0 top z=0.400",
+      "rebel": null
+    },
+    "min_pitch_m": 0.06,
+    "_min_pitch_rationale": "full_grasp_backend.pick_place scores ok when gap < 0.06 m. If cell pitch <= 0.06 m, a place at the WRONG adjacent cell still scores ok and per-cell execution success is meaningless. Measured V1 footprint is 0.240 m x 0.240 m; 5x5 over that gives pitch exactly 0.060 m, which FAILS. A 5x5 grid therefore requires the sweep to find a usable span of at least 0.30 m per axis. Fallback ladder: 5x5 (needs >=0.30 m), 4x4 (needs >=0.24 m, no centre cell), 3x3 (needs >=0.18 m, only 9 cells = no growth over V1)."
+  },
+  "reachability": {
+    "_status": "MEASURED \u2014 every on-table candidate legal. No donut: the Fetch end-effector is mocap-welded, so there is no IK failure mode inside the table.",
+    "source": "sim/reachability.py 9x9x3",
+    "measured_on": "windows-thesis-env + linux-container (identical results)",
+    "legal_cells": "ALL",
+    "illegal_cells": [],
+    "_expected_shape": "SUPERSEDED. Donut prediction was a real-arm expectation; MuJoCo Fetch does not reproduce it. Off-table targets are the only failure mode."
+  },
+  "v1_aliases_DEMO_ONLY": {
+    "_warning": "NEVER imported by score.py, validate(), or anything under bench/. Demo convenience only.",
+    "table_center": null,
+    "table_left": null,
+    "table_right": null,
+    "table_front": null,
+    "table_back": null
+  }
+}
