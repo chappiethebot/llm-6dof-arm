@@ -3,6 +3,7 @@ Returns RAW model text. No JSON extraction, no validation, no scoring — those 
 """
 import os
 from abc import ABC, abstractmethod
+
 from dotenv import load_dotenv
 
 load_dotenv()  # reads OPENAI_API_KEY from .env
@@ -11,6 +12,7 @@ load_dotenv()  # reads OPENAI_API_KEY from .env
 class LLMClient(ABC):
     """Every model, cloud or local, answers the same call: .complete(prompt) -> raw string."""
     name: str
+    last_thinking: str = ""   # V2: reasoning trace from the last complete() call. "" for non-reasoning models.
 
     @abstractmethod
     def complete(self, prompt: str) -> str:
@@ -31,6 +33,7 @@ class OpenAIClient(LLMClient):
             messages=[{"role": "user", "content": prompt}],
             temperature=self.temperature,
         )
+        self.last_thinking = ""   # OpenAI chat completions expose no reasoning trace
         return resp.choices[0].message.content
 
 
@@ -48,6 +51,10 @@ class OllamaClient(LLMClient):
             prompt=prompt,
             options={"temperature": self.temperature},
         )
+        # V2 fix: Ollama returns the reasoning trace in a SEPARATE `thinking` field.
+        # V1 read only `response`, so every deepseek-r1 trace was generated and discarded.
+        # getattr with a fallback keeps non-reasoning models (llama, qwen) working unchanged.
+        self.last_thinking = getattr(resp, "thinking", None) or ""
         return resp["response"]
 
 
@@ -70,6 +77,10 @@ if __name__ == "__main__":
         try:
             raw = client.complete(test_prompt)
             print(repr(raw))  # repr shows hidden newlines, fences, whitespace
+            if client.last_thinking:
+                print(f"  [thinking: {len(client.last_thinking)} chars] {client.last_thinking[:120]!r}...")
+            else:
+                print("  [thinking: none]")
         except Exception as e:
             print(f"ERROR: {type(e).__name__}: {e}")
     print("=" * 60)

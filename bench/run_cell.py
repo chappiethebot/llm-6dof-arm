@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 """
 bench/run_cell.py -- Phase 5 measurement runner (single cell), and the shared
 run_cell() the grid wrapper reuses so there is ONE measurement code path.
@@ -20,6 +20,14 @@ few-shot draws k fixed exemplars from seen.jsonl (via bench/dataset.py); those k
 rows are excluded from the seen test set. For held_out, few-shot uses those SAME
 seen exemplars (held_out is never an example, only a test item -- seal intact).
 held_out is SEALED and refused by the CLI without an explicit flag.
+
+V2 CHANGE (schema version 2): two columns appended, `thinking` and
+`thinking_chars`. Ollama returns reasoning models' traces in a SEPARATE
+`thinking` field; V1 read only `response`, so every deepseek-r1 trace was
+generated and discarded (0 traces in 22,520 rows). These columns capture it.
+
+Because this changes the row schema, V2 rows MUST go to NEW csv files. Appending
+to a V1 results_*.csv will raise ValueError from DictWriter -- deliberately.
 """
 import argparse, csv, json, sys, datetime
 from pathlib import Path
@@ -30,6 +38,8 @@ from llm.clients import all_clients
 from bench.dataset import load_seen_split, DEFAULT_K
 
 # ---- Row schema: fixed NOW so no column is ever added after rows exist. ----
+# V1 froze at 23 columns. V2 is a SECOND EXPERIMENT with its own files, so the
+# two new columns below do not violate that lock -- V1 csvs are never reopened.
 FIELDNAMES = [
     "ts_iso",           # wall-clock start of this run (sortable)
     "model",            # client.name
@@ -51,6 +61,9 @@ FIELDNAMES = [
     "truth_json",       # ground-truth object
     "reasons",          # failure reasons, joined (debugging)
     "raw",              # raw LLM text -- REQUIRED for post-hoc token backfill
+    # ---- V2: reasoning trace ----
+    "thinking",         # reasoning trace, "" for non-reasoning models. THE thesis variable.
+    "thinking_chars",   # len(thinking) -- pre-computed so analysis never parses the trace
     # ---- reserved nullable columns (backfilled later; reserving is free) ----
     "tokens_in",        # cloud cost axis -- recompute from prompt via tiktoken
     "tokens_out",       # cloud cost axis -- recompute from raw
@@ -93,6 +106,22 @@ def _load_rows(dataset, k):
     return rows, seen_exemplars
 
 
+def _check_header(out_path):
+    """Refuse to append V2 rows to a V1 csv. Silent when the file is new."""
+    out_path = Path(out_path)
+    if not out_path.exists() or out_path.stat().st_size == 0:
+        return
+    with out_path.open("r", newline="", encoding="utf-8") as f:
+        existing = next(csv.reader(f), [])
+    if existing and existing != FIELDNAMES:
+        missing = [c for c in FIELDNAMES if c not in existing]
+        sys.exit(
+            f"REFUSING: {out_path} has {len(existing)} columns, this run writes {len(FIELDNAMES)}.\n"
+            f"  missing there: {missing}\n"
+            f"  V2 rows must go to a NEW file. Use --out bench/results_v2_*.csv"
+        )
+
+
 def run_cell(client, strategy, out_path, *, dataset="seen", k=DEFAULT_K,
              limit=0, repeats=1, schema=None, quiet=False):
     """Run ONE (model x strategy) cell and append rows to out_path.
@@ -115,6 +144,7 @@ def run_cell(client, strategy, out_path, *, dataset="seen", k=DEFAULT_K,
 
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    _check_header(out_path)
     new_file = not out_path.exists()
     written = 0
 
@@ -137,6 +167,7 @@ def run_cell(client, strategy, out_path, *, dataset="seen", k=DEFAULT_K,
                     strict, norm, cat = False, False, f"invalid:{r.stage}"
 
                 lat = getattr(r, "latency_s", None)
+                thinking = getattr(r, "thinking", "") or ""
                 w.writerow({
                     "ts_iso": datetime.datetime.now().isoformat(timespec="seconds"),
                     "model": getattr(r, "model", client.name),
@@ -157,6 +188,8 @@ def run_cell(client, strategy, out_path, *, dataset="seen", k=DEFAULT_K,
                     "truth_json": json.dumps(truth),
                     "reasons": "; ".join(r.reasons) if getattr(r, "reasons", None) else "",
                     "raw": getattr(r, "raw", "") or "",
+                    "thinking": thinking,
+                    "thinking_chars": len(thinking),
                     "tokens_in": "", "tokens_out": "", "cost_usd": "",
                     "temperature": getattr(client, "temperature", ""),
                 })
@@ -166,8 +199,9 @@ def run_cell(client, strategy, out_path, *, dataset="seen", k=DEFAULT_K,
                 if not quiet:
                     lat_str = f"{lat:.3f}s" if isinstance(lat, (int, float)) else "  n/a"
                     warm = " [warmup]" if is_warmup else ""
+                    think = f" think={len(thinking)}ch" if thinking else ""
                     print(f"[{written}] {client.name}/{strategy} cid={cid} "
-                          f"run={run_index} {r.stage} strict={strict} {lat_str}{warm}")
+                          f"run={run_index} {r.stage} strict={strict} {lat_str}{warm}{think}")
 
     return written
 
