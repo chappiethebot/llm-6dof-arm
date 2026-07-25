@@ -1,0 +1,203 @@
+{"command": "put the bottle in box 1", "expected": {"action": "pick_place", "target": "bottle", "location": "box_1", "modifiers": []}}
+{"command": "put the bottle in box 2", "expected": {"action": "pick_place", "target": "bottle", "location": "box_2", "modifiers": []}}
+{"command": "put the bottle in box 3", "expected": {"action": "pick_place", "target": "bottle", "location": "box_3", "modifiers": []}}
+{"command": "put the car in box 1", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_1", "modifiers": []}}
+{"command": "put the car in box 2", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_2", "modifiers": []}}
+{"command": "put the car in box 3", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_3", "modifiers": []}}
+{"command": "put the rubiks cube in box 1", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_1", "modifiers": []}}
+{"command": "put the rubiks cube in box 2", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_2", "modifiers": []}}
+{"command": "put the rubiks cube in box 3", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_3", "modifiers": []}}
+{"command": "can you please keep the bottle in box 1?", "expected": {"action": "pick_place", "target": "bottle", "location": "box_1", "modifiers": []}}
+{"command": "can you please keep the bottle in box 2?", "expected": {"action": "pick_place", "target": "bottle", "location": "box_2", "modifiers": []}}
+{"command": "can you please keep the bottle in box 3?", "expected": {"action": "pick_place", "target": "bottle", "location": "box_3", "modifiers": []}}
+{"command": "can you please keep the car in box 1?", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_1", "modifiers": []}}
+{"command": "can you please keep the car in box 2?", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_2", "modifiers": []}}
+{"command": "can you please keep the car in box 3?", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_3", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in box 1?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_1", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in box 2?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_2", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in box 3?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_3", "modifiers": []}}
+{"command": "pick up the bottle and keep in box 1?", "expected": {"action": "pick_place", "target": "bottle", "location": "box_1", "modifiers": []}}
+{"command": "pick up the bottle and keep in box 2", "expected": {"action": "pick_place", "target": "bottle", "location": "box_2", "modifiers": []}}
+{"command": "pick up the bottle and keep in box 3", "expected": {"action": "pick_place", "target": "bottle", "location": "box_3", "modifiers": []}}
+{"command": "pick up the car and keep in box 1", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_1", "modifiers": []}}
+{"command": "pick up the car and keep in box 2", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_2", "modifiers": []}}
+{"command": "pick up the car and keep in box 3", "expected": {"action": "pick_place", "target": "toy_car", "location": "box_3", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in box 1", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_1", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in box 2", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_2", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in box 3", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "box_3", "modifiers": []}}
+{"command": "fetch the bottle", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "bring me the bottle", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "go get the bottle", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "fetch the toy car", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "bring me the toy car", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "go get the toy car", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "fetch the rubiks cube", "expected": {"action": "fetch", "target": "rubiks_cube", "modifiers": []}}
+{"command": "bring me the rubiks cube", "expected": {"action": "fetch", "target": "rubiks_cube", "modifiers": []}}
+{"command": "go get the rubiks cube", "expected": {"action": "fetch", "target": "rubiks_cube", "modifiers": []}}
+{"command": "hold the bottle", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "grab the bottle", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "please hold the bottle", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "hold the toy car", "expected": {"action": "hold", "target": "toy_car", "modifiers": []}}
+{"command": "grab the toy car", "expected": {"action": "hold", "target": "toy_car", "modifiers": []}}
+{"command": "please hold the toy car", "expected": {"action": "hold", "target": "toy_car", "modifiers": []}}
+{"command": "hold the rubiks cube", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "grab the rubiks cube", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "please hold the rubiks cube", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "inspect the bottle", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "examine the bottle", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "look at the bottle", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "inspect the toy car", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "examine the toy car", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "look at the toy car", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "inspect the rubiks cube", "expected": {"action": "inspect", "target": "rubiks_cube", "modifiers": []}}
+{"command": "examine the rubiks cube", "expected": {"action": "inspect", "target": "rubiks_cube", "modifiers": []}}
+{"command": "look at the rubiks cube", "expected": {"action": "inspect", "target": "rubiks_cube", "modifiers": []}}
+{"command": "move to box 1", "expected": {"action": "move_to", "location": "box_1", "modifiers": []}}
+{"command": "go to box 1", "expected": {"action": "move_to", "location": "box_1", "modifiers": []}}
+{"command": "navigate to box 1", "expected": {"action": "move_to", "location": "box_1", "modifiers": []}}
+{"command": "move to box 2", "expected": {"action": "move_to", "location": "box_2", "modifiers": []}}
+{"command": "go to box 2", "expected": {"action": "move_to", "location": "box_2", "modifiers": []}}
+{"command": "navigate to box 2", "expected": {"action": "move_to", "location": "box_2", "modifiers": []}}
+{"command": "move to box 3", "expected": {"action": "move_to", "location": "box_3", "modifiers": []}}
+{"command": "go to box 3", "expected": {"action": "move_to", "location": "box_3", "modifiers": []}}
+{"command": "navigate to box 3", "expected": {"action": "move_to", "location": "box_3", "modifiers": []}}
+{"command": "stop", "expected": {"action": "stop", "modifiers": []}}
+{"command": "halt", "expected": {"action": "stop", "modifiers": []}}
+{"command": "freeze", "expected": {"action": "stop", "modifiers": []}}
+{"command": "stop moving", "expected": {"action": "stop", "modifiers": []}}
+{"command": "unscrew the cap off the bottle", "expected": {"action": "reject", "modifiers": []}}
+{"command": "hand me the blue marker", "expected": {"action": "reject", "modifiers": []}}
+{"command": "sweep everything off the table", "expected": {"action": "reject", "modifiers": []}}
+{"command": "throw the bottle out the window", "expected": {"action": "reject", "modifiers": []}}
+{"command": "put the bottle in the far left corner of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_A1", "modifiers": []}}
+{"command": "put the car in the far left corner of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_A1", "modifiers": []}}
+{"command": "put the rubiks cube in the far left corner of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_A1", "modifiers": []}}
+{"command": "can you please keep the bottle in the far left corner of the table?", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_A1", "modifiers": []}}
+{"command": "can you please keep the car in the far left corner of the table?", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_A1", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in the far left corner of the table?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_A1", "modifiers": []}}
+{"command": "pick up the bottle and keep in the far left corner of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_A1", "modifiers": []}}
+{"command": "pick up the car and keep in the far left corner of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_A1", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in the far left corner of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_A1", "modifiers": []}}
+{"command": "move to the far left corner of the table", "expected": {"action": "move_to", "location": "grid_A1", "modifiers": []}}
+{"command": "go to the far left corner of the table", "expected": {"action": "move_to", "location": "grid_A1", "modifiers": []}}
+{"command": "navigate to the far left corner of the table", "expected": {"action": "move_to", "location": "grid_A1", "modifiers": []}}
+{"command": "put the bottle in the far side middle edge of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_A2", "modifiers": []}}
+{"command": "put the car in the far side middle edge of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_A2", "modifiers": []}}
+{"command": "put the rubiks cube in the far side middle edge of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_A2", "modifiers": []}}
+{"command": "can you please keep the bottle in the far side middle edge of the table?", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_A2", "modifiers": []}}
+{"command": "can you please keep the car in the far side middle edge of the table?", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_A2", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in the far side middle edge of the table?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_A2", "modifiers": []}}
+{"command": "pick up the bottle and keep in the far side middle edge of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_A2", "modifiers": []}}
+{"command": "pick up the car and keep in the far side middle edge of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_A2", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in the far side middle edge of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_A2", "modifiers": []}}
+{"command": "move to the far side middle edge of the table", "expected": {"action": "move_to", "location": "grid_A2", "modifiers": []}}
+{"command": "go to the far side middle edge of the table", "expected": {"action": "move_to", "location": "grid_A2", "modifiers": []}}
+{"command": "navigate to the far side middle edge of the table", "expected": {"action": "move_to", "location": "grid_A2", "modifiers": []}}
+{"command": "put the bottle in the far right side corner of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_A3", "modifiers": []}}
+{"command": "put the car in the far right side corner of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_A3", "modifiers": []}}
+{"command": "put the rubiks cube in the far right side corner of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_A3", "modifiers": []}}
+{"command": "can you please keep the bottle in the far right side corner of the table?", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_A3", "modifiers": []}}
+{"command": "can you please keep the car in the far right side corner of the table?", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_A3", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in the far right side corner of the table?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_A3", "modifiers": []}}
+{"command": "pick up the bottle and keep in the far right side corner of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_A3", "modifiers": []}}
+{"command": "pick up the car and keep in the far right side corner of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_A3", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in the far right side corner of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_A3", "modifiers": []}}
+{"command": "move to the far right side corner of the table", "expected": {"action": "move_to", "location": "grid_A3", "modifiers": []}}
+{"command": "go to the far right side corner of the table", "expected": {"action": "move_to", "location": "grid_A3", "modifiers": []}}
+{"command": "navigate to the far right side corner of the table", "expected": {"action": "move_to", "location": "grid_A3", "modifiers": []}}
+{"command": "put the bottle in the left side middle edge of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_B1", "modifiers": []}}
+{"command": "put the car in the left side middle edge of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_B1", "modifiers": []}}
+{"command": "put the rubiks cube in the left side middle edge of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_B1", "modifiers": []}}
+{"command": "can you please keep the bottle in the left side middle edge of the table?", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_B1", "modifiers": []}}
+{"command": "can you please keep the car in the left side middle edge of the table?", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_B1", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in the left side middle edge of the table?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_B1", "modifiers": []}}
+{"command": "pick up the bottle and keep in the left side middle edge of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_B1", "modifiers": []}}
+{"command": "pick up the car and keep in the left side middle edge of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_B1", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in the left side middle edge of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_B1", "modifiers": []}}
+{"command": "move to the left side middle edge of the table", "expected": {"action": "move_to", "location": "grid_B1", "modifiers": []}}
+{"command": "go to the left side middle edge of the table", "expected": {"action": "move_to", "location": "grid_B1", "modifiers": []}}
+{"command": "navigate to the left side middle edge of the table", "expected": {"action": "move_to", "location": "grid_B1", "modifiers": []}}
+{"command": "put the bottle in the center of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_B2", "modifiers": []}}
+{"command": "put the car in the center of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_B2", "modifiers": []}}
+{"command": "put the rubiks cube in the center of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_B2", "modifiers": []}}
+{"command": "can you please keep the bottle in the center of the table?", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_B2", "modifiers": []}}
+{"command": "can you please keep the car in the center of the table?", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_B2", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in the center of the table?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_B2", "modifiers": []}}
+{"command": "pick up the bottle and keep in the center of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_B2", "modifiers": []}}
+{"command": "pick up the car and keep in the center of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_B2", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in the center of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_B2", "modifiers": []}}
+{"command": "move to the center of the table", "expected": {"action": "move_to", "location": "grid_B2", "modifiers": []}}
+{"command": "go to the center of the table", "expected": {"action": "move_to", "location": "grid_B2", "modifiers": []}}
+{"command": "navigate to the center of the table", "expected": {"action": "move_to", "location": "grid_B2", "modifiers": []}}
+{"command": "put the bottle in the right side middle edge of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_B3", "modifiers": []}}
+{"command": "put the car in the right side middle edge of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_B3", "modifiers": []}}
+{"command": "put the rubiks cube in the right side middle edge of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_B3", "modifiers": []}}
+{"command": "can you please keep the bottle in the right side middle edge of the table?", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_B3", "modifiers": []}}
+{"command": "can you please keep the car in the right side middle edge of the table?", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_B3", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in the right side middle edge of the table?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_B3", "modifiers": []}}
+{"command": "pick up the bottle and keep in the right side middle edge of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_B3", "modifiers": []}}
+{"command": "pick up the car and keep in the right side middle edge of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_B3", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in the right side middle edge of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_B3", "modifiers": []}}
+{"command": "move to the right side middle edge of the table", "expected": {"action": "move_to", "location": "grid_B3", "modifiers": []}}
+{"command": "go to the right side middle edge of the table", "expected": {"action": "move_to", "location": "grid_B3", "modifiers": []}}
+{"command": "navigate to the right side middle edge of the table", "expected": {"action": "move_to", "location": "grid_B3", "modifiers": []}}
+{"command": "put the bottle in the near left side corner of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_C1", "modifiers": []}}
+{"command": "put the car in the near left side corner of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_C1", "modifiers": []}}
+{"command": "put the rubiks cube in the near left side corner of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_C1", "modifiers": []}}
+{"command": "can you please keep the bottle in the near left side corner of the table?", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_C1", "modifiers": []}}
+{"command": "can you please keep the car in the near left side corner of the table?", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_C1", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in the near left side corner of the table?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_C1", "modifiers": []}}
+{"command": "pick up the bottle and keep in the near left side corner of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_C1", "modifiers": []}}
+{"command": "pick up the car and keep in the near left side corner of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_C1", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in the near left side corner of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_C1", "modifiers": []}}
+{"command": "move to the near left side corner of the table", "expected": {"action": "move_to", "location": "grid_C1", "modifiers": []}}
+{"command": "go to the near left side corner of the table", "expected": {"action": "move_to", "location": "grid_C1", "modifiers": []}}
+{"command": "navigate to the near left side corner of the table", "expected": {"action": "move_to", "location": "grid_C1", "modifiers": []}}
+{"command": "put the bottle in the near side middle edge of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_C2", "modifiers": []}}
+{"command": "put the car in the near side middle edge of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_C2", "modifiers": []}}
+{"command": "put the rubiks cube in the near side middle edge of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_C2", "modifiers": []}}
+{"command": "can you please keep the bottle in the near side middle edge of the table?", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_C2", "modifiers": []}}
+{"command": "can you please keep the car in the near side middle edge of the table?", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_C2", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in the near side middle edge of the table?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_C2", "modifiers": []}}
+{"command": "pick up the bottle and keep in the near side middle edge of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_C2", "modifiers": []}}
+{"command": "pick up the car and keep in the near side middle edge of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_C2", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in the near side middle edge of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_C2", "modifiers": []}}
+{"command": "move to the near side middle edge of the table", "expected": {"action": "move_to", "location": "grid_C2", "modifiers": []}}
+{"command": "go to the near side middle edge of the table", "expected": {"action": "move_to", "location": "grid_C2", "modifiers": []}}
+{"command": "navigate to the near side middle edge of the table", "expected": {"action": "move_to", "location": "grid_C2", "modifiers": []}}
+{"command": "put the bottle in the near right side corner of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_C3", "modifiers": []}}
+{"command": "put the car in the near right side corner of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_C3", "modifiers": []}}
+{"command": "put the rubiks cube in the near right side corner of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_C3", "modifiers": []}}
+{"command": "can you please keep the bottle in the near right side corner of the table?", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_C3", "modifiers": []}}
+{"command": "can you please keep the car in the near right side corner of the table?", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_C3", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in the near right side corner of the table?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_C3", "modifiers": []}}
+{"command": "pick up the bottle and keep in the near right side corner of the table", "expected": {"action": "pick_place", "target": "bottle", "location": "grid_C3", "modifiers": []}}
+{"command": "pick up the car and keep in the near right side corner of the table", "expected": {"action": "pick_place", "target": "toy_car", "location": "grid_C3", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in the near right side corner of the table", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "grid_C3", "modifiers": []}}
+{"command": "move to the near right side corner of the table", "expected": {"action": "move_to", "location": "grid_C3", "modifiers": []}}
+{"command": "go to the near right side corner of the table", "expected": {"action": "move_to", "location": "grid_C3", "modifiers": []}}
+{"command": "navigate to the near right side corner of the table", "expected": {"action": "move_to", "location": "grid_C3", "modifiers": []}}
+{"command": "put the bottle in the farthest spot you can reach", "expected": {"action": "pick_place", "target": "bottle", "location": "max_reach", "modifiers": []}}
+{"command": "put the car in the farthest spot you can reach", "expected": {"action": "pick_place", "target": "toy_car", "location": "max_reach", "modifiers": []}}
+{"command": "put the rubiks cube in the farthest spot you can reach", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "max_reach", "modifiers": []}}
+{"command": "can you please keep the bottle in the farthest spot you can reach?", "expected": {"action": "pick_place", "target": "bottle", "location": "max_reach", "modifiers": []}}
+{"command": "can you please keep the car in the farthest spot you can reach?", "expected": {"action": "pick_place", "target": "toy_car", "location": "max_reach", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in the farthest spot you can reach?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "max_reach", "modifiers": []}}
+{"command": "pick up the bottle and keep in the farthest spot you can reach", "expected": {"action": "pick_place", "target": "bottle", "location": "max_reach", "modifiers": []}}
+{"command": "pick up the car and keep in the farthest spot you can reach", "expected": {"action": "pick_place", "target": "toy_car", "location": "max_reach", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in the farthest spot you can reach", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "max_reach", "modifiers": []}}
+{"command": "move to the farthest spot you can reach", "expected": {"action": "move_to", "location": "max_reach", "modifiers": []}}
+{"command": "go to the farthest spot you can reach", "expected": {"action": "move_to", "location": "max_reach", "modifiers": []}}
+{"command": "navigate to the farthest spot you can reach", "expected": {"action": "move_to", "location": "max_reach", "modifiers": []}}
+{"command": "put the bottle in anywhere you see free", "expected": {"action": "pick_place", "target": "bottle", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "put the car in anywhere you see free", "expected": {"action": "pick_place", "target": "toy_car", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "put the rubiks cube in anywhere you see free", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "can you please keep the bottle in anywhere you see free?", "expected": {"action": "pick_place", "target": "bottle", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "can you please keep the car in anywhere you see free?", "expected": {"action": "pick_place", "target": "toy_car", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "can you please keep the rubiks cube in anywhere you see free?", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "pick up the bottle and keep in anywhere you see free", "expected": {"action": "pick_place", "target": "bottle", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "pick up the car and keep in anywhere you see free", "expected": {"action": "pick_place", "target": "toy_car", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "pick up the rubiks cube and keep in anywhere you see free", "expected": {"action": "pick_place", "target": "rubiks_cube", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "move to anywhere you see free", "expected": {"action": "move_to", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "go to anywhere you see free", "expected": {"action": "move_to", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "navigate to anywhere you see free", "expected": {"action": "move_to", "location": "nearest_free_cell", "modifiers": []}}

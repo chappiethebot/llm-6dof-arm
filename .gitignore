@@ -13,3 +13,7 @@ sim/voice_clip.wav
 bench/results_*.csv
 
 bench/figures/
+!data/seen_v2.jsonl
+!data/held_out_v2.jsonl
+!data/location_phrases_v2.json
+!data/reachability.json
