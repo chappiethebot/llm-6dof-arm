@@ -7,6 +7,12 @@ read from a file here. This keeps 'examples come only from seen.jsonl, and never
 overlap the command being scored' enforceable at the eval layer, not buried here.
 
 This step builds STRINGS only. No model is called here — that's the pipeline step.
+
+V2: schema_version 2 introduces opaque location names (grid_A1 ... grid_C3). A V1
+name like `table_left` is self-describing; `grid_A1` is not. Without a key, the
+model cannot map "the far left corner" to a symbol and is reduced to guessing.
+_grid_legend() emits that key, and ONLY for schemas that declare schema_version
+>= 2 — so V1 prompts are byte-identical to what produced the existing 22,520 rows.
 """
 import json
 
@@ -14,6 +20,21 @@ import json
 def load_schema(path: str = "schema/schema.json"):
     with open(path, encoding="utf-8") as f:
         return json.load(f)
+
+
+def _grid_legend(schema: dict) -> str:
+    """Key for the V2 grid naming scheme. Empty string for V1 schemas."""
+    if schema.get("schema_version", 1) < 2:
+        return ""
+    if not any(loc.startswith("grid_") for loc in schema.get("locations", [])):
+        return ""
+    return (
+        "\nGrid locations are squares on the table surface, named grid_<ROW><COL>.\n"
+        "Rows:    A = far from the robot,  B = middle,  C = near the robot.\n"
+        "Columns: 1 = left,  2 = middle,  3 = right.\n"
+        "max_reach = the furthest point the arm can reach; resolved by the robot.\n"
+        "nearest_free_cell = whichever square is currently empty; resolved by the robot.\n"
+    )
 
 
 def _schema_spec(schema: dict) -> str:
@@ -24,6 +45,9 @@ def _schema_spec(schema: dict) -> str:
     lines.append("")
     lines.append("Allowed targets: " + ", ".join(schema["targets"]))
     lines.append("Allowed locations: " + ", ".join(schema["locations"]))
+    legend = _grid_legend(schema)
+    if legend:
+        lines.append(legend)
     return "\n".join(lines)
 
 

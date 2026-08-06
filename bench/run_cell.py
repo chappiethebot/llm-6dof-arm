@@ -88,6 +88,18 @@ def resolve_clients():
     return {c.name: c for c in cs}
 
 
+# V2 datasets live alongside V1. `seen` -> data/seen.jsonl (schema v1),
+# `seen_v2` -> data/seen_v2.jsonl (schema v2). Kept explicit so a V2 run can
+# never silently read a V1 file.
+DATASETS = {
+    "seen":        {"file": "data/seen.jsonl",        "schema": "schema/schema.json",   "exemplars_from": "data/seen.jsonl"},
+    "held_out":    {"file": "data/held_out.jsonl",    "schema": "schema/schema.json",   "exemplars_from": "data/seen.jsonl"},
+    "seen_v2":     {"file": "data/seen_v2.jsonl",     "schema": "schema/schema_v2.json","exemplars_from": "data/seen_v2.jsonl"},
+    "held_out_v2": {"file": "data/held_out_v2.jsonl", "schema": "schema/schema_v2.json","exemplars_from": "data/seen_v2.jsonl"},
+}
+SEALED = {"held_out", "held_out_v2"}
+
+
 def _load_rows(dataset, k):
     """Return (rows, fewshot_pool).
     seen:     test rows = seen minus k exemplars; exemplar pool = those k.
@@ -96,13 +108,18 @@ def _load_rows(dataset, k):
               and clean: exemplars come from seen ONLY, held-out is never an
               example -- only a test item -- so the seal and the generalization
               KPI both stay intact."""
-    if dataset == "seen":
-        exemplars, rows = load_seen_split(k=k)
+    if dataset not in DATASETS:
+        raise ValueError(f"unknown dataset {dataset!r}. known: {sorted(DATASETS)}")
+    cfg = DATASETS[dataset]
+    seen_path = cfg["exemplars_from"]
+
+    if dataset not in SEALED:
+        exemplars, rows = load_seen_split(k=k, seen_path=seen_path)
         return rows, exemplars
-    # held_out (or any non-seen set): test on all its rows; exemplars from seen.
-    data_path = Path("data") / f"{dataset}.jsonl"
+    # held-out: test on ALL its rows; exemplars come from the matching seen file.
+    data_path = Path(cfg["file"])
     rows = [json.loads(line) for line in data_path.open(encoding="utf-8") if line.strip()]
-    seen_exemplars, _ = load_seen_split(k=k)
+    seen_exemplars, _ = load_seen_split(k=k, seen_path=seen_path)
     return rows, seen_exemplars
 
 
@@ -128,10 +145,9 @@ def run_cell(client, strategy, out_path, *, dataset="seen", k=DEFAULT_K,
     Returns the number of rows written. This is the shared path used by both the
     CLI below and the grid wrapper -- so there is exactly one scoring/timing code."""
     if schema is None:
-        try:
-            schema = load_schema()
-        except TypeError:
-            schema = load_schema("schema/schema.json")
+        # Schema follows the dataset. A v2 dataset scored against the v1 schema
+        # would mark every grid location invalid, so this is never inferred.
+        schema = load_schema(DATASETS[dataset]["schema"])
 
     rows, exemplars = _load_rows(dataset, k)
 
@@ -210,7 +226,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="openai:gpt-4o-mini")
     ap.add_argument("--strategy", default="zero_shot")
-    ap.add_argument("--dataset", default="seen", choices=["seen", "held_out"])
+    ap.add_argument("--dataset", default="seen", choices=sorted(DATASETS))
     ap.add_argument("--limit", type=int, default=5, help="first N commands (smoke). 0 = all")
     ap.add_argument("--repeats", type=int, default=1)
     ap.add_argument("--k", type=int, default=DEFAULT_K, help="few-shot exemplars reserved from seen")
@@ -226,13 +242,17 @@ def main():
         print("strategies expected:  zero_shot, few_shot, cot, role_based")
         return
 
-    if args.dataset == "held_out" and not args.i_understand_heldout_is_sealed:
-        sys.exit("REFUSING: held_out is sealed. This flag is the single sealed pass; "
+    if args.dataset in SEALED and not args.i_understand_heldout_is_sealed:
+        sys.exit(f"REFUSING: {args.dataset} is sealed. This flag is the single sealed pass; "
                  "pass --i-understand-heldout-is-sealed only when you truly mean it.")
 
     if args.model not in clients:
         sys.exit(f"unknown model '{args.model}'. available: {list(clients.keys())}")
     client = clients[args.model]
+
+    cfg = DATASETS[args.dataset]
+    print(f"dataset={args.dataset}  file={cfg['file']}  schema={cfg['schema']}  "
+          f"exemplars={cfg['exemplars_from']}  k={args.k}")
 
     written = run_cell(client, args.strategy, args.out,
                        dataset=args.dataset, k=args.k,
