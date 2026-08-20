@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 """
 bench/rescore.py -- recompute score columns on an existing grid CSV using the
 CURRENT llm.score.score(), without re-running any model. Reads pred_json /
@@ -9,12 +9,22 @@ LAST occurrence, so resumed-cell orphans are dropped.
 Why this exists: scoring is a pure function of (pred, truth), both of which we
 stored on every row. So a scorer fix is a re-SCORE (seconds), never a re-RUN.
 
+FIELD SIZE: the V2 schema added a `thinking` column holding deepseek-r1's full
+reasoning trace. Python's csv module caps a single field at 128 KB by default,
+and at least one trace exceeds that -- a runaway reasoning loop, which is itself
+a measurement, not corruption. The limit is raised below. sys.maxsize is NOT
+used: on Windows it overflows the underlying C long and raises OverflowError.
+
 Usage:
     python -m bench.rescore --in bench/results_grid.csv --out bench/results_grid_scored.csv
 """
 import argparse, csv, json
 from pathlib import Path
+
 from llm.score import score
+
+# 2**31 - 1: comfortably larger than any trace, and safe for the C long on Windows.
+csv.field_size_limit(2**31 - 1)
 
 
 def parse(s):
@@ -62,7 +72,6 @@ def main():
                 new_cat = sc.category
             else:
                 new_strict, new_norm, new_cat = False, False, f"invalid:{r['stage']}"
-
             if (str(new_strict) != r["strict_match"] or str(new_norm) != r["normalized_match"]
                     or new_cat != r["category"]):
                 changed += 1
@@ -70,7 +79,6 @@ def main():
             r["normalized_match"] = new_norm
             r["category"] = new_cat
             w.writerow(r)
-
     print(f"wrote {args.out} | {changed} rows had at least one score column change")
 
 

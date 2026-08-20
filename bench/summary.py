@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 """
 bench/summary.py -- KPI summary over scored grid CSVs. Read-only; computes
 nothing new, just reports. Works on scored files; the cost/throughput sections
@@ -8,14 +8,31 @@ Sections:
   1. Accuracy      -- strict / normalized / gap, per cell
   2. Latency       -- median, p95, p99, plus generation throughput (tokens/sec)
   3. Reject-rate   -- unmappable commands correctly routed to `reject` (safety KPI)
-  4. Cost          -- cloud USD per command by strategy (cloud rows only)
+  4. Thinking      -- reasoning-trace length vs latency (schema v2 files only)
+  5. Cost          -- cloud USD per command by strategy (cloud rows only)
+
+COMPARABILITY: seen_v2 and held_out_v2 do NOT contain the same verb mix.
+held_out_v2 varies the LOCATION PHRASING, and fetch/hold/inspect/stop/reject
+carry no location -- so there was nothing to vary and those rows do not exist in
+held-out at all. seen_v2 has 35 such rows out of 200. Comparing raw seen vs
+held-out accuracy therefore mixes a phrasing effect with a verb-mix effect, and
+can even show held-out as EASIER. --match-verbs restricts BOTH files to the
+verbs present in both (pick_place, move_to) so the generalization gap measures
+phrasing alone. Use it for any number that goes in the thesis.
+
+FIELD SIZE: the V2 schema added a `thinking` column holding deepseek-r1's full
+reasoning trace, and at least one trace exceeds Python's default 128 KB field
+cap. The limit is raised below. sys.maxsize is NOT used: on Windows it overflows
+the underlying C long and raises OverflowError.
 
 Usage:
-    python -m bench.summary --in bench/results_grid_tokens.csv
-    python -m bench.summary --in bench/results_grid_tokens.csv --held bench/results_heldout_tokens.csv
+    python -m bench.summary --in bench/results_grid_v2_scored.csv
+    python -m bench.summary --in bench/results_grid_v2_scored.csv --held bench/results_heldout_v2_scored.csv
 """
 import argparse, csv, json, math, statistics
 from collections import defaultdict
+
+csv.field_size_limit(2**31 - 1)
 
 MODELS = ["openai:gpt-4o-mini", "ollama:llama3.2:3b", "ollama:qwen2.5:3b",
           "ollama:qwen2.5:0.5b", "ollama:deepseek-r1:7b"]
@@ -47,18 +64,54 @@ def has_tokens(rows):
     return any(r.get("tokens_out") not in (None, "") for r in rows)
 
 
-def sec_accuracy(rows):
-    print("1. ACCURACY  strict / normalized / gap")
-    print(f'{"model":16}{"strategy":11}{"strict":>8}{"norm":>8}{"gap":>7}')
+def has_thinking(rows):
+    return any(r.get("thinking_chars") not in (None, "", "0") for r in rows)
+
+
+def truth_verb(r):
+    try:
+        return json.loads(r["truth_json"]).get("action")
+    except (json.JSONDecodeError, TypeError, KeyError):
+        return None
+
+
+def verbs_in(rows):
+    return {v for v in (truth_verb(r) for r in rows) if v}
+
+
+def _acc(cell, col):
+    return sum(r[col] == "True" for r in cell) / len(cell)
+
+
+def sec_accuracy(rows, held=None):
+    """When a held-out file is supplied, the generalization gap is shown inline.
+    That gap is the headline KPI: it is the whole reason held_out exists."""
+    print("1. ACCURACY  strict / normalized / gap"
+          + ("   + SEEN->HELD-OUT generalization gap" if held else ""))
+    hdr = f'{"model":16}{"strategy":11}{"strict":>8}{"norm":>8}{"gap":>7}'
+    if held:
+        hdr += f'{"held":>9}{"drop":>8}'
+    print(hdr)
     for m in MODELS:
         for s in STRATS:
             cell = [r for r in rows if r["model"] == m and r["strategy"] == s]
             if not cell:
                 continue
-            st = sum(r["strict_match"] == "True" for r in cell) / len(cell)
-            nm = sum(r["normalized_match"] == "True" for r in cell) / len(cell)
+            st, nm = _acc(cell, "strict_match"), _acc(cell, "normalized_match")
+            line = (f'{short(m):16}{s:11}{st*100:7.1f}%{nm*100:7.1f}%'
+                    f'{(nm-st)*100:+6.1f}%')
+            if held:
+                hc = [r for r in held if r["model"] == m and r["strategy"] == s]
+                if hc:
+                    hst = _acc(hc, "strict_match")
+                    line += f'{hst*100:8.1f}%{(hst-st)*100:+7.1f}'
+                else:
+                    line += f'{"n/a":>9}{"":>8}'
             flag = "  <==" if (nm - st) > 0.10 else ""
-            print(f'{short(m):16}{s:11}{st*100:7.1f}%{nm*100:7.1f}%{(nm-st)*100:+6.1f}%{flag}')
+            print(line + flag)
+    if held:
+        print("   `drop` is held-out strict minus seen strict. More negative = worse")
+        print("   generalization to unseen PHRASINGS of the same locations.")
 
 
 def sec_latency(rows):
@@ -125,13 +178,36 @@ def sec_reject(rows, held=None):
         print(line)
     print("   A safety KPI: 0% means the model NEVER refuses an impossible command,")
     print("   and instead emits a plausible-looking action.")
+    if b is None:
+        print("   held_out_v2 contains NO reject rows -- reject commands carry no")
+        print("   location, so there was no phrasing to vary. Seen-only KPI in V2.")
+
+
+def sec_thinking(rows):
+    """Reasoning-trace length per strategy. The thesis is named after this cost."""
+    if not has_thinking(rows):
+        return
+    print("\n4. REASONING TRACE  (models that return a separate `thinking` field)")
+    print(f'{"model":16}{"strategy":11}{"n":>6}{"med chars":>11}{"max chars":>11}{"med lat":>9}')
+    for m in MODELS:
+        for s in STRATS:
+            c = [r for r in rows if r["model"] == m and r["strategy"] == s
+                 and r.get("thinking_chars") not in (None, "")]
+            tc = [int(r["thinking_chars"]) for r in c]
+            if not tc or max(tc) == 0:
+                continue
+            lats = [float(r["latency_s"]) for r in c if r["latency_s"]]
+            print(f'{short(m):16}{s:11}{len(tc):6d}{statistics.median(tc):11.0f}'
+                  f'{max(tc):11d}{statistics.median(lats):9.2f}')
+    print("   A trace far above the median is a runaway reasoning loop, not verbosity.")
+    print("   Report those separately: they drive the p99 latency tail.")
 
 
 def sec_cost(rows):
     if not has_tokens(rows):
-        print("\n4. COST -- skipped (token columns empty; run bench/backfill_tokens.py first)")
+        print("\n5. COST -- skipped (token columns empty; run bench/backfill_tokens.py first)")
         return
-    print("\n4. CLOUD COST per command by strategy  (gpt-4o-mini rows only)")
+    print("\n5. CLOUD COST per command by strategy  (gpt-4o-mini rows only)")
     print(f'{"strategy":12}{"tok_in":>8}{"tok_out":>9}{"USD/cmd":>12}{"USD/1k cmd":>12}')
     total = 0.0
     for s in STRATS:
@@ -152,17 +228,39 @@ def sec_cost(rows):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", default="bench/results_grid_scored.csv")
-    ap.add_argument("--held", default=None, help="optional held-out file, for the reject-rate column")
+    ap.add_argument("--held", default=None,
+                    help="optional held-out file; enables the generalization-gap column")
+    ap.add_argument("--match-verbs", action="store_true",
+                    help="restrict BOTH files to verbs present in both, so the "
+                         "generalization gap is not confounded by verb mix")
     args = ap.parse_args()
 
     rows = load(args.inp)
     held = load(args.held) if args.held else None
     print(f"loaded {len(rows)} rows from {args.inp}"
-          + (f" | {len(held)} from {args.held}" if held else "") + "\n")
+          + (f" | {len(held)} from {args.held}" if held else ""))
 
-    sec_accuracy(rows)
+    if args.match_verbs:
+        if not held:
+            raise SystemExit("--match-verbs needs --held")
+        common = verbs_in(rows) & verbs_in(held)
+        before = (len(rows), len(held))
+        rows = [r for r in rows if truth_verb(r) in common]
+        held = [r for r in held if truth_verb(r) in common]
+        print(f"--match-verbs: common verbs {sorted(common)}")
+        print(f"  seen {before[0]} -> {len(rows)} rows | held {before[1]} -> {len(held)} rows")
+    elif held:
+        only_seen = verbs_in(rows) - verbs_in(held)
+        if only_seen:
+            print(f"  WARNING: verbs present ONLY in seen: {sorted(only_seen)}. "
+                  f"The `drop` column mixes phrasing and verb-mix effects. "
+                  f"Re-run with --match-verbs for the thesis number.")
+    print()
+
+    sec_accuracy(rows, held)
     sec_latency(rows)
     sec_reject(rows, held)
+    sec_thinking(rows)
     sec_cost(rows)
 
 
