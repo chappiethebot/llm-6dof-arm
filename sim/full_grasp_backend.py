@@ -6,11 +6,32 @@ import mujoco
 
 Z_CARRY = 0.55
 HANDOVER = (1.22, 0.75, 0.50)
+
+# V1 locations. Frozen: these produced the 22,520 V1 rows and must not move.
 LOCATIONS = {
     "box_1": (1.24, 0.65), "box_2": (1.44, 0.65), "box_3": (1.44, 0.85),
     "table_center": (1.34, 0.75), "table_left": (1.34, 0.63), "table_right": (1.34, 0.87),
     "table_front": (1.22, 0.75), "table_back": (1.46, 0.75),
 }
+
+# V2 grid cells, merged in from sim/workspace.py (derived from the measured
+# geometry in schema/grid_spec.json). Additive: every V1 name still resolves, so
+# the V1 demo and any V1 replay keep working unchanged. If workspace.py or the
+# spec is missing, the backend degrades to V1-only rather than failing to import.
+try:
+    try:
+        from sim.workspace import grid_cells, resolve as resolve_symbol, RUNTIME_SYMBOLS
+    except ImportError:                       # running from inside sim/
+        from workspace import grid_cells, resolve as resolve_symbol, RUNTIME_SYMBOLS
+    LOCATIONS.update(grid_cells())
+    HAS_GRID = True
+except Exception as _e:          # noqa: BLE001 - deliberate: demo must still start
+    RUNTIME_SYMBOLS = ()
+    HAS_GRID = False
+
+    def resolve_symbol(symbol, **_kw):
+        return symbol
+
 # name map kept simple so 1 object -> 3 objects is a config change later, not a rewrite
 OBJECT_OF = {"rubiks_cube": "object0", "bottle": "object0", "toy_car": "object0"}
 
@@ -24,6 +45,30 @@ class FullGraspBackend:
         self.gain, self.step_limit = gain, step_limit
         self.obs, _ = self.env.reset()
         self.u = self.env.unwrapped
+
+    # ---- location handling -------------------------------------------------
+    def _xy(self, location):
+        """Resolve a location SYMBOL to (x, y).
+
+        Runtime symbols (max_reach, nearest_free_cell) have no fixed coordinate;
+        they are resolved here against the live scene. The resolved cell id is
+        stored on self.last_resolved so the caller can report what it chose --
+        important for the demo, and for any future execution-success logging.
+        """
+        self.last_resolved = location
+        if location in RUNTIME_SYMBOLS:
+            cell = resolve_symbol(
+                location,
+                gripper_xy=tuple(self._grip_pos()[:2]),
+                occupied_xy=[tuple(self.obj_pos()[:2])],
+            )
+            self.last_resolved = cell
+            location = cell
+        if location not in LOCATIONS:
+            raise KeyError(
+                f"unknown location {location!r}. known: {sorted(LOCATIONS)}"
+                + ("" if HAS_GRID else "  (grid cells unavailable: sim/workspace.py did not import)"))
+        return LOCATIONS[location]
 
     def obj_pos(self, obj="object0"):
         return mujoco_utils.get_joint_qpos(self.u.model, self.u.data, f"{obj}:joint")[:3].copy()
@@ -73,12 +118,13 @@ class FullGraspBackend:
         return False, steps, tries
 
     def move_to(self, location):
-        x, y = LOCATIONS[location]
+        x, y = self._xy(location)
         s = self._reach([x, y, 0.47], 0.0)
-        return {"verb": "move_to", "location": location, "ok": True, "steps": s}
+        return {"verb": "move_to", "location": location,
+                "resolved": self.last_resolved, "ok": True, "steps": s}
 
     def pick_place(self, target, location):
-        obj = OBJECT_OF[target]; x, y = LOCATIONS[location]
+        obj = OBJECT_OF[target]; x, y = self._xy(location)
         held, s1, tries = self._grasp_verified(obj)
         s2 = 0
         if held:
@@ -86,9 +132,17 @@ class FullGraspBackend:
             s2 += self._reach([x, y, 0.45], -1.0)
             s2 += self._grip(1.0, 15)
             s2 += self._reach([x, y, Z_CARRY], 1.0)
-        gap = float(np.linalg.norm(self.obj_pos(obj)[:2] - np.array([x, y])))
+        P = self.obj_pos(obj)
+        gap = float(np.linalg.norm(P[:2] - np.array([x, y])))
+        # z check: gap is an XY distance, so an object knocked onto the FLOOR can
+        # still report a small gap. Verified in sim: a place aimed off the table
+        # returned ok=True with the object at z=0.025. The table top is ~0.40.
+        on_table = bool(P[2] > 0.35)
         return {"verb": "pick_place", "target": target, "location": location,
-                "ok": held and gap < 0.06, "grasp_tries": tries, "steps": s1 + s2, "gap_cm": round(gap*100,1)}
+                "resolved": self.last_resolved,
+                "ok": held and gap < 0.06 and on_table, "grasp_tries": tries,
+                "steps": s1 + s2, "gap_cm": round(gap * 100, 1),
+                "on_table": on_table}
 
     def fetch(self, target):
         obj = OBJECT_OF[target]
@@ -126,6 +180,7 @@ class FullGraspBackend:
 
 if __name__ == "__main__":
     be = FullGraspBackend(render=False)
+    print(f"locations available: {len(LOCATIONS)}  (grid cells: {'yes' if HAS_GRID else 'NO'})")
     rng = np.random.default_rng(0)
     stats = {}
     for k in range(6):
@@ -134,6 +189,13 @@ if __name__ == "__main__":
         be.set_object([x, y, 0.425]); r = be.fetch("bottle"); stats.setdefault("fetch", []).append(r["ok"]); print(r)
         be.set_object([x, y, 0.425]); r = be.hold("toy_car"); stats.setdefault("hold", []).append(r["ok"]); print(r)
         be.set_object([x, y, 0.425]); r = be.inspect("rubiks_cube"); stats.setdefault("inspect", []).append(r["ok"]); print(r)
+    if HAS_GRID:
+        print("\n== grid cells ==")
+        for cell in ["grid_A1", "grid_B2", "grid_C3", "max_reach", "nearest_free_cell"]:
+            be.set_object([1.34, 0.75, 0.425])
+            r = be.pick_place("bottle", cell)
+            stats.setdefault("grid", []).append(r["ok"])
+            print(f"  {cell:18} -> {r['resolved']:10} ok={r['ok']} gap={r['gap_cm']}cm")
     print("\n== reliability ==")
     for v, oks in stats.items():
         print(f"{v:11s} {sum(oks)}/{len(oks)}")
