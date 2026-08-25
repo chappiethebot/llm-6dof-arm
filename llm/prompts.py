@@ -1,6 +1,6 @@
-"""llm/prompts.py — Phase 3: build the model prompt. One function, four strategies.
+"""llm/prompts.py — Phase 3: build the model prompt. One function, six strategies.
 
-strategy in {"zero_shot", "few_shot", "cot", "role_based"}.
+strategy in {"zero_shot", "few_shot", "cot", "role_based", "rag", "classifier"}.
 
 INTEGRITY: few-shot examples are INJECTED by the caller (`examples` arg), never
 read from a file here. This keeps 'examples come only from seen.jsonl, and never
@@ -13,6 +13,31 @@ name like `table_left` is self-describing; `grid_A1` is not. Without a key, the
 model cannot map "the far left corner" to a symbol and is reduced to guessing.
 _grid_legend() emits that key, and ONLY for schemas that declare schema_version
 >= 2 — so V1 prompts are byte-identical to what produced the existing 22,520 rows.
+
+RUNG 2 (rag): "rag" shares the few_shot branch EXACTLY. Same wrapper, same shot
+count, same formatting — the ONLY difference is that the caller selected the
+examples by per-command similarity (llm/retrieve.py) instead of using the k fixed
+exemplars. Written this way deliberately: if RAG had its own prompt string, any
+accuracy difference between the few_shot and rag cells could be the wrapper
+rather than the retrieval, and the rung-1 vs rung-2 comparison would be dead.
+
+RUNG 4 (classifier): the DistilBERT classifier has NO prompt. It is an encoder
+over the command string, not a generator conditioned on instructions. The
+"classifier" strategy therefore returns the command VERBATIM. Two reasons this
+is a strategy rather than a special case in the pipeline:
+  1. ONE measurement path. run_once -> extract_json -> validate_object is
+     unchanged, so the classifier is scored by exactly the code that scored
+     every other rung.
+  2. `latency_s` wraps client.complete() only, so for rung 4 it times tokenise +
+     forward and nothing else — which is the CPU number the thesis reports.
+NOTE: pairing "classifier" with an LLM model is an operator error. The model
+would receive a bare command with no schema and no output rule. It fails loudly
+(near-zero accuracy), it does not fail silently, but do not do it.
+
+STRATEGIES is unchanged — it still lists only the four rung-1 strategies, so
+bench/run_grid.py keeps producing exactly the frozen 20-cell base grid. "rag" is
+listed separately in STRATEGIES_RAG and runs as its own 5 cells; "classifier" in
+STRATEGIES_CLS and runs as 1 cell.
 """
 import json
 
@@ -63,14 +88,27 @@ def _format_example(ex: dict) -> str:
 
 
 def build_prompt(command: str, strategy: str, schema: dict, examples: list[dict] | None = None) -> str:
+    # Rung 4 dispatches FIRST, before any schema string is built. The classifier
+    # consumes the raw command; a legend it cannot read would only be truncated
+    # away by the tokeniser at max_len, silently destroying the input.
+    if strategy == "classifier":
+        return command
+
     spec = _schema_spec(schema)
     base = f"Convert the robot command into a schema JSON object.\n\n{spec}\n\n"
 
     if strategy == "zero_shot":
         return f"{base}{_OUTPUT_RULE}\n\nCommand: {command}\nJSON:"
 
-    if strategy == "few_shot":
+    # few_shot and rag share this branch ON PURPOSE. Identical wrapper, identical
+    # shot count. Only the SELECTION of `examples` differs (fixed vs retrieved).
+    if strategy in ("few_shot", "rag"):
         if not examples:
+            if strategy == "rag":
+                raise ValueError(
+                    "rag requires retrieved examples; the caller must pass them from "
+                    "llm/retrieve.py (corpus = data/train_v2.jsonl only)"
+                )
             raise ValueError("few_shot requires injected examples (from seen.jsonl only)")
         shots = "\n\n".join(_format_example(e) for e in examples)
         return f"{base}{_OUTPUT_RULE}\n\nExamples:\n{shots}\n\nCommand: {command}\nJSON:"
@@ -96,7 +134,21 @@ def build_prompt(command: str, strategy: str, schema: dict, examples: list[dict]
     raise ValueError(f"unknown strategy: {strategy!r}")
 
 
+# Rung 1. Do NOT append "rag" or "classifier" here — bench/run_grid.py iterates
+# this list and the base grid is frozen at 5 models x 4 strategies = 20 cells.
 STRATEGIES = ["zero_shot", "few_shot", "cot", "role_based"]
+
+# Rung 2. Run as its own 5 cells (5 models x 1 strategy).
+STRATEGIES_RAG = ["rag"]
+
+# Rung 4. Run as its own 1 cell (1 classifier x 1 strategy).
+STRATEGIES_CLS = ["classifier"]
+
+# Everything build_prompt understands, for CLI choices and validation.
+ALL_STRATEGIES = STRATEGIES + STRATEGIES_RAG + STRATEGIES_CLS
+
+# Strategies whose prompt contains in-context examples.
+EXAMPLE_STRATEGIES = {"few_shot", "rag"}
 
 
 if __name__ == "__main__":
@@ -108,10 +160,17 @@ if __name__ == "__main__":
         {"command": "stop now", "expected": {"action": "stop"}},
     ]
     cmd = "put the bottle in box 1"
-    for strat in STRATEGIES:
+    for strat in ALL_STRATEGIES:
         print("=" * 70)
         print(f"STRATEGY: {strat}")
         print("-" * 70)
-        ex = demo_examples if strat == "few_shot" else None
+        ex = demo_examples if strat in EXAMPLE_STRATEGIES else None
         print(build_prompt(cmd, strat, schema, examples=ex))
     print("=" * 70)
+    # Proof that rag and few_shot differ ONLY in which examples were selected.
+    a = build_prompt(cmd, "few_shot", schema, examples=demo_examples)
+    b = build_prompt(cmd, "rag", schema, examples=demo_examples)
+    print(f"few_shot prompt == rag prompt, given identical examples: {a == b}")
+    # Proof that the classifier receives the command and nothing else.
+    c = build_prompt(cmd, "classifier", schema)
+    print(f"classifier prompt is the bare command: {c == cmd}  -> {c!r}")

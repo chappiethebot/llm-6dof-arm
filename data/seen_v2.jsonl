@@ -201,3 +201,90 @@
 {"command": "move to anywhere you see free", "expected": {"action": "move_to", "location": "nearest_free_cell", "modifiers": []}}
 {"command": "go to anywhere you see free", "expected": {"action": "move_to", "location": "nearest_free_cell", "modifiers": []}}
 {"command": "navigate to anywhere you see free", "expected": {"action": "move_to", "location": "nearest_free_cell", "modifiers": []}}
+{"command": "retrieve the bottle", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "retrieve the toy car", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "retrieve the rubiks cube", "expected": {"action": "fetch", "target": "rubiks_cube", "modifiers": []}}
+{"command": "can you grab the bottle for me", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "can you grab the toy car for me", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "can you grab the rubiks cube for me", "expected": {"action": "fetch", "target": "rubiks_cube", "modifiers": []}}
+{"command": "i need the bottle", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "i need the toy car", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "i need the rubiks cube", "expected": {"action": "fetch", "target": "rubiks_cube", "modifiers": []}}
+{"command": "fetch me the bottle", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "fetch me the toy car", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "fetch me the rubiks cube", "expected": {"action": "fetch", "target": "rubiks_cube", "modifiers": []}}
+{"command": "bring the bottle here", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "bring the toy car here", "expected": {"action": "fetch", "target": "toy_car", "modifiers": []}}
+{"command": "bring the rubiks cube here", "expected": {"action": "fetch", "target": "rubiks_cube", "modifiers": []}}
+{"command": "go fetch the bottle", "expected": {"action": "fetch", "target": "bottle", "modifiers": []}}
+{"command": "keep hold of the bottle", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "keep hold of the toy car", "expected": {"action": "hold", "target": "toy_car", "modifiers": []}}
+{"command": "keep hold of the rubiks cube", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "grasp the bottle", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "grasp the toy car", "expected": {"action": "hold", "target": "toy_car", "modifiers": []}}
+{"command": "grasp the rubiks cube", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "take the bottle in your hand", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "take the toy car in your hand", "expected": {"action": "hold", "target": "toy_car", "modifiers": []}}
+{"command": "take the rubiks cube in your hand", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "pick up and hold the bottle", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "pick up and hold the toy car", "expected": {"action": "hold", "target": "toy_car", "modifiers": []}}
+{"command": "pick up and hold the rubiks cube", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "hold onto the bottle", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "hold onto the toy car", "expected": {"action": "hold", "target": "toy_car", "modifiers": []}}
+{"command": "hold onto the rubiks cube", "expected": {"action": "hold", "target": "rubiks_cube", "modifiers": []}}
+{"command": "maintain your grasp on the bottle", "expected": {"action": "hold", "target": "bottle", "modifiers": []}}
+{"command": "check out the bottle", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "check out the toy car", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "check out the rubiks cube", "expected": {"action": "inspect", "target": "rubiks_cube", "modifiers": []}}
+{"command": "take a look at the bottle", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "take a look at the toy car", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "take a look at the rubiks cube", "expected": {"action": "inspect", "target": "rubiks_cube", "modifiers": []}}
+{"command": "scan the bottle", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "scan the toy car", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "scan the rubiks cube", "expected": {"action": "inspect", "target": "rubiks_cube", "modifiers": []}}
+{"command": "analyze the bottle", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "analyze the toy car", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "analyze the rubiks cube", "expected": {"action": "inspect", "target": "rubiks_cube", "modifiers": []}}
+{"command": "evaluate the bottle", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "evaluate the toy car", "expected": {"action": "inspect", "target": "toy_car", "modifiers": []}}
+{"command": "evaluate the rubiks cube", "expected": {"action": "inspect", "target": "rubiks_cube", "modifiers": []}}
+{"command": "run a check on the bottle", "expected": {"action": "inspect", "target": "bottle", "modifiers": []}}
+{"command": "cease", "expected": {"action": "stop", "modifiers": []}}
+{"command": "abort", "expected": {"action": "stop", "modifiers": []}}
+{"command": "cancel that", "expected": {"action": "stop", "modifiers": []}}
+{"command": "pause", "expected": {"action": "stop", "modifiers": []}}
+{"command": "stop what you are doing", "expected": {"action": "stop", "modifiers": []}}
+{"command": "halt execution", "expected": {"action": "stop", "modifiers": []}}
+{"command": "end current task", "expected": {"action": "stop", "modifiers": []}}
+{"command": "stop right there", "expected": {"action": "stop", "modifiers": []}}
+{"command": "do not move", "expected": {"action": "stop", "modifiers": []}}
+{"command": "hold it right there", "expected": {"action": "stop", "modifiers": []}}
+{"command": "cut it out", "expected": {"action": "stop", "modifiers": []}}
+{"command": "terminate action", "expected": {"action": "stop", "modifiers": []}}
+{"command": "stay still", "expected": {"action": "stop", "modifiers": []}}
+{"command": "abort operation", "expected": {"action": "stop", "modifiers": []}}
+{"command": "quit moving", "expected": {"action": "stop", "modifiers": []}}
+{"command": "pause movement", "expected": {"action": "stop", "modifiers": []}}
+{"command": "freeze right there", "expected": {"action": "stop", "modifiers": []}}
+{"command": "cease all motor functions", "expected": {"action": "stop", "modifiers": []}}
+{"command": "halt your movement", "expected": {"action": "stop", "modifiers": []}}
+{"command": "stand down", "expected": {"action": "stop", "modifiers": []}}
+{"command": "stop action", "expected": {"action": "stop", "modifiers": []}}
+{"command": "pour the water from the bottle into a glass", "expected": {"action": "reject", "modifiers": []}}
+{"command": "smash the rubiks cube with a hammer", "expected": {"action": "reject", "modifiers": []}}
+{"command": "open the box and take out the toy car", "expected": {"action": "reject", "modifiers": []}}
+{"command": "toss the toy car over here to me", "expected": {"action": "reject", "modifiers": []}}
+{"command": "stack the boxes on top of each other", "expected": {"action": "reject", "modifiers": []}}
+{"command": "break the window with the bottle", "expected": {"action": "reject", "modifiers": []}}
+{"command": "move the rubiks cube to the fourth column of the table", "expected": {"action": "reject", "modifiers": []}}
+{"command": "place the bottle underneath the table", "expected": {"action": "reject", "modifiers": []}}
+{"command": "put the toy car on the shelf behind you", "expected": {"action": "reject", "modifiers": []}}
+{"command": "pick up the red apple and put it in box 1", "expected": {"action": "reject", "modifiers": []}}
+{"command": "inspect the screwdriver", "expected": {"action": "reject", "modifiers": []}}
+{"command": "fetch the green mug from the far left corner", "expected": {"action": "reject", "modifiers": []}}
+{"command": "move to box 1 but stay exactly where you are", "expected": {"action": "reject", "modifiers": []}}
+{"command": "pick up the bottle without lifting it from the table", "expected": {"action": "reject", "modifiers": []}}
+{"command": "fetch the rubiks cube without touching it", "expected": {"action": "reject", "modifiers": []}}
+{"command": "inspect the toy car with your camera deactivated", "expected": {"action": "reject", "modifiers": []}}
+{"command": "put the bottle in a spot past the right edge", "expected": {"action": "reject", "modifiers": []}}
+{"command": "put the toy car in the far left corner and the near right side corner at the same time", "expected": {"action": "reject", "modifiers": []}}

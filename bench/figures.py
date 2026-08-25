@@ -50,16 +50,41 @@ def short(m):
 
 
 def load(path):
-    rows = list(csv.DictReader(open(path, encoding="utf-8")))
+    """Read a scored CSV, dedupe keeping LAST (resume orphans).
+
+    Key includes `dataset`: command_id indexes THAT dataset's test rows, so seen
+    row 7 and held-out row 7 are different commands. 25-col V2 and 28-col V3 rows
+    both read fine -- every access below goes through .get() with a default."""
+    with open(path, encoding="utf-8", newline="") as f:
+        rows = list(csv.DictReader(f))
     seen = {}
     for r in rows:
-        seen[(r["model"], r["strategy"], r["command_id"], r["run_index"])] = r
+        seen[(r.get("dataset", ""), r.get("model", ""), r.get("strategy", ""),
+              r.get("command_id", ""), r.get("run_index", ""))] = r
     return list(seen.values())
+
+
+def models_in(rows):
+    """Known models in fixed order, then any unexpected ones, so nothing is hidden."""
+    present = {r.get("model") for r in rows}
+    out = [m for m in MODELS if m in present]
+    out += sorted(m for m in present if m and m not in MODELS)
+    return out
+
+
+def _fl(r, key):
+    v = r.get(key)
+    if v in (None, ""):
+        return None
+    try:
+        return float(v)
+    except ValueError:
+        return None
 
 
 def truth_loc(r):
     try:
-        return json.loads(r["truth_json"]).get("location")
+        return json.loads(r.get("truth_json") or "{}").get("location")
     except (json.JSONDecodeError, TypeError, KeyError):
         return None
 
@@ -68,7 +93,7 @@ def pred_loc(r):
     """Hashable predicted location. Some models nest the whole action object, so
     .get('location') can return a dict -- stringify before using as a key."""
     try:
-        obj = json.loads(r["pred_json"]) if r["pred_json"] else None
+        obj = json.loads(r["pred_json"]) if r.get("pred_json") else None
     except (json.JSONDecodeError, TypeError):
         return None
     if not isinstance(obj, dict):
@@ -84,7 +109,7 @@ def pred_loc(r):
 def phrase_for(rows, cell):
     for r in rows:
         if truth_loc(r) == cell:
-            c = r["command"]
+            c = r.get("command", "")
             for pre in ("put the bottle in ", "put the car in ", "put the rubiks cube in ",
                         "move to ", "go to ", "navigate to "):
                 if c.startswith(pre):
@@ -100,13 +125,13 @@ def is_ambiguous(phrase):
 def cell_acc(rows, model):
     acc = {c: [0, 0] for c in CELLS}
     for r in rows:
-        if r["model"] != model:
+        if r.get("model") != model:
             continue
         t = truth_loc(r)
         if t not in acc:
             continue
         acc[t][1] += 1
-        if r["strict_match"] == "True":
+        if r.get("strict_match") == "True":
             acc[t][0] += 1
     return {c: (100 * h / n if n else float("nan")) for c, (h, n) in acc.items()}
 
@@ -122,11 +147,12 @@ def save(fig, outdir, name):
 # ---------------------------------------------------------------- fig 1
 def fig_cell_accuracy(seen, held, outdir):
     sets = [("Seen", seen)] + ([("Held-out", held)] if held else [])
-    fig, axes = plt.subplots(len(sets), len(MODELS),
-                             figsize=(3.1 * len(MODELS), 3.4 * len(sets)),
+    models = models_in(seen)
+    fig, axes = plt.subplots(len(sets), len(models),
+                             figsize=(3.1 * len(models), 3.4 * len(sets)),
                              squeeze=False)
     for i, (label, rows) in enumerate(sets):
-        for j, m in enumerate(MODELS):
+        for j, m in enumerate(models):
             ax = axes[i][j]
             a = cell_acc(rows, m)
             grid = np.array([[a[f"grid_{r}{c}"] for c in COLS] for r in ROWS])
@@ -162,7 +188,7 @@ def fig_confusion(seen, held, model, outdir):
             cnt = collections.Counter()
             n = 0
             for r in rows:
-                if r["model"] != model or truth_loc(r) != t:
+                if r.get("model") != model or truth_loc(r) != t:
                     continue
                 n += 1
                 cnt[pred_loc(r)] += 1
@@ -195,19 +221,20 @@ def fig_clean_vs_amb(seen, held, outdir):
         ax = axes[0][k]
         amb = {c: is_ambiguous(phrase_for(rows, c)) for c in CELLS}
         clean, ambig = [], []
-        for m in MODELS:
+        models = models_in(seen)
+        for m in models:
             a = cell_acc(rows, m)
             cs = [a[c] for c in CELLS if not amb[c] and not math.isnan(a[c])]
             as_ = [a[c] for c in CELLS if amb[c] and not math.isnan(a[c])]
             clean.append(statistics.mean(cs) if cs else 0)
             ambig.append(statistics.mean(as_) if as_ else 0)
-        x = np.arange(len(MODELS))
+        x = np.arange(len(models))
         ax.bar(x - 0.2, clean, 0.4, label="clean phrasing", color="#3d7d3d")
         ax.bar(x + 0.2, ambig, 0.4, label="ambiguous phrasing", color="#b5482f")
         for xi, (a, b) in enumerate(zip(clean, ambig)):
             ax.text(xi - 0.2, a + 1.5, f"{a:.0f}", ha="center", fontsize=8)
             ax.text(xi + 0.2, b + 1.5, f"{b:.0f}", ha="center", fontsize=8)
-        ax.set_xticks(x, [short(m) for m in MODELS], rotation=20, ha="right", fontsize=8)
+        ax.set_xticks(x, [short(m) for m in models], rotation=20, ha="right", fontsize=8)
         ax.set_title(label, fontsize=11, fontweight="bold")
         ax.set_ylim(0, 105)
         ax.grid(axis="y", alpha=0.25)
@@ -229,11 +256,20 @@ def fig_latency(seen, held, outdir):
 
     fig, ax = plt.subplots(figsize=(9, 4.8))
     width = 0.2
-    x = np.arange(len(MODELS))
+    models = models_in(seen)
+    x = np.arange(len(models))
+    # rag rows carry a separate retrieval stage; add it so the bar is END-TO-END.
+    any_ret = any(r.get("retrieval_latency_s") not in (None, "") for r in seen)
     stats = {"p50": [], "p95": [], "p99": [], "max": []}
-    for m in MODELS:
-        lats = [float(r["latency_s"]) for r in seen
-                if r["model"] == m and r["is_warmup"] != "True" and r["latency_s"]]
+    for m in models:
+        lats = []
+        for r in seen:
+            if r.get("model") != m or r.get("is_warmup") == "True":
+                continue
+            l = _fl(r, "latency_s")
+            if l is None:
+                continue
+            lats.append(l + (_fl(r, "retrieval_latency_s") or 0.0))
         if not lats:
             for k in stats:
                 stats[k].append(0)
@@ -246,9 +282,10 @@ def fig_latency(seen, held, outdir):
     for i, (k, c) in enumerate(zip(["p50", "p95", "p99", "max"], colors)):
         ax.bar(x + (i - 1.5) * width, stats[k], width, label=k, color=c)
     ax.set_yscale("log")
-    ax.set_xticks(x, [short(m) for m in MODELS], rotation=20, ha="right", fontsize=9)
+    ax.set_xticks(x, [short(m) for m in models], rotation=20, ha="right", fontsize=9)
     ax.set_ylabel("latency (s, log scale)")
-    ax.set_title("End-to-end LLM latency, warm-up excluded — tail decomposition")
+    ax.set_title("End-to-end LLM latency, warm-up excluded — tail decomposition"
+                 + ("  (incl. retrieval stage)" if any_ret else ""))
     ax.grid(axis="y", alpha=0.25, which="both")
     ax.legend(fontsize=9)
     save(fig, outdir, "fig4_latency_tail")
@@ -260,10 +297,11 @@ def fig_thinking(seen, held, outdir):
     for label, rows in [("Seen", seen)] + ([("Held-out", held)] if held else []):
         for r in rows:
             tc = r.get("thinking_chars")
-            if tc in (None, "", "0") or not r.get("latency_s"):
+            lat = _fl(r, "latency_s")
+            if tc in (None, "", "0") or lat is None:
                 continue
             try:
-                pts.append((label, int(tc), float(r["latency_s"])))
+                pts.append((label, int(tc), lat))
             except ValueError:
                 continue
     if not pts:
@@ -286,6 +324,11 @@ def fig_thinking(seen, held, outdir):
 
 def main():
     ap = argparse.ArgumentParser()
+    # NOTE: defaults point at the _scored files. Figures must read the same file
+    # bench/summary.py reports, or the thesis text and the plots disagree. In a RAW
+    # file normalized == strict everywhere by construction (run_cell hardcodes both
+    # to False for any row that did not validate), so plotting a raw file silently
+    # erases the strict->normalized gap.
     ap.add_argument("--seen", default="bench/results_grid_v2_scored.csv")
     ap.add_argument("--held", default="bench/results_heldout_v2_scored.csv")
     ap.add_argument("--model", default="openai:gpt-4o-mini")

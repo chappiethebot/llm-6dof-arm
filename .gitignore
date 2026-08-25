@@ -19,3 +19,6 @@ bench/figures/
 !data/reachability.json
 !bench/figures/*.pdf
 !bench/figures/*.png
+
+ft/export/*.gguf
+ft/runs/**/*.pt
