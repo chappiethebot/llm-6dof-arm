@@ -1,0 +1,53 @@
+{
+  "schema_version": 2,
+  "verbs": [
+    "pick_place",
+    "fetch",
+    "hold",
+    "move_to",
+    "inspect",
+    "stop",
+    "reject"
+  ],
+  "targets": [
+    "rubiks_cube",
+    "bottle",
+    "toy_car"
+  ],
+  "locations": [
+    "box_1",
+    "box_2",
+    "box_3",
+    "grid_A1",
+    "grid_A2",
+    "grid_A3",
+    "grid_B1",
+    "grid_B2",
+    "grid_B3",
+    "grid_C1",
+    "grid_C2",
+    "grid_C3",
+    "max_reach",
+    "nearest_free_cell"
+  ],
+  "verb_fields": {
+    "pick_place": [
+      "target",
+      "location"
+    ],
+    "fetch": [
+      "target"
+    ],
+    "hold": [
+      "target"
+    ],
+    "move_to": [
+      "location"
+    ],
+    "inspect": [
+      "target"
+    ],
+    "stop": [],
+    "reject": []
+  }
+}

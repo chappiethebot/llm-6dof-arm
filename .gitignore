@@ -22,3 +22,11 @@ bench/figures/
 
 ft/export/*.gguf
 ft/runs/**/*.pt
+
+!data/train_v2.jsonl
+!data/dev_v2.jsonl
+!data/held_out_v3.jsonl
+
+ft/export/
+ft/runs/**/epoch_*/
+ft/runs/**/checkpoint-*/

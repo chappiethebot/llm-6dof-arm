@@ -1,0 +1,66 @@
+[
+  {
+    "string_match": 0.9649122807017544,
+    "json_match": 0.9649122807017544,
+    "json_exact": 0.9649122807017544,
+    "parse_rate": 1.0,
+    "n": 57,
+    "epoch": 1
+  },
+  {
+    "string_match": 0.9298245614035088,
+    "json_match": 0.9298245614035088,
+    "json_exact": 0.9298245614035088,
+    "parse_rate": 1.0,
+    "n": 57,
+    "epoch": 2
+  },
+  {
+    "string_match": 0.9473684210526315,
+    "json_match": 0.9473684210526315,
+    "json_exact": 0.9473684210526315,
+    "parse_rate": 1.0,
+    "n": 57,
+    "epoch": 3
+  },
+  {
+    "string_match": 0.9473684210526315,
+    "json_match": 0.9473684210526315,
+    "json_exact": 0.9473684210526315,
+    "parse_rate": 1.0,
+    "n": 57,
+    "epoch": 4
+  },
+  {
+    "string_match": 0.9473684210526315,
+    "json_match": 0.9473684210526315,
+    "json_exact": 0.9473684210526315,
+    "parse_rate": 1.0,
+    "n": 57,
+    "epoch": 5
+  },
+  {
+    "string_match": 0.9473684210526315,
+    "json_match": 0.9473684210526315,
+    "json_exact": 0.9473684210526315,
+    "parse_rate": 1.0,
+    "n": 57,
+    "epoch": 6
+  },
+  {
+    "string_match": 0.9473684210526315,
+    "json_match": 0.9473684210526315,
+    "json_exact": 0.9473684210526315,
+    "parse_rate": 1.0,
+    "n": 57,
+    "epoch": 7
+  },
+  {
+    "string_match": 0.9473684210526315,
+    "json_match": 0.9473684210526315,
+    "json_exact": 0.9473684210526315,
+    "parse_rate": 1.0,
+    "n": 57,
+    "epoch": 8
+  }
+]
