@@ -1,24 +1,56 @@
+# Direct dependencies, pinned 2026-08-27 to the versions present in the
+# `thesis` conda env at audit time. For the full transitive closure see
+# requirements.lock.txt.
+#
+# PROVENANCE WARNING: these pins describe the AUDIT-TIME environment, not the
+# environment that produced the 30,380 measured rows on 2026-08-24/25. No lock
+# file was captured at measurement time. See AUDIT_REPORT.md finding F-ENV.
+# The one exception is peft, pinned below to the version the checkpoints
+# themselves record.
+
 # Core simulation
-mujoco
-gymnasium
-gymnasium-robotics
+mujoco==3.10.0
+gymnasium==1.3.0
+gymnasium-robotics==1.4.2
 
 # LLM backends (Phase 3)
-openai
-ollama
-python-dotenv          # loads OPENAI_API_KEY from .env — was missing, caused dotenv ImportError on both machines
+openai==2.44.0
+ollama==0.6.2
+python-dotenv==1.2.2    # loads OPENAI_API_KEY from .env — was missing, caused dotenv ImportError on both machines
 
 # ASR / voice (Phase 4)
-faster-whisper
-sounddevice            # live microphone capture (Phase 4) — remove if keeping requirements to current-phase deps only
+faster-whisper==1.2.1
+sounddevice==0.5.5      # live microphone capture (Phase 4)
 
 # Utilities
-numpy
+numpy==2.4.6
+matplotlib==3.11.0      # bench/analyze.py, bench/figures.py — was an undeclared dependency until this pinning pass
 
-# RL (deferred — Future Work, not on critical path)
-stable-baselines3
-sb3-contrib
+# Eval / cost accounting (Phase 5)
+tiktoken==0.13.0        # bench/backfill_tokens*.py. EXACT for gpt-4o-mini only;
+                        # an approximation for the Ollama models, which use their
+                        # own vocabularies. See AUDIT_REPORT.md B7-i.
 
-# Vision (deferred — Future Work, not on critical path)
-ultralytics
-opencv-python
+# Rung 2 — retrieval
+sentence-transformers==6.0.0
+
+# Rungs 3 and 4 — fine-tuning
+torch==2.12.1
+transformers==5.15.1    # train_lora.py documents API specifics verified against this exact version
+peft==0.20.0            # NOT audit-time latest. This is the version recorded in
+                        # ft/runs/*/checkpoint-87/adapter_config.json, i.e. the one
+                        # that trained the rung-3 adapters. Do not bump without
+                        # re-verifying the adapters still load.
+accelerate==1.14.0      # required by transformers.Trainer; version used in August is unrecorded
+safetensors==0.8.0
+
+# RL (deferred — Future Work, not on critical path). NOT INSTALLED in the
+# thesis env as of 2026-08-27; Phase 2.5 has zero lines of implementation.
+# stable-baselines3
+# sb3-contrib
+
+# Vision (deferred — Future Work, not on critical path). ultralytics and
+# opencv-python ARE installed but nothing in the repo imports them; Phase 6
+# has zero lines of implementation.
+ultralytics==8.4.88
+opencv-python==5.0.0.93

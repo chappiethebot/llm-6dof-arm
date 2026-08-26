@@ -1,0 +1,124 @@
+﻿# requirements.lock.txt -- exact contents of the thesis conda env
+# Captured 2026-08-27 by the implementation/validity audit.
+#
+# WARNING: this is the AUDIT-TIME environment, NOT the environment that
+# produced the 30,380 measured rows on 2026-08-24/25. No lock file was taken
+# at measurement time, so that environment is not exactly reconstructible.
+# See AUDIT_REPORT.md finding F-ENV.
+#
+# peft==0.20.0 is NOT the audit-time latest: it is the version recorded in
+# ft/runs/*/checkpoint-87/adapter_config.json ("peft_version": "0.20.0"),
+# i.e. the version that actually trained the rung-3 adapters. It was absent
+# from the env at audit time and was reinstalled to that pin deliberately.
+# accelerate==1.14.0 was also absent and is audit-time latest; the version
+# used in August is not recorded anywhere.
+#
+# Env: C:\Users\USER\.conda\envs\thesis
+# Python: 3.11.15
+# Packages: 105
+
+absl-py==2.4.0
+accelerate==1.14.0
+ale-py==0.12.0
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anyio==4.14.1
+av==17.1.0
+certifi==2026.6.17
+cffi==2.1.0
+charset-normalizer==3.4.7
+click==8.4.2
+cloudpickle==3.1.2
+colorama==0.4.6
+contourpy==1.3.3
+ctranslate2==4.8.0
+cycler==0.12.1
+distro==1.9.0
+etils==1.14.0
+Farama-Notifications==0.0.6
+faster-whisper==1.2.1
+filelock==3.29.4
+flatbuffers==25.12.19
+fonttools==4.63.0
+fsspec==2026.6.0
+glfw==2.10.0
+grpcio==1.81.1
+gymnasium==1.3.0
+gymnasium-robotics==1.4.2
+h11==0.16.0
+hf-xet==1.5.1
+httpcore==1.0.9
+httpx==0.28.1
+huggingface_hub==1.21.0
+idna==3.18
+ImageIO==2.37.3
+Jinja2==3.1.6
+jiter==0.15.0
+joblib==1.5.3
+kiwisolver==1.5.0
+Markdown==3.10.2
+markdown-it-py==4.2.0
+MarkupSafe==3.0.3
+matplotlib==3.11.0
+mdurl==0.1.2
+mpmath==1.3.0
+mujoco==3.10.0
+narwhals==2.24.0
+networkx==3.6.1
+numpy==2.4.6
+nvidia-ml-py==13.610.43
+ollama==0.6.2
+onnxruntime==1.27.0
+openai==2.44.0
+opencv-python==5.0.0.93
+packaging==26.0
+pandas==3.0.3
+peft==0.20.0
+pettingzoo==1.26.1
+pillow==12.2.0
+polars==1.42.1
+polars-runtime-32==1.42.1
+protobuf==7.35.1
+psutil==7.2.2
+pycparser==3.0
+pydantic==2.13.4
+pydantic_core==2.46.4
+pygame-ce==2.5.7
+Pygments==2.20.0
+PyOpenGL==3.1.10
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
+python-dotenv==1.2.2
+PyYAML==6.0.3
+regex==2026.7.19
+requests==2.34.2
+rich==15.0.0
+safetensors==0.8.0
+sb3_contrib==2.9.0
+scikit-learn==1.9.0
+scipy==1.17.1
+sentence-transformers==6.0.0
+shellingham==1.5.4
+six==1.17.0
+sniffio==1.3.1
+sounddevice==0.5.5
+stable_baselines3==2.9.0
+sympy==1.14.0
+tensorboard==2.21.0
+tensorboard-data-server==0.7.2
+threadpoolctl==3.6.0
+tiktoken==0.13.0
+tokenizers==0.22.2
+torch==2.12.1
+torchvision==0.27.1
+tqdm==4.68.3
+transformers==5.15.1
+typer==0.25.1
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+tzdata==2026.2
+ultralytics==8.4.88
+ultralytics-thop==2.0.20
+urllib3==2.7.0
+Werkzeug==3.1.8
+zipp==4.1.0

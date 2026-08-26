@@ -30,3 +30,6 @@ ft/runs/**/*.pt
 ft/export/
 ft/runs/**/epoch_*/
 ft/runs/**/checkpoint-*/
+
+# audit working copies of measurement data - never commit (34 MB)
+audit/backup_scored_v3/
