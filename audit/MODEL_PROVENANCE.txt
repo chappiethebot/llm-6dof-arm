@@ -1,0 +1,12 @@
+# Model provenance — captured 2026-08-27T01:07:24+02:00
+# Ollama client 0.20.3, store OLLAMA_MODELS=D:\LLM
+# Tag names are mutable and do not identify what was measured; these digests do.
+# Blob mtimes corroborate: LoRA blobs Aug 22 16:21 vs merge_and_export.py 16:07; runs Aug 24-25.
+
+MODEL                      QUANT      BLOB_MTIME   MANIFEST_SHA256
+llama3.2:3b                Q4_K_M     2026-06-29   a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72
+qwen2.5:3b                 Q4_K_M     2026-06-29   357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b
+qwen2.5:0.5b               Q4_K_M     2026-07-16   a8b0c51577010a279d933d14c2a8ab4b268079d44c5c8830c0a93900f1827c67
+deepseek-r1:7b             Q4_K_M     2026-07-19   755ced02ce7befdb13b7ca74e1e4d08cddba4986afdb63a480f2c93d3140383f
+qwen2.5-3b-lora:latest     Q4_K_M     2026-08-22   b8ca05919dd44187a61e4ef6681b0c7df79437d9abea5b83c7fa26fc612a3a39
+qwen2.5-0.5b-lora:latest   Q4_K_M     2026-08-22   9e4aa731ea116c42fc0a65e25598764504ab9ef093ac1cef99425c7b6769b8aa

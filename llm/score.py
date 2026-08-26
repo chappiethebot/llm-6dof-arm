@@ -10,6 +10,26 @@ Scores the SAME object two ways (frozen policy, decided by inspecting the data):
                  a wrong verb or wrong target still fails under normalized.
 Empty modifiers (absent or []) are ignored in both. A non-empty modifiers list IS compared.
 
+PRECISELY WHAT "EMPTY" MEANS HERE -- _canonical() drops a key in
+_IGNORE_IF_EMPTY when its value is FALSY, not when it is specifically [] or
+absent. So strict also accepts modifiers=None, "", {}, 0 and False as
+equivalent to absent. None of those five ever occurred: across all 30,380
+held_out_v3 predictions the only values emitted are absent, [], and genuine
+non-empty lists. Recorded because the wider rule is not obvious from the
+sentence above.
+
+Two consequences worth knowing before touching this file:
+  - modifiers=0 and modifiers=False score strict=True but normalized=False,
+    which inverts the intended ordering of the two policies (normalized is
+    meant to be the more forgiving one). Zero occurrences in the data; left
+    unchanged because this scorer is frozen at commit 3000198 and every
+    reported number was produced under it.
+  - The evaluation set carries an empty modifiers list on all 217 held-out
+    commands, so this field is not under test at all. It is a normalisation of
+    a constant, not a relaxation of the accuracy criterion -- but it is load
+    bearing: 8,897 of 12,528 strict-correct rows (71%) have pred.modifiers
+    differing from truth.modifiers and depend on this rule.
+
 This is scoring only. It does NOT call a model and does NOT re-generate -- it grades
 text that llm/pipeline.py already produced. The Phase 5 harness calls this across
 the full dataset x 20 cells x >=5 runs. This file is the grader, not the harness.

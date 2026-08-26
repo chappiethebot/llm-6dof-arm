@@ -72,6 +72,102 @@ from pathlib import Path
 os.environ.setdefault("OLLAMA_MAX_LOADED_MODELS", "1")
 os.environ.setdefault("OLLAMA_KEEP_ALIVE", "0")
 
+
+def write_run_manifest(args, cfg, schema, cells, expected_per_cell, retriever=None):
+    """V3 AUDIT FIX (A4-b): write the run conditions to a sidecar JSON.
+
+    These conditions were previously PRINTED to the console and stored nowhere.
+    The four held_out_v3 launches went to four consoles that no longer exist,
+    so environment parity across them cannot be confirmed or refuted from the
+    artifacts -- and run_grid's own docstring calls keep-alive "an experimental
+    condition, not a setting". An experimental condition that is not recorded
+    is not a condition, it is an assumption.
+
+    A SIDECAR, not new CSV columns: adding columns would change the 28-column
+    schema that every analysis script and all 30,380 existing rows share. The
+    manifest sits beside the CSV as <out>.manifest.json and is append-only
+    across resumes, so a resumed run records BOTH launches rather than
+    overwriting the first.
+
+    Model weights are identified by DIGEST, not tag: Ollama tags are mutable
+    and do not identify an artifact (see AUDIT_REPORT.md PROV).
+    """
+    import json, platform, subprocess, sys
+    from datetime import datetime, timezone
+
+    def _ollama_digests():
+        out = {}
+        try:
+            p = subprocess.run(["ollama", "list"], capture_output=True,
+                               text=True, timeout=30)
+            for line in p.stdout.splitlines()[1:]:
+                parts = line.split()
+                if len(parts) >= 2:
+                    out[parts[0]] = parts[1]
+        except Exception as e:
+            out["_error"] = f"{type(e).__name__}: {e}"
+        return out
+
+    def _pkg_versions():
+        want = ["openai", "ollama", "transformers", "torch", "peft", "tiktoken",
+                "sentence-transformers", "numpy"]
+        out = {}
+        for name in want:
+            try:
+                from importlib.metadata import version
+                out[name] = version(name)
+            except Exception:
+                out[name] = None
+        return out
+
+    entry = {
+        "started_utc": datetime.now(timezone.utc).isoformat(),
+        "argv": sys.argv,
+        "out": args.out,
+        "dataset": args.dataset,
+        "dataset_file": cfg["file"],
+        "schema_file": cfg["schema"],
+        "schema_version": schema.get("schema_version", 1),
+        "n_locations": len(schema["locations"]),
+        "exemplars_from": cfg["exemplars_from"],
+        "k": args.k,
+        "repeats": args.repeats,
+        "cells": [f"{m}/{s}" for m, s in cells],
+        "expected_rows_per_cell": expected_per_cell,
+        "env": {
+            "OLLAMA_KEEP_ALIVE": os.environ.get("OLLAMA_KEEP_ALIVE"),
+            "OLLAMA_MAX_LOADED_MODELS": os.environ.get("OLLAMA_MAX_LOADED_MODELS"),
+            "OLLAMA_MODELS": os.environ.get("OLLAMA_MODELS"),
+            "OLLAMA_NUM_PARALLEL": os.environ.get("OLLAMA_NUM_PARALLEL"),
+            "HF_HUB_OFFLINE": os.environ.get("HF_HUB_OFFLINE"),
+            "CUDA_VISIBLE_DEVICES": os.environ.get("CUDA_VISIBLE_DEVICES"),
+        },
+        "num_ctx_pinned": getattr(
+            __import__("llm.clients", fromlist=["OllamaClient"]).OllamaClient,
+            "DEFAULT_NUM_CTX", None),
+        "ollama_model_digests": _ollama_digests(),
+        "packages": _pkg_versions(),
+        "python": sys.version.split()[0],
+        "platform": platform.platform(),
+    }
+    if retriever is not None:
+        entry["retrieval"] = {
+            "model": getattr(retriever, "model_name", None),
+            "corpus": str(getattr(retriever, "corpus_path", None)),
+            "device": str(getattr(retriever, "device", None)),
+        }
+
+    path = Path(str(args.out) + ".manifest.json")
+    log = []
+    if path.exists():
+        try:
+            log = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            log = []
+    log.append(entry)
+    path.write_text(json.dumps(log, indent=2), encoding="utf-8")
+    print(f"run manifest -> {path}  (launch {len(log)} recorded)")
+
 from bench.run_cell import (run_cell, resolve_clients, _load_rows,
                             DATASETS, SEALED, RAG_CONTAMINATED)
 from bench.dataset import DEFAULT_K
@@ -164,6 +260,7 @@ def main():
     schema = load_schema(cfg["schema"])
 
     # ---- build the retriever ONCE, before the loop -------------------------
+    # (write_run_manifest is defined at module level; see below)
     retriever = None
     if needs_retriever:
         from llm.retrieve import Retriever, CORPUS_PATH, MODEL_NAME
@@ -198,6 +295,8 @@ def main():
     print(f"\ngrid: {len(cells)} cells | {n_test} test rows x {args.repeats} repeats "
           f"= {expected_per_cell} rows/cell | total {expected_per_cell*len(cells):,} calls")
     print(f"out={args.out}\n")
+
+    write_run_manifest(args, cfg, schema, cells, expected_per_cell, retriever)
 
     ran, skipped = 0, 0
     for i, (model, strategy) in enumerate(cells, 1):

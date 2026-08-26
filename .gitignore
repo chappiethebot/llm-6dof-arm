@@ -33,3 +33,4 @@ ft/runs/**/checkpoint-*/
 
 # audit working copies of measurement data - never commit (34 MB)
 audit/backup_scored_v3/
+audit/backup_tokens_v3/

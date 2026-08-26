@@ -32,11 +32,20 @@ def short(m):
 
 
 def load(path):
-    """Read a scored CSV, dedupe on identity key keeping LAST (resume orphans)."""
+    """Read a scored CSV, dedupe on identity key keeping LAST (resume orphans).
+
+    KEY INCLUDES `dataset`. command_id is an index into THAT dataset's test
+    rows, so seen row 7 and held-out row 7 are different commands. Without
+    `dataset` in the key a union of two files silently drops rows -- no error,
+    no warning, just a smaller denominator. This function currently reads one
+    file at a time, so the four-field key happened to be safe; it stops being
+    safe the moment anyone passes a combined file or unions two loads.
+    Matches bench/summary.py, bench/figures.py and bench/rescore.py."""
     rows = list(csv.DictReader(open(path, encoding="utf-8")))
     seen = {}
     for r in rows:
-        seen[(r["model"], r["strategy"], r["command_id"], r["run_index"])] = r
+        seen[(r.get("dataset", ""), r["model"], r["strategy"],
+              r["command_id"], r["run_index"])] = r
     return list(seen.values())
 
 

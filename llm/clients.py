@@ -41,6 +41,24 @@ class LLMClient(ABC):
     name: str
     last_thinking: str = ""   # V2: reasoning trace from the last complete() call. "" for non-reasoning models.
 
+    # V3 AUDIT FIX: both providers RETURN authoritative token counts on every
+    # response and the old code discarded them, exactly as V1 discarded
+    # `thinking`. Reconstructing counts with an external tokenizer is strictly
+    # worse: Qwen, Llama and DeepSeek each use their own vocabulary, so
+    # counting their output with OpenAI's o200k_base is wrong even when it is
+    # available. The server already did the arithmetic against the right
+    # vocabulary -- keep it.
+    #
+    # Parked on the client the same way last_thinking is, and read by the
+    # caller IMMEDIATELY after complete(), before the next call overwrites it.
+    #
+    #   {"tokens_in": int, "tokens_out_total": int, "source": str}
+    #
+    # tokens_out_total counts EVERYTHING generated, reasoning included --
+    # Ollama's eval_count already does, and it is the only figure that makes
+    # a reasoning model's cost honest. {} when the provider returned nothing.
+    last_usage: dict = {}
+
     @abstractmethod
     def complete(self, prompt: str) -> str:
         ...
@@ -61,27 +79,59 @@ class OpenAIClient(LLMClient):
             temperature=self.temperature,
         )
         self.last_thinking = ""   # OpenAI chat completions expose no reasoning trace
+        # `usage` is authoritative and billed; never re-derive it with tiktoken.
+        u = getattr(resp, "usage", None)
+        self.last_usage = {
+            "tokens_in": getattr(u, "prompt_tokens", None),
+            "tokens_out_total": getattr(u, "completion_tokens", None),
+            "source": "openai.usage",
+        } if u is not None else {}
         return resp.choices[0].message.content
 
 
 class OllamaClient(LLMClient):
-    def __init__(self, model: str, temperature: float = 0.0):
+    # V3 AUDIT FIX (num_ctx): Ollama derives its default context window from
+    # available VRAM -- on the measurement machine that was 4096, computed from
+    # 16 GiB ("vram-based default context ... default_num_ctx=4096"). No model
+    # Modelfile sets num_ctx, so the effective window was a property of the GPU
+    # rather than of the experiment, and a replication on different hardware
+    # would silently get a different one. Pinning it makes the window a
+    # RECORDED EXPERIMENTAL CONDITION.
+    #
+    # 4096 is chosen to match what the held_out_v3 measurement actually ran
+    # under, NOT because it is generous: the largest prompt in the study is
+    # ~401 tokens, so this is a 10x margin on input. It is deliberately not
+    # raised, because raising it would make future runs non-comparable with the
+    # 30,380 rows already collected.
+    DEFAULT_NUM_CTX = 4096
+
+    def __init__(self, model: str, temperature: float = 0.0, num_ctx: int | None = None):
         import ollama
         self._ollama = ollama
         self.model = model
         self.temperature = temperature
+        self.num_ctx = self.DEFAULT_NUM_CTX if num_ctx is None else num_ctx
         self.name = f"ollama:{model}"
 
     def complete(self, prompt: str) -> str:
         resp = self._ollama.generate(
             model=self.model,
             prompt=prompt,
-            options={"temperature": self.temperature},
+            options={"temperature": self.temperature, "num_ctx": self.num_ctx},
         )
         # V2 fix: Ollama returns the reasoning trace in a SEPARATE `thinking` field.
         # V1 read only `response`, so every deepseek-r1 trace was generated and discarded.
         # getattr with a fallback keeps non-reasoning models (llama, qwen) working unchanged.
         self.last_thinking = getattr(resp, "thinking", None) or ""
+        # eval_count covers EVERY generated token, reasoning included -- which is
+        # the whole point for deepseek-r1, where 96% of output is never returned
+        # to the caller. prompt_eval_count is the server's own prompt count,
+        # tokenised with THIS model's vocabulary.
+        self.last_usage = {
+            "tokens_in": getattr(resp, "prompt_eval_count", None),
+            "tokens_out_total": getattr(resp, "eval_count", None),
+            "source": "ollama.eval_count",
+        }
         return resp["response"]
 
 
