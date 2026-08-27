@@ -44,11 +44,29 @@ _ROOT = os.path.dirname(_HERE)
 for _p in (_ROOT, _HERE):
     if _p not in sys.path:
         sys.path.insert(0, _p)
-from full_grasp_backend import FullGraspBackend, HAS_GRID
 from llm.prompts import load_schema
 from llm.pipeline import run_once
-from llm.clients import OpenAIClient, OllamaClient
-from llm_demo import drive, describe, print_legend, draw_box_markers  # reuse, unchanged
+from llm.clients import all_clients
+from bench.dataset import load_seen_split
+
+# The MuJoCo-dependent imports are DEFERRED to load_sim(), not taken at module
+# level. full_grasp_backend and llm_demo both pull in gymnasium_robotics ->
+# mujoco, so importing them here made every code path require a working physics
+# engine -- including `--list` and the model/strategy menu, which need no
+# simulator at all. Deferring also means a blocked or missing MuJoCo produces a
+# clear message at the point of use instead of an import traceback at startup.
+
+
+def load_sim():
+    """Import the MuJoCo-backed pieces. Returns (FullGraspBackend, HAS_GRID, helpers)."""
+    try:
+        from full_grasp_backend import FullGraspBackend, HAS_GRID
+        from llm_demo import drive, describe, print_legend, draw_box_markers
+    except OSError as e:
+        sys.exit(f"cannot load the MuJoCo backend: {e}\n"
+                 f"  The simulator is required to drive the arm. The model and "
+                 f"strategy menu (--list) works without it.")
+    return FullGraspBackend, HAS_GRID, (drive, describe, print_legend, draw_box_markers)
 
 # --- audio config (proven Phase 4 steps 1-3) ---
 MIC_NAME_HINT = "Seiren"
@@ -59,8 +77,97 @@ LANGUAGE      = "en"
 CLIP_PATH     = Path(os.path.join(os.path.dirname(__file__), "voice_clip.wav"))
 
 
-def make_client(name):
-    return OpenAIClient(name) if name.startswith("gpt-") else OllamaClient(name)
+# ---------- client roster + per-client strategy constraints ----------
+#
+# The roster is built from llm.clients.all_clients() rather than a hardcoded
+# list, so the demo cannot drift out of sync with the harness again. Previously
+# this file had no model menu at all: `make_client` dispatched on whether the
+# name started with "gpt-", which silently produced an OllamaClient for
+# anything else -- including "classifier:distilbert", which would then fail at
+# call time rather than at selection time.
+#
+# NOT EVERY CLIENT SUPPORTS EVERY STRATEGY, and the table below is the single
+# place that says so. It mirrors how each rung was actually trained and
+# measured; offering a combination outside it would produce output that looks
+# plausible and means nothing.
+#
+#   base models (rung 1/2)  zero_shot, few_shot, cot, role_based, rag
+#   merged LoRA (rung 3)    zero_shot ONLY -- the adapters were trained on
+#                           bare zero-shot prompts and measured that way. A cot
+#                           or few_shot prompt is off-distribution for them.
+#   classifier  (rung 4)    classifier ONLY -- it is an encoder over the command
+#                           string with no prompt surface at all.
+BASE_STRATEGIES = ("zero_shot", "few_shot", "cot", "role_based", "rag")
+LORA_STRATEGIES = ("zero_shot",)
+CLASSIFIER_STRATEGIES = ("classifier",)
+
+# Strategies that need in-context examples supplied by the caller. build_prompt
+# RAISES for these when `examples` is empty, which run_once records as
+# prompt_error -- the arm silently never moves. See wire_examples().
+NEEDS_EXAMPLES = {"few_shot", "rag"}
+
+
+def strategies_for(name: str) -> tuple:
+    """Allowed strategies for a client, keyed on its .name."""
+    if name.startswith("classifier:"):
+        return CLASSIFIER_STRATEGIES
+    if name.endswith("-lora"):
+        return LORA_STRATEGIES
+    return BASE_STRATEGIES
+
+
+def build_roster():
+    """[(client, allowed_strategies)] in all_clients() order."""
+    return [(c, strategies_for(c.name)) for c in all_clients()]
+
+
+def resolve_model(roster, arg):
+    """Map a --model value to a client. Accepts the full name ('ollama:qwen2.5:3b')
+    or the bare name the old flag used ('qwen2.5:3b', 'gpt-4o-mini')."""
+    for client, _ in roster:
+        if client.name == arg:
+            return client
+    for client, _ in roster:
+        bare = client.name.split(":", 1)[1] if ":" in client.name else client.name
+        if bare == arg:
+            return client
+    return None
+
+
+def _fmt_rung(name):
+    if name.startswith("classifier:"):
+        return "rung 4"
+    if name.endswith("-lora"):
+        return "rung 3"
+    return "rung 1/2"
+
+
+def choose_client(roster):
+    print("\nSelect model:")
+    for i, (client, strats) in enumerate(roster, 1):
+        only = f"  [{strats[0]} only]" if len(strats) == 1 else ""
+        print(f"  {i}. {client.name:26} {_fmt_rung(client.name):9}{only}")
+    while True:
+        raw = input(f"Enter 1-{len(roster)}: ").strip()
+        if raw.isdigit() and 1 <= int(raw) <= len(roster):
+            return roster[int(raw) - 1]
+        print(f"  Please type a number from 1 to {len(roster)}.")
+
+
+def choose_strategy(client, strats):
+    # One option means there is nothing to ask. Skip the prompt entirely.
+    if len(strats) == 1:
+        print(f"\nStrategy: {strats[0]}  (only strategy {client.name} supports)")
+        return strats[0]
+    print(f"\nSelect strategy for {client.name}:")
+    for i, s in enumerate(strats, 1):
+        note = "  (needs examples; loaded automatically)" if s in NEEDS_EXAMPLES else ""
+        print(f"  {i}. {s}{note}")
+    while True:
+        raw = input(f"Enter 1-{len(strats)}: ").strip()
+        if raw.isdigit() and 1 <= int(raw) <= len(strats):
+            return strats[int(raw) - 1]
+        print(f"  Please type a number from 1 to {len(strats)}.")
 
 
 # ---------- input mode selection ----------
@@ -135,21 +242,76 @@ def get_voice_command(asr, device, sr):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="gpt-4o-mini")
-    ap.add_argument("--strategy", default="zero_shot")
+    ap.add_argument("--model", default=None,
+                    help="client name, full ('ollama:qwen2.5:3b') or bare "
+                         "('qwen2.5:3b'). Omit to pick from the menu.")
+    ap.add_argument("--strategy", default=None,
+                    help="must be legal for the chosen model; see --list")
+    ap.add_argument("--list", action="store_true",
+                    help="print the model/strategy table and exit")
     ap.add_argument("--schema", default="auto", choices=["auto", "v1", "v2"],
                     help="auto = v2 when the grid loaded, else v1")
     args = ap.parse_args()
 
+    roster = build_roster()
+
+    if args.list:
+        print("\nmodel                      rung       strategies")
+        for client, strats in roster:
+            print(f"{client.name:26} {_fmt_rung(client.name):10} {', '.join(strats)}")
+        return
+
+    # --- flags: resolve and VALIDATE against the same table the menu uses ---
+    client = strategy = None
+    if args.model is not None:
+        client = resolve_model(roster, args.model)
+        if client is None:
+            names = "\n  ".join(c.name for c, _ in roster)
+            sys.exit(f"unknown --model {args.model!r}. Available:\n  {names}")
+    if args.strategy is not None:
+        if client is None:
+            sys.exit("--strategy requires --model (a strategy is only legal "
+                     "relative to a model). Use --list to see the pairs.")
+        allowed = strategies_for(client.name)
+        if args.strategy not in allowed:
+            sys.exit(
+                f"--strategy {args.strategy!r} is not valid for {client.name}.\n"
+                f"  {client.name} supports: {', '.join(allowed)}\n"
+                f"  (rung-3 LoRA models were trained and measured on zero_shot "
+                f"only; the rung-4 classifier has no prompt at all.)")
+        strategy = args.strategy
+
     mode = choose_mode()
-    client = make_client(args.model)
-    strategy = args.strategy
-    examples = None   # few_shot examples: data/seen*.jsonl ONLY (seal rule). Wired later.
+    if client is None:
+        client, allowed = choose_client(roster)
+    else:
+        allowed = strategies_for(client.name)
+        print(f"\nModel: {client.name}  (from --model)")
+    if strategy is None:
+        strategy = choose_strategy(client, allowed)
+
+    # few_shot/rag need in-context examples. build_prompt RAISES without them,
+    # which run_once turns into a prompt_error and the arm never moves -- this
+    # file previously hardcoded `examples = None` with a "wired later" note, so
+    # both strategies were silently dead. Exemplars come from seen_v2 ONLY
+    # (never held_out): the same split bench/dataset.py gives the harness.
+    examples = None
+    retriever = None
+    if strategy == "few_shot":
+        examples, _ = load_seen_split(k=3, seen_path=os.path.join(_ROOT, "data", "seen_v2.jsonl"))
+        print(f"few-shot exemplars: {len(examples)} from data/seen_v2.jsonl")
+    elif strategy == "rag":
+        from llm.retrieve import Retriever
+        print("building retriever (once; ~2-3 s model load)...")
+        retriever = Retriever(quiet=True)
+        print(f"retrieval corpus: {retriever.corpus_path} ({len(retriever.rows)} rows)")
 
     # --- BUILD SIM VIEWER FIRST (belt-and-braces main-thread measure) ---
     # Primary macOS fix is running under plain `python` (see module docstring).
     # Building the backend before Whisper/sounddevice is an extra safeguard and
     # is order-independent on Windows.
+    FullGraspBackend, HAS_GRID, helpers = load_sim()
+    drive, describe, print_legend, draw_box_markers = helpers
     root = _ROOT
     if args.schema == "auto":
         name = "schema_v2.json" if HAS_GRID else "schema.json"
@@ -199,8 +361,15 @@ def main():
                     continue
 
             # --- STAGE 2: LLM -> schema (raw text; identical both modes) ---
+            # rag selects its examples PER COMMAND; few_shot reuses the fixed
+            # exemplars loaded once above. Everything downstream is unchanged.
+            turn_examples = examples
+            if retriever is not None:
+                res = retriever.retrieve(command, k=3)
+                turn_examples = res.examples
+                print(f"  retrieved:     {res.ids}  ({res.latency_s*1000:.0f} ms)")
             t0 = time.perf_counter()
-            r = run_once(command, client, strategy, schema, examples=examples)
+            r = run_once(command, client, strategy, schema, examples=turn_examples)
             llm_ms = (time.perf_counter() - t0) * 1000
             print(f"  understood as: {r.obj}  ({'valid' if r.ok else 'FAILED at ' + r.stage})")
 
