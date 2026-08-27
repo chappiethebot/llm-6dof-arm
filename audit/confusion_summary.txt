@@ -1,0 +1,98 @@
+
+====================================================================================================
+classifier:distilbert (rung 4)
+====================================================================================================
+rows: 1,085   validated: 1,085   EXCLUDED (stage != validated): 0 (0.0%)
+location-bearing rows used: 840 | verb rows: 1,085 | target rows: 765
+  -> audit/confusion_{location,verb,target}_classifierdistilbert.csv
+  location  head accuracy: 635/840 = 75.6%
+  verb      head accuracy: 1,015/1,085 = 93.5%
+  target    head accuracy: 735/765 = 96.1%
+
+-- Q1. COLLAPSE ONTO grid_B2 --
+   grid_B2 itself: 60/60 correct (100.0%)
+   OTHER symbols predicted as grid_B2: 0 rows
+
+-- Q2. ROW INVERSION (A<->C) --
+   upper/bottom     170/  360 =  47.2% A<->C inverted
+   neither            0/  180 =   0.0% A<->C inverted
+
+-- Q3. COLUMN INVERSION (1<->3) --
+   ALL                0/  540 =   0.0% col 1<->3 swapped
+   row A              0/  180 =   0.0% col 1<->3 swapped
+   row B              0/  180 =   0.0% col 1<->3 swapped
+   row C              0/  180 =   0.0% col 1<->3 swapped
+
+-- Q4. OTHER CONFUSION PAIRS > 5% OF THE TRUTH SYMBOL'S ROWS --
+   grid_A3              -> grid_C3                 60 = 100.0% of 60  [Q2 row inversion]
+   grid_A1              -> grid_C1                 50 =  83.3% of 60  [Q2 row inversion]
+   grid_A2              -> grid_C2                 30 =  50.0% of 60  [Q2 row inversion]
+   grid_C2              -> grid_B1                 25 =  41.7% of 60
+   grid_C2              -> grid_A2                 20 =  33.3% of 60  [Q2 row inversion]
+   grid_C3              -> grid_A3                 10 =  16.7% of 60  [Q2 row inversion]
+   grid_C1              -> grid_B1                  5 =   8.3% of 60
+   grid_A2              -> grid_B3                  5 =   8.3% of 60
+
+====================================================================================================
+rung-1 pooled (20 cells, 5 models x 4 strategies)
+====================================================================================================
+rows: 21,700   validated: 13,059   EXCLUDED (stage != validated): 8,641 (39.8%)
+  excluded by stage: {'schema_failed': 7657, 'extract_failed': 984}
+location-bearing rows used: 10,036 | verb rows: 13,059 | target rows: 9,241
+  -> audit/confusion_{location,verb,target}_rung-1.csv
+  location  head accuracy: 6,535/10,036 = 65.1%
+  verb      head accuracy: 10,490/13,059 = 80.3%
+  target    head accuracy: 7,980/9,241 = 86.4%
+
+-- Q1. COLLAPSE ONTO grid_B2 --
+   grid_B2 itself: 553/715 correct (77.3%)
+   OTHER symbols predicted as grid_B2: 871 rows
+     grid_C2                478  =  67.8% of its 705 rows
+     grid_A2                318  =  43.6% of its 729 rows
+     grid_B3                 35  =   4.8% of its 735 rows
+     grid_B1                 30  =   4.2% of its 719 rows
+     nearest_free_cell       10  =   1.3% of its 754 rows
+
+-- Q2. ROW INVERSION (A<->C) --
+   upper/bottom     622/ 4225 =  14.7% A<->C inverted
+   neither            0/ 1970 =   0.0% A<->C inverted
+
+-- Q3. COLUMN INVERSION (1<->3) --
+   ALL               75/ 6195 =   1.2% col 1<->3 swapped
+   row A              0/ 2138 =   0.0% col 1<->3 swapped
+   row B             50/ 1970 =   2.5% col 1<->3 swapped
+   row C             25/ 2087 =   1.2% col 1<->3 swapped
+
+-- Q4. OTHER CONFUSION PAIRS > 5% OF THE TRUTH SYMBOL'S ROWS --
+   grid_C2              -> grid_B2                478 =  67.8% of 705  [Q1 B2-collapse]
+   grid_A2              -> grid_B2                318 =  43.6% of 729  [Q1 B2-collapse]
+   grid_A3              -> grid_C3                292 =  38.9% of 750  [Q2 row inversion]
+   grid_B3              -> grid_C3                239 =  32.5% of 735
+   grid_C1              -> grid_A1                210 =  28.2% of 745  [Q2 row inversion]
+   grid_B1              -> grid_A1                202 =  28.1% of 719
+   nearest_free_cell    -> (absent)               210 =  27.9% of 754
+   nearest_free_cell    -> max_reach              205 =  27.2% of 754
+   grid_B3              -> grid_A3                 99 =  13.5% of 735
+   grid_C1              -> grid_B1                 95 =  12.8% of 745
+   grid_B1              -> grid_C1                 78 =  10.8% of 719
+   grid_B2              -> (absent)                67 =   9.4% of 715
+   grid_A3              -> grid_B3                 65 =   8.7% of 750
+   grid_A2              -> grid_A3                 55 =   7.5% of 729
+   max_reach            -> (absent)                56 =   7.4% of 755
+   grid_B2              -> grid_A2                 50 =   7.0% of 715
+   grid_B3              -> grid_C2                 50 =   6.8% of 735
+   grid_B1              -> grid_A2                 45 =   6.3% of 719
+   grid_C3              -> grid_B3                 40 =   5.6% of 715
+   grid_B3              -> (absent)                38 =   5.2% of 735
+
+
+====================================================================================================
+PER-MODEL: is each effect general or classifier-specific?
+====================================================================================================
+model                           n    ->B2      %  rowinv      %  colinv      %
+ollama:llama3.2:3b           2020     315   15.6     120    9.7       0    0.0
+ollama:qwen2.5:3b            3005     325   10.8     310   15.9      75    3.8
+openai:gpt-4o-mini           3326     206    6.2       2    0.1       0    0.0
+ollama:deepseek-r1:7b        1010      25    2.5     135   23.3       0    0.0
+classifier:distilbert         840       0    0.0     170   31.5       0    0.0
+ollama:qwen2.5:0.5b           675       0    0.0      55   14.9       0    0.0

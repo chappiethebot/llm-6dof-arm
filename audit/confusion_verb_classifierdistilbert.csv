@@ -1,0 +1,8 @@
+truth\pred (verb),pick_place,fetch,hold,move_to,inspect,stop,reject,(absent),(other),row_total
+pick_place,630,0,0,0,0,0,0,0,0,630
+fetch,0,20,5,0,0,0,20,0,0,45
+hold,0,0,25,0,5,0,10,0,0,40
+move_to,0,0,0,210,0,0,0,0,0,210
+inspect,0,0,0,0,50,0,0,0,0,50
+stop,5,0,0,0,0,45,0,0,0,50
+reject,5,0,15,5,0,0,35,0,0,60

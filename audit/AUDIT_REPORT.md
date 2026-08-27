@@ -1230,6 +1230,186 @@ and every input needed to build it is on disk.
 
 
 =====================================================================
+CONF — CONFUSION MATRICES (location, verb, target)
+=====================================================================
+
+Artifacts: audit/confusion_{location,verb,target}_{classifierdistilbert,rung-1}.csv
+           audit/confusion_summary.txt      Script: audit/confusion.py
+
+EXCLUSIONS. Rows with stage != "validated" carry no trustworthy predicted
+symbol and are dropped:
+  classifier   1,085 rows ->     0 excluded (0.0%)   -- it never fails validation
+  rung-1 pooled 21,700 rows -> 8,641 excluded (39.8%)
+                               schema_failed 7,657 | extract_failed 984
+  usable location-bearing rows: 840 (classifier) | 10,036 (rung-1)
+
+HEAD ACCURACY
+  head        classifier          rung-1 pooled
+  location    635/840   75.6%     6,535/10,036  65.1%
+  verb      1,015/1,085 93.5%    10,490/13,059  80.3%
+  target      735/765   96.1%     7,980/9,241   86.4%
+
+CONF-1  [Certain]  THE grid_B2 COLLAPSE IS REAL, LARGE, AND ABSENT FROM
+                   THE CLASSIFIER
+
+rung-1 pooled: 871 rows predicted grid_B2 when the truth was something else.
+  grid_C2 -> grid_B2   478  = 67.8% of grid_C2's 705 rows
+  grid_A2 -> grid_B2   318  = 43.6% of grid_A2's 729 rows
+  grid_B3 -> grid_B2    35  =  4.8%
+  grid_B1 -> grid_B2    30  =  4.2%
+  nearest_free_cell     10  =  1.3%
+grid_B2 itself is 77.3% correct (553/715).
+
+The collapse is confined to COLUMN 2 -- the two other column-2 cells account
+for 796 of the 871 rows (91.4%). This is the documented middle/centre legend
+collision: "middle" appears both in the column-2 label and in the phrase for
+the centre cell, and the models resolve it to the centre.
+
+CLASSIFIER: ZERO. Not one of its 840 location rows collapses onto grid_B2, and
+grid_B2 is 60/60 correct. The effect is entirely a prompting-path artifact --
+the classifier has no legend to be confused by, which is the mechanism made
+visible. Per-model: llama3.2 15.6%, qwen2.5:3b 10.8%, gpt-4o-mini 6.2%,
+deepseek 2.5%, qwen2.5:0.5b 0.0%, classifier 0.0%.
+
+CONF-2  [Certain]  ROW INVERSION EXISTS — BUT THE REQUESTED far/near VS
+                   upper/bottom SPLIT CANNOT BE COMPUTED ON THIS DATASET
+
+held_out_v3 contains ZERO far/near commands. Phrasing inventory:
+  seen_v2       n=290   far=38  near=37  upper=0   bottom=0
+  held_out_v3   n=217   far=0   near=0   upper=36  bottom=36
+  held_out_v2   n=132   far=0   near=0   upper=36  bottom=36
+
+The train and evaluation splits are phrasing-disjoint on the row axis BY
+DESIGN -- that disjointness is the generalisation test. So the documented
+finding ("far/near triggers row inversion; upper/bottom does not") was
+measured on a different phrasing population and cannot be reproduced or
+refuted here. Any inversion measured on held_out_v3 is an UPPER/BOTTOM effect.
+
+And it is substantial, which is the uncomfortable part: the documented claim
+is that upper/bottom does NOT invert.
+  classifier      170/360  = 47.2% of grid->grid pairs are A<->C inverted
+  rung-1 pooled   622/4225 = 14.7%
+  (rows with neither phrasing: 0.0% in both -- the effect is phrasing-bound)
+
+Per-model A<->C inversion rate: classifier 31.5%, deepseek 23.3%,
+qwen2.5:3b 15.9%, qwen2.5:0.5b 14.9%, llama3.2 9.7%, gpt-4o-mini 0.1%.
+GENERAL, not classifier-specific -- but the classifier is the worst offender
+and gpt-4o-mini is essentially immune (2 rows in 3,326).
+
+Row A is the FAR row from the robot base (sim/workspace.py: row_A_x .. row_E_x,
+"far -> near"). So "upper" must map to the row furthest from the robot, and the
+failing models map it to the nearest. This is a viewpoint ambiguity —
+table-top-down versus robot-egocentric — not a legend collision.
+
+CONF-3  [Certain]  COLUMN INVERSION (1<->3) IS NOT SYSTEMATIC
+
+  classifier      0/540  = 0.0%   (all rows, and 0.0% in every row A/B/C)
+  rung-1 pooled   75 rows total, entirely from qwen2.5:3b (3.8% of its pairs)
+  every other model: 0.0%
+
+The live observation of grid_C1 for "right bottom corner" is NOT column
+inversion. grid_C1 IS the bottom-left... the classifier's error there is the
+ROW/column pairing, and its dominant off-diagonal is grid_C2 -> grid_B1
+(41.7%), a diagonal move, not a mirror. Left/right confusion is not a
+systematic effect in this data and no row shows it preferentially.
+
+CONF-4  [Certain]  PAIRS ABOVE 5% NOT ALREADY NAMED
+
+CLASSIFIER (each denominator is 60 rows):
+  grid_A3 -> grid_C3   60  100.0%   row inversion, TOTAL failure of this symbol
+  grid_A1 -> grid_C1   50   83.3%   row inversion
+  grid_A2 -> grid_C2   30   50.0%   row inversion
+  grid_C2 -> grid_B1   25   41.7%   NOT previously named -- diagonal
+  grid_C2 -> grid_A2   20   33.3%   row inversion
+  grid_C3 -> grid_A3   10   16.7%   row inversion
+  grid_C1 -> grid_B1    5    8.3%   NOT previously named
+  grid_A2 -> grid_B3    5    8.3%   NOT previously named
+
+RUNG-1 POOLED, not already named:
+  grid_B3 -> grid_C3   239  32.5%   row drift toward C, no mirror
+  grid_B1 -> grid_A1   202  28.1%   row drift toward A
+  nearest_free_cell -> (absent)  210  27.9%   the runtime symbol is DROPPED
+  nearest_free_cell -> max_reach 205  27.2%   the two runtime symbols conflate
+  grid_B3 -> grid_A3    99  13.5%
+  grid_C1 -> grid_B1    95  12.8%
+  grid_B1 -> grid_C1    78  10.8%
+  grid_B2 -> (absent)   67   9.4%
+  grid_A3 -> grid_B3    65   8.7%
+  grid_A2 -> grid_A3    55   7.5%
+  max_reach -> (absent) 56   7.4%
+  grid_B2 -> grid_A2    50   7.0%
+  grid_B3 -> grid_C2    50   6.8%
+  grid_B1 -> grid_A2    45   6.3%
+  grid_C3 -> grid_B3    40   5.6%
+  grid_B3 -> (absent)   38   5.2%
+
+THE UNNAMED FINDING THAT MATTERS MOST: the two RUNTIME SYMBOLS.
+nearest_free_cell is dropped entirely on 27.9% of its rows and confused with
+max_reach on a further 27.2% -- so 55.1% of its rows fail in one of two ways,
+neither of which is a grid-geometry error. These are the symbols the model
+cannot resolve from the prompt by construction (they depend on scene state at
+execution time), and they are the single worst-served part of the label space.
+Worth its own sentence in the results chapter.
+
+
+=====================================================================
+FIG — ACCURACY AND COST FIGURES (all 28 cells)
+=====================================================================
+
+Artifacts: audit/figures/fig{1..4}.{png,pdf} + audit/figures/cell_stats.csv
+Script: audit/figures_v3.py
+
+WRITTEN FRESH, and bench/figures.py is NOT broken -- correcting an earlier
+claim in this report (F4). It renders all five of its figures without error;
+it simply defaults to the V2 files (results_grid_v2_scored.csv /
+results_heldout_v2_scored.csv, 20,000 + 13,200 rows). Re-running it reproduced
+its committed outputs byte-identically. It was left untouched because it is
+tracked with committed PNG/PDF outputs, produces a different figure set, and
+has no notion of the per-model effective-n correction these figures need.
+
+INTERVALS. Bootstrap (2,000 resamples, seed 20260827) over command_id
+CLUSTERS rather than rows. Each cell is 217 commands x 5 repeats; for all seven
+local models the repeats are byte-identical, so effective n is 217 and a naive
+sqrt(1085) interval would understate the error by sqrt(5) = 2.24x. gpt-4o-mini
+is the exception (77.1% identical), and clustering handles both without a
+special case: a deterministic cluster contributes zero within-cluster variance.
+Measured median CI half-width across the 28 cells: 5.8 points; widest 6.7
+points near p=0.5, which matches the +-6.6 predicted analytically.
+
+FIG-1  fig1_strict_accuracy_clustered_ci
+  All 28 cells sorted, with clustered 95% intervals, marker by rung.
+
+FIG-2  fig2_grid_vs_container
+  Grid (n=181) against container (n=36) per cell. Container intervals drawn at
+  +-16 points and CLIPPED to [0,1], since accuracy is a bounded proportion and
+  an unclipped bar runs off the axis. Five cells sit at exactly 1.000 on
+  containers. Reinforces B9: two tasks, not two difficulties.
+
+FIG-3  fig3_cost_accuracy_pareto  <-- HEADLINE
+  p50 latency (log x, rag includes retrieval) against strict accuracy.
+  THE FRONTIER IS THREE POINTS, and no cell is both faster and more accurate
+  than any of them:
+
+    cls:distilbert / classifier    acc=0.747   p50=0.019 s   rung 4
+    gpt-4o-mini / role_based       acc=0.855   p50=0.699 s   rung 1
+    gpt-4o-mini / rag              acc=0.924   p50=0.804 s   rung 2
+
+  Read as a frontier, not a winner. The classifier buys 0.747 accuracy at
+  1/37th the latency of the nearest more-accurate cell; gpt-4o-mini/rag buys
+  the top accuracy in the study at 42x the classifier's latency. Everything
+  else in the grid is dominated. Note that all three LOCAL generative rungs are
+  strictly dominated -- including both LoRA cells -- which is the finding the
+  cost curve was built to expose.
+
+FIG-4  fig4_strict_vs_normalized_gap
+  normalized minus strict per cell. deepseek-r1 occupies the top of this
+  ranking: its nested-action-object emissions are semantically right and
+  structurally rejected, which is exactly what the dual-axis scorer exists to
+  separate (see B7-h and the live demo pass, where deepseek failed both
+  multi-slot commands with bad_action_type:dict).
+
+
+=====================================================================
 FINAL TRIAGE TABLE
 =====================================================================
 
