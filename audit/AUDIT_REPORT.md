@@ -1410,6 +1410,221 @@ FIG-4  fig4_strict_vs_normalized_gap
 
 
 =====================================================================
+FIGV2 — V2-STYLE FIGURES RENDERED ON V3, AND THE ZERO-CELL EXPLANATION
+=====================================================================
+
+Artifacts: audit/figures/v3_style/fig{1..4}.{png,pdf} + v3_style_numbers.csv
+Script:    audit/figures_v3_style.py   (bench/figures.py NOT modified)
+
+WHY FLAGS ALONE WOULD NOT WORK — five blockers in bench/figures.py:
+  1. load() takes ONE path; the V3 measurement is four files and --seen/--held
+     cannot union them.
+  2. Every figure builds sets = [("Seen", seen)] + ..., so the first panel is
+     always LABELLED "Seen". V3 is held-out only; the label would be false.
+  3. fig_confusion renders one model (--model); eight are wanted.
+  4. Labels say "strict accuracy", which B1-a established is not exact match.
+  5. is_ambiguous() classifies a whole CELL from the FIRST matching row.
+     On held_out_v3 that is lossy: grid_B1 and grid_B3 each hold 9
+     legend-token commands and 3 clean ones, so a per-cell label misassigns 3
+     rows in each. The V3 version classifies PER COMMAND.
+MODELS is also hardcoded to 5; models_in() would append the other three in
+arbitrary order. The V3 version orders all eight explicitly.
+
+FIGV2-1  [Certain]  WHICH V2 FINDINGS REPRODUCE ON V3
+
+Zero cells (a grid cell where the model is correct on none of its rows),
+held-out in both cases:
+
+  model            V2 zero cells              V3 zero cells        verdict
+  gpt-4o-mini      (none)                     (none)               REPRODUCES
+  llama3.2:3b      A3                         A3                   REPRODUCES exactly
+  qwen2.5:3b       A3, B1, B3                 B1                   PARTLY - A3 and B3 recover
+  qwen2.5:0.5b     B1, B2, B3, C1, C2         B2, C2               MOSTLY NOT - the whole-row-B
+                                                                   collapse does not reproduce
+  deepseek-r1:7b   (none)                     (none)               REPRODUCES
+  qwen2.5-0.5b-lora    n/a                    A1,A2,A3,C1,C2,C3    NEW - two whole rows
+  qwen2.5-3b-lora      n/a                    A2,A3,C1,C2,C3       NEW - one whole row + A2,A3
+  classifier           n/a                    A3                   NEW
+
+SUPERSEDED BY FIGV2-6 -- see the corrected table there. The judgement below
+tests exact zeros against 12-command cells and is too strict.
+
+The single most robust result across both datasets is llama3.2's A3 zero.
+The most dramatic V2 result -- qwen2.5:0.5b scoring 0 across the entire
+middle row -- does NOT survive: on V3 that row is 2%/0%/2% rather than
+0%/0%/0%. Same shape, marginally above zero, so it is not a whole-row zero
+any more.
+
+FIGV2-2  [Certain]  THE ZERO ROWS AND COLUMNS ARE MARGINAL PREDICTION
+                    COLLAPSE, NOT A SPATIAL EFFECT
+
+This is the explanation the V2 figure never carried. Truth is uniform across
+rows -- exactly one third of grid commands target each of A, B and C. What
+each model actually PREDICTS is not:
+
+  model                predicts A   predicts B   predicts C   no location
+  --- V2 held-out ---
+  gpt-4o-mini              37.0%        32.9%        25.2%         4.9%
+  llama3.2:3b              17.5%        47.5%        15.1%        19.9%
+  qwen2.5:3b               21.2%        29.2%        48.2%         1.4%
+  qwen2.5:0.5b             36.3%         0.9%        10.9%        51.9%
+  deepseek-r1:7b           29.0%        16.2%        14.4%        40.4%
+  --- V3 held-out ---
+  gpt-4o-mini              36.2%        33.7%        26.4%         3.7%
+  llama3.2:3b              18.0%        46.9%        18.0%        17.0%
+  qwen2.5:3b               24.5%        28.0%        46.2%         1.3%
+  qwen2.5:0.5b             36.2%         1.9%        15.0%        46.9%
+  deepseek-r1:7b           32.5%        21.5%        13.7%        32.3%
+  qwen2.5-0.5b-lora         0.0%        90.0%         0.0%        10.0%
+  qwen2.5-3b-lora           7.4%        92.6%         0.0%         0.0%
+  classifier:distilbert    12.1%        39.9%        48.1%         0.0%
+
+A zero ROW in the heatmap means the model essentially never EMITS that row.
+It is a degenerate marginal, not a failure of spatial reasoning on those
+particular cells: the model would score zero there regardless of what the
+command said. Two opposite versions of the same pathology:
+
+  qwen2.5:0.5b emits row B on 0.9% (V2) / 1.9% (V3) of grid commands, so
+  row B is zero or near-zero in both. It is not confusing B with something;
+  B is barely in its output distribution at all. Note also that it produces
+  NO parseable location on 46.9-51.9% of grid rows, which is the larger
+  problem and is invisible in a heatmap of accuracy.
+
+  BOTH LoRA MODELS COLLAPSE ONTO ROW B: 90.0% and 92.6% of grid predictions,
+  against a 33.3% base rate. Rows A and C are therefore zero almost by
+  construction. This is the strongest single effect in either dataset and it
+  appears only in the fine-tuned rung -- the adapters learned a row prior
+  rather than a row mapping. Worth stating plainly in the results chapter:
+  the rung-3 models did not learn to place objects, they learned to answer
+  "middle".
+
+  qwen2.5:3b leans the other way, emitting row C on 46-48%, which is why its
+  A-row and B-row cells are the ones that go dark.
+
+CONSEQUENCE FOR THE THESIS: the phrase-legend collision (CONF-1) is a real
+but comparatively small effect -- 871 rows pooled. The marginal collapse is
+larger and more basic, and the two must not be conflated. A reader shown only
+the heatmap will read the dark cells as "this model cannot reach the far left
+corner", when the true statement is "this model almost never says A".
+
+FIGV2-4  [Certain]  THE LoRA ROW-B COLLAPSE EXPLAINED — IT IS A FINE-TUNING
+                    FINDING, NOT A DATASET FINDING
+
+Script: audit/lora_collapse.py
+
+DATASET ACCOUNT: REFUTED. train_v2's grid rows are close to balanced, and row
+B is not the most common:
+
+  train_v2.jsonl     grid=85    row A 29.4%   row B 34.1%   row C 36.5%
+  dev_v2.jsonl       grid=21    row A 42.9%   row B 33.3%   row C 23.8%
+  held_out_v3.jsonl  grid=108   row A 33.3%   row B 33.3%   row C 33.3%
+
+Row C is the most frequent training row (36.5%). If the adapters had learned
+the training frequency they would over-emit C. They emit B on 90.0% and 92.6%.
+The collapse is NOT learned frequency.
+
+COPY-ELSE-DEFAULT ACCOUNT: REFUTED, on two independent grounds.
+  (a) The 0.5B LoRA does not copy. On container commands, where the answer IS
+      verbatim in the text, it emits NO location on 155 of 180 rows (86%) and
+      scores 0.139. A copying rule would score near 1.000 there.
+  (b) Both LoRA models handle the RUNTIME symbols well -- max_reach and
+      nearest_free_cell never appear verbatim in any command, yet the 0.5B
+      scores 0.792 and the 3B scores 0.917 on them, far above their grid
+      accuracy. There is no "copy when present, else default" rule that
+      predicts this.
+
+WHAT THE DATA ACTUALLY SUPPORTS [Certain]: the adapters learned the COLUMN
+axis and did not learn the ROW axis. Scoring the two axes separately on grid
+commands:
+
+  model                    row correct   column correct   both
+  qwen2.5-0.5b-lora            30.6%          90.0%      30.6%
+  qwen2.5-3b-lora              40.8%          86.1%      40.8%
+  classifier:distilbert        62.2%          94.4%      62.2%
+  qwen2.5:3b (prompted)        41.2%          82.2%      38.6%
+  gpt-4o-mini (prompted)       82.1%          96.3%      82.1%
+  (chance on either axis = 33.3%)
+
+The LoRA models are at or barely above CHANCE on rows while near-ceiling on
+columns. Because a legal symbol requires some row, they emit the middle one
+constantly -- and row accuracy then equals the base rate of B, which is exactly
+what 30.6% is. They are not collapsing onto one CELL: the 0.5B spreads its
+predictions across B1/B2/B3 at 28.8/33.4/27.8%, tracking the column it
+correctly identified.
+
+  MECHANISM, stated plainly: the rung-3 adapters learned left/right and did
+  not learn far/near. They answer the column question and guess the row.
+
+GENERALITY [Certain]: the row/column asymmetry is present in EVERY model, not
+only the fine-tuned ones -- gpt-4o-mini is 96.3% on columns against 82.1% on
+rows. It is catastrophic only in the LoRA rung. This ties directly to CONF-2:
+columns are lateral (left/right is unambiguous in any frame) while rows are
+depth (far/near versus upper/bottom is frame-dependent), and the training and
+evaluation splits use DIFFERENT row vocabulary (seen_v2 far/near, held_out_v3
+upper/bottom) while sharing left/right. The adapters were fine-tuned on row
+words they never see at evaluation, and the column words are identical in both.
+That is the most economical explanation of why fine-tuning helped the column
+axis and actively hurt the row axis.
+
+NOT GENERAL TO EVERYTHING TRAINED ON train_v2 [Certain]: the DistilBERT
+classifier trained on the same file does NOT collapse -- 12.1/39.9/48.1 across
+rows, and 62.2% row accuracy. Whatever happened is specific to the LoRA
+fine-tuning of a generative model, not to the training data.
+
+FIGV2-5  [Certain]  fig1 NOW REPORTS PARSE FAILURES PER PANEL
+
+Commands producing no parseable location were previously folded silently into
+the heatmap cells, so a dark cell conflated "chose the wrong place" with
+"produced nothing usable". Each panel title now carries the rate, in red above
+25%:
+
+  qwen2.5:0.5b 47%   deepseek-r1:7b 32%   llama3.2:3b 17%
+  qwen2.5-0.5b-lora 10%   gpt-4o-mini 4%   qwen2.5:3b 1%
+  qwen2.5-3b-lora 0%   classifier 0%
+
+Stated in the title rather than as a fourth heatmap column, which would have
+put two different quantities on one colour scale.
+
+FIGV2-6  [Certain]  CORRECTION TO THE REPRODUCTION TABLE (FIGV2-1)
+
+The earlier table judged reproduction on whether a cell was exactly zero. That
+is the wrong standard at this sample size. Each cell holds 12 DISTINCT
+COMMANDS (the ~240-300 rows per cell are 12 commands x repeats x strategies).
+At 0 hits in 12 commands the 95% Wilson upper bound is 24.3%; at 1 hit it is
+26.7%. Zero and "one command out of twelve" are statistically indistinguishable.
+
+  qwen2.5:0.5b, row B and the C1/C2 cells:
+    V2  B1 0/240  B2 0/240  B3 0/240  C1 0/240  C2 0/240   (all 0.0%)
+    V3  B1 5/300  B2 0/300  B3 5/300  C1 5/300  C2 0/300   (0.0-1.7%)
+  Five rows out of 300 is ONE command out of twelve, hit on all five repeats.
+
+CORRECTED VERDICT: qwen2.5:0.5b REPRODUCES. The model barely emits row B in
+either dataset (0.9% V2, 1.9% V3 of grid predictions) and the V2 whole-row
+zero was thresholding a near-zero marginal, not measuring a different
+phenomenon. The same correction applies to qwen2.5:3b, whose A3 and B3 cells
+moved from 0 to a similarly indistinguishable non-zero.
+
+  model              V2 zeros            V3 zeros        CORRECTED verdict
+  gpt-4o-mini        (none)              (none)          reproduces
+  llama3.2:3b        A3                  A3              reproduces exactly
+  qwen2.5:3b         A3,B1,B3            B1              reproduces (within noise)
+  qwen2.5:0.5b       B1,B2,B3,C1,C2      B2,C2           reproduces (within noise)
+  deepseek-r1:7b     (none)              (none)          reproduces
+  LoRA pair          n/a                 6 and 5 cells   new, not in V2
+  classifier         n/a                 A3              new, not in V2
+
+NO V2 FINDING FAILS TO REPRODUCE ON V3. The earlier "does not reproduce"
+entries were an artifact of testing exact zeros against 12-command cells.
+The right way to report any of these cells is the marginal (FIGV2-2), which is
+estimated from all 539-2,695 of a model's grid rows rather than 12 commands.
+
+FIGV2-3  [Certain]  fig4 renders correctly across the full range. The
+classifier's p50 is 0.019 s against deepseek-r1's maximum near 380 s -- about
+4.5 orders of magnitude. Log axis with limits pinned to [0.005, 400] keeps
+the classifier's bars visible instead of collapsing them onto the axis.
+
+
+=====================================================================
 FINAL TRIAGE TABLE
 =====================================================================
 
