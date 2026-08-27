@@ -1,0 +1,213 @@
+model,split,command,truth,pred,vocab,row_ok,col_ok,cell_ok,stage
+ollama:qwen2.5-0.5b-lora,train_v2,move to the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,navigate to the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,go to the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,go to the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,move to the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,move to the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,go to the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,navigate to the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,navigate to the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,go to the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,go to the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,navigate to the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,go to the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,go to the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,move to the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,navigate to the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,move to the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,move to the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,navigate to the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,move to the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,go to the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,move to the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the car and keep in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the bottle and keep in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the rubiks cube in the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the car in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the car and keep in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the bottle in the right side middle edge of the table?,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the car in the near side middle edge of the table?,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the bottle in the far side middle edge of the table?,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the car in the left side middle edge of the table?,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the car in the far side middle edge of the table?,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the bottle and keep in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the rubiks cube and keep in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the bottle and keep in the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the bottle in the left side middle edge of the table?,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the bottle and keep in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the rubiks cube and keep in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the rubiks cube and keep in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the car in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the rubiks cube in the near side middle edge of the table?,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the bottle in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the rubiks cube in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the bottle in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the rubiks cube in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the rubiks cube in the left side middle edge of the table?,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the rubiks cube in the right side middle edge of the table?,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the rubiks cube in the far side middle edge of the table?,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the bottle in the near side middle edge of the table?,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the car in the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the car and keep in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the rubiks cube in the near left side corner of the table?,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the car in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the rubiks cube and keep in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the bottle in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the rubiks cube in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the bottle in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the bottle in the far right side corner of the table?,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the rubiks cube in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the bottle in the far left corner of the table?,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the car and keep in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the car in the far right side corner of the table?,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the rubiks cube in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the bottle in the near left side corner of the table?,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the car in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the rubiks cube and keep in the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the rubiks cube and keep in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the rubiks cube in the center of the table?,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the bottle and keep in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the car in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the car in the near right side corner of the table?,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the rubiks cube in the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the rubiks cube in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the bottle and keep in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the rubiks cube in the near right side corner of the table?,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the rubiks cube in the far left corner of the table?,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the bottle and keep in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the car and keep in the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the bottle and keep in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the bottle in the center of the table?,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the car and keep in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,put the car in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,can you please keep the car in the center of the table?,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the rubiks cube and keep in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,train_v2,pick up the rubiks cube and keep in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,move to the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,navigate to the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,navigate to the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,navigate to the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,go to the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,put the car in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,put the bottle in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,can you please keep the car in the right side middle edge of the table?,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,pick up the rubiks cube and keep in the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,put the rubiks cube in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,pick up the car and keep in the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,pick up the car and keep in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,can you please keep the car in the near left side corner of the table?,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,put the bottle in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,can you please keep the bottle in the near right side corner of the table?,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,put the bottle in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,pick up the car and keep in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,can you please keep the rubiks cube in the far right side corner of the table?,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,pick up the bottle and keep in the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,can you please keep the car in the far left corner of the table?,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-0.5b-lora,dev_v2,put the car in the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,move to the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,navigate to the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,go to the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,go to the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,move to the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,move to the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,go to the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,navigate to the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,navigate to the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,go to the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,go to the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,navigate to the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,go to the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,go to the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,move to the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,navigate to the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,move to the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,move to the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,navigate to the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,move to the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,go to the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,move to the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the car and keep in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the bottle and keep in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the rubiks cube in the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the car in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the car and keep in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the bottle in the right side middle edge of the table?,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the car in the near side middle edge of the table?,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the bottle in the far side middle edge of the table?,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the car in the left side middle edge of the table?,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the car in the far side middle edge of the table?,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the bottle and keep in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the rubiks cube and keep in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the bottle and keep in the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the bottle in the left side middle edge of the table?,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the bottle and keep in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the rubiks cube and keep in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the rubiks cube and keep in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the car in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the rubiks cube in the near side middle edge of the table?,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the bottle in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the rubiks cube in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the bottle in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the rubiks cube in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the rubiks cube in the left side middle edge of the table?,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the rubiks cube in the right side middle edge of the table?,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the rubiks cube in the far side middle edge of the table?,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the bottle in the near side middle edge of the table?,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the car in the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the car and keep in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the rubiks cube in the near left side corner of the table?,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the car in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the rubiks cube and keep in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the bottle in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the rubiks cube in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the bottle in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the bottle in the far right side corner of the table?,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the rubiks cube in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the bottle in the far left corner of the table?,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the car and keep in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the car in the far right side corner of the table?,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the rubiks cube in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the bottle in the near left side corner of the table?,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the car in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the rubiks cube and keep in the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the rubiks cube and keep in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the rubiks cube in the center of the table?,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the bottle and keep in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the car in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the car in the near right side corner of the table?,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the rubiks cube in the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the rubiks cube in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the bottle and keep in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the rubiks cube in the near right side corner of the table?,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the rubiks cube in the far left corner of the table?,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the bottle and keep in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the car and keep in the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the bottle and keep in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the bottle in the center of the table?,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the car and keep in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,put the car in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,can you please keep the car in the center of the table?,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the rubiks cube and keep in the near left side corner of the table,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,train_v2,pick up the rubiks cube and keep in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,move to the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,navigate to the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,navigate to the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,navigate to the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,go to the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,put the car in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,put the bottle in the left side middle edge of the table,grid_B1,grid_B1,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,can you please keep the car in the right side middle edge of the table?,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,pick up the rubiks cube and keep in the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,put the rubiks cube in the right side middle edge of the table,grid_B3,grid_B3,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,pick up the car and keep in the far side middle edge of the table,grid_A2,grid_A2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,pick up the car and keep in the near side middle edge of the table,grid_C2,grid_C2,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,can you please keep the car in the near left side corner of the table?,grid_C1,grid_C1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,put the bottle in the far right side corner of the table,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,can you please keep the bottle in the near right side corner of the table?,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,put the bottle in the center of the table,grid_B2,grid_B2,other,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,pick up the car and keep in the near right side corner of the table,grid_C3,grid_C3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,can you please keep the rubiks cube in the far right side corner of the table?,grid_A3,grid_A3,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,pick up the bottle and keep in the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,can you please keep the car in the far left corner of the table?,grid_A1,grid_A1,far/near,1,1,1,validated
+ollama:qwen2.5-3b-lora,dev_v2,put the car in the far left corner of the table,grid_A1,grid_A1,far/near,1,1,1,validated

@@ -1555,6 +1555,60 @@ correctly identified.
   MECHANISM, stated plainly: the rung-3 adapters learned left/right and did
   not learn far/near. They answer the column question and guess the row.
 
+FIGV2-4b  [Certain]  THE VOCABULARY EXPLANATION IS NOW DEMONSTRATED, NOT
+                     ARGUED. Upgraded from [Likely].
+
+Script: audit/lora_vocab_test.py   Data: audit/lora_vocab_test.csv
+
+The alignment above was an inference. The data contains a natural experiment
+that settles it, on non-sealed splits:
+
+  train_v2      85 grid rows, 56 far/near, 0 upper/bottom   TRAINED ON
+  dev_v2        21 grid rows, 14 far/near, 0 upper/bottom   NOT trained on
+  held_out_v3  108 grid rows,  0 far/near, 72 upper/bottom  NOT trained on
+
+dev_v2 is the decisive one: SAME row vocabulary as training, never trained on.
+A jump there is a vocabulary effect and cannot be memorisation.
+
+Both adapters, zero_shot, same run_once path:
+
+  model               split         row vocab       n     row     col    cell
+  qwen2.5-0.5b-lora   train_v2      far/near       56   100.0%  100.0%  100.0%
+  qwen2.5-0.5b-lora   dev_v2        far/near       14   100.0%  100.0%  100.0%
+  qwen2.5-0.5b-lora   dev_v2        ALL            21   100.0%  100.0%  100.0%
+  qwen2.5-0.5b-lora   held_out_v3   upper/bottom  539    30.6%   90.0%   30.6%
+
+  qwen2.5-3b-lora     train_v2      far/near       56   100.0%  100.0%  100.0%
+  qwen2.5-3b-lora     dev_v2        far/near       14   100.0%  100.0%  100.0%
+  qwen2.5-3b-lora     dev_v2        ALL            21   100.0%  100.0%  100.0%
+  qwen2.5-3b-lora     held_out_v3   upper/bottom  539    40.8%   86.1%   40.8%
+
+Row accuracy goes from 100.0% to 30.6% / 40.8% when, and only when, the row
+vocabulary changes. Column accuracy barely moves (100% -> 86-90%), and the
+column words are the ones that are shared between splits.
+
+The predicted-row marginal confirms it from the other direction. On train_v2
+and dev_v2 the adapters' predicted row distribution MATCHES the truth
+distribution exactly -- 29.4/34.1/36.5 and 42.9/33.3/23.8 -- with zero
+parse failures. There is no collapse onto B at all on those splits. The 90%
+B-collapse exists only under the unseen row vocabulary.
+
+CONCLUSION [Certain]: the rung-3 adapters did not fail to learn the row axis.
+They learned it perfectly for the words they were trained on and have no
+mapping for the words they were not. The collapse onto the middle row is what
+the model does when the row term is out of vocabulary: it keeps the column,
+which it can still read, and defaults the row.
+
+TWO CAVEATS, both stated rather than buried:
+  - dev_v2 is n=21. 21/21 gives a 95% Wilson lower bound near 84.5%, so the
+    contrast against 30.6% is overwhelming, but the point estimate of 100% is
+    not precise.
+  - dev_v2 was used for CHECKPOINT SELECTION (earliest-plateau rule, see F2),
+    so it is not fully independent -- it influenced which checkpoint exists.
+    It was never trained on, which is what this test requires, but 100% on it
+    partly reflects that selection. train_v2 at 100% is the memorisation
+    ceiling and carries no information beyond that.
+
 GENERALITY [Certain]: the row/column asymmetry is present in EVERY model, not
 only the fine-tuned ones -- gpt-4o-mini is 96.3% on columns against 82.1% on
 rows. It is catastrophic only in the LoRA rung. This ties directly to CONF-2:
@@ -1566,10 +1620,29 @@ words they never see at evaluation, and the column words are identical in both.
 That is the most economical explanation of why fine-tuning helped the column
 axis and actively hurt the row axis.
 
-NOT GENERAL TO EVERYTHING TRAINED ON train_v2 [Certain]: the DistilBERT
-classifier trained on the same file does NOT collapse -- 12.1/39.9/48.1 across
-rows, and 62.2% row accuracy. Whatever happened is specific to the LoRA
-fine-tuning of a generative model, not to the training data.
+THE CONTROL THAT MAKES THE ARGUMENT WORK [Certain]: the DistilBERT classifier
+was trained on the SAME train_v2 file, with the SAME far/near row vocabulary,
+and evaluated on the SAME upper/bottom held-out set. It does not collapse:
+12.1/39.9/48.1 across predicted rows, and 62.2% row accuracy against the
+adapters' 30.6%.
+
+Same data in, same vocabulary shift at evaluation, different architecture,
+different outcome. That single comparison rules out the training data as the
+cause and isolates the failure to the LoRA fine-tuning of a generative model.
+It is the strongest structural evidence in the study, and it should be
+presented as a control rather than as an incidental observation: without it
+the row collapse is a story about train_v2, and with it the row collapse is a
+story about what LoRA fine-tuning did to a model that already had the concept.
+
+HOW TO FRAME THIS IN THE CHAPTER [Certain]: rows are intrinsically harder than
+columns in this task for EVERY model -- gpt-4o-mini is 96.3% on columns and
+82.1% on rows without any fine-tuning involved. Plausibly [Likely] because
+left/right is egocentric and reads the same from any viewpoint, while
+near/far is allocentric and depends on where the reader stands relative to
+the table. Fine-tuning on mismatched row vocabulary then turns a hard axis
+into a failed one. Present it in that order -- a task property first, a
+fine-tuning failure on top -- rather than as "LoRA broke the model". The
+former is a result about the task and generalises; the latter is a bug report.
 
 FIGV2-5  [Certain]  fig1 NOW REPORTS PARSE FAILURES PER PANEL
 
