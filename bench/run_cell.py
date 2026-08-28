@@ -51,6 +51,26 @@ from pathlib import Path
 
 from llm.pipeline import run_once, load_schema
 from llm.prompts import ALL_STRATEGIES
+
+
+def apply_legend(version: str) -> str:
+    """Select the prompt legend for this run. Returns the text now in force.
+
+    Implemented as a one-line rebinding of llm.prompts._grid_legend rather than
+    a new argument threaded through run_once/build_prompt. _schema_spec() looks
+    that name up as a module global at CALL time, so rebinding it reaches every
+    downstream build_prompt with no change to the measurement path -- which
+    matters because llm/prompts.py and llm/pipeline.py are the provenance of the
+    30,380 measured rows and must not be edited.
+
+    v3 is the default and is a no-op, so an unflagged run is byte-identical to
+    what produced those rows.
+    """
+    if version == "v3":
+        return "v3 (unchanged; matches the 30,380 measured rows)"
+    from llm import prompts as _p, prompts_v4 as _p4
+    _p._grid_legend = _p4._grid_legend_v4
+    return "v4 (row B vs column 2 disambiguated; runtime symbols redefined)"
 from llm.score import score
 from llm.clients import all_clients
 from bench.dataset import load_seen_split, DEFAULT_K
@@ -131,6 +151,18 @@ DATASETS = {
     # V3 additions
     "dev_v2":      {"file": "data/dev_v2.jsonl",      "schema": "schema/schema_v2.json", "exemplars_from": "data/seen_v2.jsonl", "carve": False},
     "held_out_v3": {"file": "data/held_out_v3.jsonl", "schema": "schema/schema_v2.json", "exemplars_from": "data/seen_v2.jsonl", "carve": False},
+    # held_out_v4b: held_out_v3 with the row vocabulary aligned to training
+    # (upper->far, bottom->near). Ground truth identical; 72 of 217 commands
+    # reworded. DELIBERATELY NOT IN `SEALED`: 72 of its commands are VERBATIM
+    # training data after the reword (56 in train_v2, 14 in dev_v2), so it is a
+    # memorisation probe, not a held-out KPI. See audit/build_v4b.py.
+    "held_out_v4b": {"file": "data/held_out_v4b.jsonl", "schema": "schema/schema_v2.json", "exemplars_from": "data/seen_v2.jsonl", "carve": False},
+    # held_out_v4c: row words replaced with front/back -- vocabulary in NEITHER
+    # training nor held_out_v3. Ground truth identical; 72 of 217 reworded.
+    # Verified 0 verbatim collisions with seen_v2/train_v2/dev_v2, so unlike
+    # v4b this is a genuine generalisation test. SEALED-equivalent in intent:
+    # it is derived from the sealed set and must not be used for tuning.
+    "held_out_v4c": {"file": "data/held_out_v4c.jsonl", "schema": "schema/schema_v2.json", "exemplars_from": "data/seen_v2.jsonl", "carve": False},
 }
 
 # Sealed = run once, never used for a design decision. held_out_v2 is already
@@ -302,6 +334,11 @@ def main():
     ap.add_argument("--model", default="openai:gpt-4o-mini")
     ap.add_argument("--strategy", default="zero_shot", choices=ALL_STRATEGIES)
     ap.add_argument("--dataset", default="seen_v2", choices=sorted(DATASETS))
+    ap.add_argument("--legend", default="v3", choices=["v3", "v4"],
+                    help="prompt legend version. v3 (default) is what produced "
+                         "the 30,380 measured rows; v4 disambiguates row B from "
+                         "column 2 and rewrites the runtime-symbol definitions. "
+                         "V4 runs are NOT comparable with the V3 measurement.")
     ap.add_argument("--limit", type=int, default=5, help="first N commands (smoke). 0 = all")
     ap.add_argument("--repeats", type=int, default=1)
     ap.add_argument("--k", type=int, default=DEFAULT_K,
@@ -310,6 +347,8 @@ def main():
     ap.add_argument("--list-models", action="store_true")
     ap.add_argument("--i-understand-heldout-is-sealed", action="store_true")
     args = ap.parse_args()
+
+    apply_legend(args.legend)
 
     clients = resolve_clients()
 

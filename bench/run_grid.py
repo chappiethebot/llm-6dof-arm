@@ -211,6 +211,11 @@ def main():
                          f"(default: the 4 rung-1 strategies)")
     ap.add_argument("--dataset", default="seen_v2", choices=sorted(DATASETS),
                     help="sealed datasets require --i-understand-heldout-is-sealed")
+    ap.add_argument("--legend", default="v3", choices=["v3", "v4"],
+                    help="prompt legend version. v3 (default) is what produced "
+                         "the 30,380 measured rows; v4 disambiguates row B from "
+                         "column 2 and rewrites the runtime-symbol definitions. "
+                         "V4 runs are NOT comparable with the V3 measurement.")
     ap.add_argument("--i-understand-heldout-is-sealed", action="store_true")
     ap.add_argument("--i-understand-rag-on-seen-is-contaminated", action="store_true",
                     help="allow rag cells on a dataset that overlaps the retrieval corpus")
@@ -220,6 +225,9 @@ def main():
                     help="in-context examples: fixed exemplars (few_shot) or retrieved (rag)")
     ap.add_argument("--out", default="bench/results_grid.csv")
     args = ap.parse_args()
+
+    from bench.run_cell import apply_legend
+    legend_note = apply_legend(args.legend)
 
     models = [m.strip() for m in args.models.split(",") if m.strip()]
     strategies = [s.strip() for s in args.strategies.split(",") if s.strip()]
@@ -274,6 +282,7 @@ def main():
     print(f"  OLLAMA_KEEP_ALIVE       = {os.environ.get('OLLAMA_KEEP_ALIVE')}")
     print(f"  OLLAMA_MAX_LOADED_MODELS= {os.environ.get('OLLAMA_MAX_LOADED_MODELS')}")
     print(f"  HF_HUB_OFFLINE          = {os.environ.get('HF_HUB_OFFLINE', '(unset)')}")
+    print(f"  LEGEND                  = {legend_note}")
     print(f"  dataset  = {args.dataset}  ({cfg['file']})")
     print(f"  schema   = {cfg['schema']}  (version {schema.get('schema_version', 1)}, "
           f"{len(schema['locations'])} locations)")
