@@ -1,0 +1,76 @@
+[
+  {
+    "started_utc": "2026-08-28T21:44:26.440910+00:00",
+    "argv": [
+      "C:\\Users\\USER\\llm-6dof-arm\\bench\\run_grid.py",
+      "--dataset",
+      "held_out_v3",
+      "--legend",
+      "v4",
+      "--i-understand-heldout-is-sealed",
+      "--models",
+      "openai:gpt-4o-mini",
+      "--strategies",
+      "zero_shot,few_shot,cot,role_based,rag",
+      "--repeats",
+      "5",
+      "--out",
+      "bench/results_v4a_cloud.csv"
+    ],
+    "out": "bench/results_v4a_cloud.csv",
+    "dataset": "held_out_v3",
+    "dataset_file": "data/held_out_v3.jsonl",
+    "schema_file": "schema/schema_v2.json",
+    "schema_version": 2,
+    "n_locations": 14,
+    "exemplars_from": "data/seen_v2.jsonl",
+    "k": 3,
+    "repeats": 5,
+    "cells": [
+      "openai:gpt-4o-mini/zero_shot",
+      "openai:gpt-4o-mini/few_shot",
+      "openai:gpt-4o-mini/cot",
+      "openai:gpt-4o-mini/role_based",
+      "openai:gpt-4o-mini/rag"
+    ],
+    "expected_rows_per_cell": 1085,
+    "env": {
+      "OLLAMA_KEEP_ALIVE": "0",
+      "OLLAMA_MAX_LOADED_MODELS": "1",
+      "OLLAMA_MODELS": "D:\\LLM",
+      "OLLAMA_NUM_PARALLEL": null,
+      "HF_HUB_OFFLINE": null,
+      "CUDA_VISIBLE_DEVICES": null
+    },
+    "legend": "v4",
+    "num_ctx_pinned": 4096,
+    "ollama_model_digests": {
+      "qwen2.5-3b-lora:latest": "b8ca05919dd4",
+      "qwen2.5-0.5b-lora:latest": "9e4aa731ea11",
+      "deepseek-r1:7b": "755ced02ce7b",
+      "qwen2.5:0.5b": "a8b0c5157701",
+      "qwen2.5:3b": "357c53fb659c",
+      "llama3.2:3b": "a80c4f17acd5",
+      "QWEN3.6:latest": "480e034edda1",
+      "gemma4_31B:latest": "dd19489a638e",
+      "coder3101_gemma4:latest": "61c9517a9493"
+    },
+    "packages": {
+      "openai": "2.44.0",
+      "ollama": "0.6.2",
+      "transformers": "5.15.1",
+      "torch": "2.12.1",
+      "peft": "0.20.0",
+      "tiktoken": "0.13.0",
+      "sentence-transformers": "6.0.0",
+      "numpy": "2.4.6"
+    },
+    "python": "3.11.15",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "retrieval": {
+      "model": "sentence-transformers/all-MiniLM-L6-v2",
+      "corpus": "data\\train_v2.jsonl",
+      "device": "cpu"
+    }
+  }
+]

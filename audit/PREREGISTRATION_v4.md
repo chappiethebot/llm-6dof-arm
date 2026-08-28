@@ -223,3 +223,34 @@ the §6b conflict class the audit catalogued, newly introduced by choosing
 `back` as the row-A word. It affects 1 of 217 commands and none of the 72
 reworded ones. Swapping `back`→`rear` (0 occurrences in any split) removes it
 and is a one-word change if the result looks sensitive to it.
+
+---
+
+## OUTCOMES (written after measurement, 2026-08-29)
+
+All runs complete: V4a 27 cells, V4a-lite 2, V4c 2. Rescored under `3000198`
+(verified behaviourally identical, 0/20,716 verdicts differ). Full table and
+figures in `audit/V4_RESULTS.md`.
+
+| # | verdict |
+|---|---|
+| H1 | NOT SUPPORTED - grid_B2 collapse rose under V4 |
+| H2 | NOT SUPPORTED - no real runtime-symbol gain |
+| H3 | SPLIT - 3b-lora 0.364 supported; 0.5b-lora 0.495 INCONCLUSIVE |
+| H4 | NOT SUPPORTED - gpt-4o-mini few_shot moved -0.159 |
+| H5 | SUPPORTED - llama3.2 recovered to within the CI of V3 |
+| H6 | SUPPORTED - grid_B2 share 40.3% -> 11.1% |
+| H7 | SUPPORTED - modifier pollution only halved; different causes |
+
+**The abandonment criterion in section 5 partially fired.** V4a produced a
+large gain on cells whose V3 errors were not grid_B2 collapse (deepseek
+zero_shot +0.213 from a 0.065 baseline), so the mechanism is NOT established
+for the gains. They are reported as an observed effect without a demonstrated
+cause.
+
+**A defect was introduced by the fix** [Certain]: V4's row line reads
+`Rows run front-to-back: A = far from the robot`. `front-to-back` implies A is
+the front; `far from the robot` says it is the back. The two halves contradict.
+gpt-4o-mini few_shot lost 208 rows dominated by A->C inversion
+(grid_A1->grid_C1 x49, grid_A3->grid_C3 x43). V4a-lite retains the phrase, so
+it does not test this. No fourth variant was run, per the commitment above.
