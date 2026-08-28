@@ -142,6 +142,9 @@ def write_run_manifest(args, cfg, schema, cells, expected_per_cell, retriever=No
             "HF_HUB_OFFLINE": os.environ.get("HF_HUB_OFFLINE"),
             "CUDA_VISIBLE_DEVICES": os.environ.get("CUDA_VISIBLE_DEVICES"),
         },
+        # The legend version is the single most important condition for a V4
+        # run and argv is the only other place it appears. Recorded explicitly.
+        "legend": getattr(args, "legend", "v3"),
         "num_ctx_pinned": getattr(
             __import__("llm.clients", fromlist=["OllamaClient"]).OllamaClient,
             "DEFAULT_NUM_CTX", None),
