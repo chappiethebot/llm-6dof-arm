@@ -114,6 +114,77 @@ prompt ambiguity. That is reportable and will be reported.
 
 ---
 
+## 3b. AMENDMENT — V4a-lite, added 2026-08-28 after the V4a local run
+
+**Written before the V4a-lite measurement.** The V4a local cells (20/20) had
+already been run and inspected when this was added; that is disclosed here
+rather than presented as an original hypothesis.
+
+### What V4a showed
+
+Mean delta across the 20 local cells was **-0.000** — no net effect — but that
+average hides two opposite movements, six of them beyond the ~6 pt CI:
+
+| cell | V3 | V4 | delta |
+|---|---|---|---|
+| deepseek-r1:7b zero_shot | 0.064 | 0.278 | **+0.214** |
+| deepseek-r1:7b role_based | 0.161 | 0.352 | **+0.190** |
+| deepseek-r1:7b cot | 0.106 | 0.208 | **+0.102** |
+| llama3.2:3b few_shot | 0.400 | 0.222 | **-0.178** |
+| llama3.2:3b rag | 0.322 | 0.167 | **-0.155** |
+
+### Ruled out first
+
+The obvious explanation — the legend contradicting the in-context examples —
+was tested and **refuted**. Of the 3 fixed few-shot exemplars, 1 contains
+middle/centre/center; of the 230 `train_v2` RAG corpus rows, 49 do. **Zero**
+conflict with the V4 rule in either set.
+
+### Diagnosis [Likely]
+
+llama3.2's losses split into two distinct failure modes:
+
+1. **Spurious modifier extraction** (few_shot, 22 of 40 lost rows are
+   `validated` with the *correct* location). V4 causes the row word to be
+   emitted as a modifier:
+   `V3 {"action":"pick_place","target":"toy_car","location":"grid_A1"}` →
+   `V4 {... ,"location":"grid_A1","modifiers":["upper"]}`. Non-empty
+   `modifiers` is compared, so strict fails on an otherwise correct answer.
+2. **grid_B2 anchoring** (rag, 38 of 42 lost rows are `validated` with a
+   *wrong* location, systematically `grid_B2`).
+   `'move to the upper left corner'` → V3 `grid_A1`, V4 `grid_B2`. This is the
+   exact collapse V4 was built to prevent, made worse.
+
+The V4 rule block adds the only two concrete hooks in the whole prompt: the
+literal token `grid_B2` (the only cell id written anywhere) and `->` arrow
+notation. [Guessing] a 3B model latches onto these where a 7B model uses the
+rule as intended.
+
+### The condition
+
+**V4a-lite:** the same rule stated in prose. No cell id spelled out, no arrows.
+Nothing else changes. v3 337 chars / v4 937 / v4lite 888.
+
+**Cells:** llama3.2:3b `few_shot` and `rag` only — the two that regressed.
+
+### Predictions, before running
+
+- **H5:** llama3.2 few_shot and rag **recover toward their V3 values**
+  (0.400 / 0.322), landing within 6 pts of V3 or better.
+- **H6:** the recovery is driven by the `grid_B2` anchoring disappearing in
+  rag; predicted `grid_B2` share on rag rows falls below the V4 level.
+- **H7 [Guessing]:** spurious `modifiers` extraction in few_shot is *not* fully
+  fixed by removing the hooks, because it is caused by the extra prose length
+  rather than the two tokens. If few_shot recovers and rag does not, or vice
+  versa, the two failure modes have different causes and should be reported
+  separately.
+
+**This is the last legend condition.** No fourth variant will be run. If
+V4a-lite does not recover llama3.2, the conclusion is that the legend rewrite
+helps large models and hurts small ones, and that is the reported result.
+
+---
+
 ## 4. Analysis plan, fixed in advance
 
 - **Primary metric:** action match (verb, target and location all correct) —

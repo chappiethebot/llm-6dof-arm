@@ -69,6 +69,9 @@ def apply_legend(version: str) -> str:
     if version == "v3":
         return "v3 (unchanged; matches the 30,380 measured rows)"
     from llm import prompts as _p, prompts_v4 as _p4
+    if version == "v4lite":
+        _p._grid_legend = _p4._grid_legend_v4lite
+        return "v4lite (V4 rule in prose; no literal cell id, no arrow notation)"
     _p._grid_legend = _p4._grid_legend_v4
     return "v4 (row B vs column 2 disambiguated; runtime symbols redefined)"
 from llm.score import score
@@ -334,7 +337,7 @@ def main():
     ap.add_argument("--model", default="openai:gpt-4o-mini")
     ap.add_argument("--strategy", default="zero_shot", choices=ALL_STRATEGIES)
     ap.add_argument("--dataset", default="seen_v2", choices=sorted(DATASETS))
-    ap.add_argument("--legend", default="v3", choices=["v3", "v4"],
+    ap.add_argument("--legend", default="v3", choices=["v3", "v4", "v4lite"],
                     help="prompt legend version. v3 (default) is what produced "
                          "the 30,380 measured rows; v4 disambiguates row B from "
                          "column 2 and rewrites the runtime-symbol definitions. "

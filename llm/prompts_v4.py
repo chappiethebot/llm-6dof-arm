@@ -101,6 +101,42 @@ def _grid_legend_v4(schema: dict) -> str:
     )
 
 
+def _grid_legend_v4lite(schema: dict) -> str:
+    """V4a-lite: same rule as V4, stated in prose only.
+
+    V4 measured a regression on llama3.2 (few_shot -0.178, rag -0.155) while
+    deepseek gained (+0.214 zero_shot). Diagnosis: llama3.2 anchored on the two
+    concrete hooks the V4 rule block offers a small model -- the literal token
+    `grid_B2` (the only cell id written anywhere in the prompt) and the `->`
+    arrow notation. Its rag failures are systematically truth grid_A1 predicted
+    grid_B2, i.e. the collapse V4 was meant to prevent, made worse.
+
+    This variant removes both hooks and changes nothing else: no cell id spelled
+    out, no arrows, rule expressed as sentences.
+    """
+    if schema.get("schema_version", 1) < 2:
+        return ""
+    if not any(loc.startswith("grid_") for loc in schema.get("locations", [])):
+        return ""
+    return (
+        "\nGrid locations are squares on the table surface, named grid_<ROW><COL>.\n"
+        "Rows run front-to-back:   A = far from the robot,  B = centre,  C = near the robot.\n"
+        "Columns run side-to-side: 1 = left,  2 = middle,  3 = right.\n"
+        "\n"
+        'The words "middle", "centre" and "center" can refer to either axis. If the\n'
+        "command also gives a row word, then middle describes the column. If the\n"
+        "command also gives a column word, then middle describes the row. If the\n"
+        "command gives neither, it means the square at the centre of the table.\n"
+        "\n"
+        "max_reach = the square farthest from the robot that the arm can still\n"
+        '  reach. Commands say "the farthest spot you can reach" or "the maximum\n'
+        '  distance you can reach".\n'
+        "nearest_free_cell = any square that is currently unoccupied; the robot\n"
+        '  chooses which one. Commands say "anywhere you want" or "anywhere you\n'
+        '  see free". Despite the name it does not mean the closest square.\n'
+    )
+
+
 @contextlib.contextmanager
 def _v4_legend():
     original = _v3._grid_legend
