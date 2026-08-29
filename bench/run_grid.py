@@ -214,7 +214,7 @@ def main():
                          f"(default: the 4 rung-1 strategies)")
     ap.add_argument("--dataset", default="seen_v2", choices=sorted(DATASETS),
                     help="sealed datasets require --i-understand-heldout-is-sealed")
-    ap.add_argument("--legend", default="v3", choices=["v3", "v4", "v4lite"],
+    ap.add_argument("--legend", default="v3", choices=["v3", "v4", "v4lite", "v5"],
                     help="prompt legend version. v3 (default) is what produced "
                          "the 30,380 measured rows; v4 disambiguates row B from "
                          "column 2 and rewrites the runtime-symbol definitions. "

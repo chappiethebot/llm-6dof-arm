@@ -59,24 +59,41 @@ class LLMClient(ABC):
     # a reasoning model's cost honest. {} when the provider returned nothing.
     last_usage: dict = {}
 
+    # DEMO-ONLY: JSON Schema for constrained decoding. None = unconstrained,
+    # which is how every measured row in this repo was produced.
+    json_schema: dict | None = None
+
     @abstractmethod
     def complete(self, prompt: str) -> str:
         ...
 
 
 class OpenAIClient(LLMClient):
-    def __init__(self, model: str = "gpt-4o-mini", temperature: float = 0.0):
+    def __init__(self, model: str = "gpt-4o-mini", temperature: float = 0.0,
+                 json_schema: dict | None = None):
         from openai import OpenAI
         self._client = OpenAI()
         self.model = model
         self.temperature = temperature
+        self.json_schema = json_schema
         self.name = f"openai:{model}"
 
     def complete(self, prompt: str) -> str:
+        kw = {}
+        if self.json_schema is not None:
+            # Structured Outputs. strict=True requires every property to appear
+            # in `required` and additionalProperties=false -- the per-verb
+            # oneOf split in llm/schema_json.py satisfies both by construction.
+            kw["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {"name": "action", "strict": False,
+                                "schema": self.json_schema},
+            }
         resp = self._client.chat.completions.create(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
             temperature=self.temperature,
+            **kw,
         )
         self.last_thinking = ""   # OpenAI chat completions expose no reasoning trace
         # `usage` is authoritative and billed; never re-derive it with tiktoken.
@@ -105,19 +122,30 @@ class OllamaClient(LLMClient):
     # 30,380 rows already collected.
     DEFAULT_NUM_CTX = 4096
 
-    def __init__(self, model: str, temperature: float = 0.0, num_ctx: int | None = None):
+    def __init__(self, model: str, temperature: float = 0.0, num_ctx: int | None = None,
+                 json_schema: dict | None = None):
         import ollama
         self._ollama = ollama
         self.model = model
         self.temperature = temperature
         self.num_ctx = self.DEFAULT_NUM_CTX if num_ctx is None else num_ctx
+        self.json_schema = json_schema
         self.name = f"ollama:{model}"
 
     def complete(self, prompt: str) -> str:
+        # DEMO-ONLY constrained decoding. `format` takes a JSON Schema; Ollama
+        # compiles it to a GBNF grammar and masks non-conforming tokens, which
+        # makes malformed output impossible rather than merely unlikely.
+        # OFF by default: every measured row in this repo was produced
+        # unconstrained, and turning it on would make new runs incomparable.
+        kw = {}
+        if self.json_schema is not None:
+            kw["format"] = self.json_schema
         resp = self._ollama.generate(
             model=self.model,
             prompt=prompt,
             options={"temperature": self.temperature, "num_ctx": self.num_ctx},
+            **kw,
         )
         # V2 fix: Ollama returns the reasoning trace in a SEPARATE `thinking` field.
         # V1 read only `response`, so every deepseek-r1 trace was generated and discarded.

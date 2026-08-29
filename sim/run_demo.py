@@ -244,14 +244,35 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default=None,
                     help="client name, full ('ollama:qwen2.5:3b') or bare "
-                         "('qwen2.5:3b'). Omit to pick from the menu.")
+                         "('qwen2.5:3b'). Omit to pick from the menu; pass "
+                         "--default to take the demo default without a menu.")
+    ap.add_argument("--default", action="store_true",
+                    help="use the demo default client (gpt-4o-mini / rag: the "
+                         "top of the measured Pareto frontier at 0.924) and "
+                         "skip both menus")
     ap.add_argument("--strategy", default=None,
                     help="must be legal for the chosen model; see --list")
     ap.add_argument("--list", action="store_true",
                     help="print the model/strategy table and exit")
     ap.add_argument("--schema", default="auto", choices=["auto", "v1", "v2"],
                     help="auto = v2 when the grid loaded, else v1")
+    # ---- demo defaults. NOT measurement settings. -------------------------
+    # `python -m sim.run_demo` with no flags gives the best demo: V5 legend,
+    # constrained decoding on, gpt-4o-mini. Every measured row in this repo was
+    # produced with legend v3 and no constraint; those remain reachable by flag.
+    ap.add_argument("--legend", default="v5", choices=["v3", "v4", "v4lite", "v5"],
+                    help="prompt legend. v5 (default) is the demo legend: it is "
+                         "the only one passing all four checks in "
+                         "audit/check_legend_v5.py. v3 is what produced the "
+                         "30,380 measured rows.")
+    ap.add_argument("--constrain", default="on", choices=["on", "off"],
+                    help="constrained decoding via Ollama `format` / OpenAI "
+                         "structured outputs. on by default for the demo; "
+                         "measurements were all run off.")
     args = ap.parse_args()
+
+    from bench.run_cell import apply_legend
+    legend_note = apply_legend(args.legend)
 
     roster = build_roster()
 
@@ -282,13 +303,31 @@ def main():
         strategy = args.strategy
 
     mode = choose_mode()
-    if client is None:
+    if client is None and args.default:
+        client = resolve_model(roster, "openai:gpt-4o-mini")
+        strategy = strategy or "rag"
+        allowed = strategies_for(client.name)
+        print(f"\nModel: {client.name} / {strategy}  (demo default)")
+    elif client is None:
         client, allowed = choose_client(roster)
     else:
         allowed = strategies_for(client.name)
         print(f"\nModel: {client.name}  (from --model)")
     if strategy is None:
         strategy = choose_strategy(client, allowed)
+
+    # Constrained decoding: attach the JSON Schema to the chosen client. Ollama
+    # takes the full per-verb oneOf form; OpenAI rejects oneOf at the root, so it
+    # gets the flat form and the field mask is enforced by validate_object
+    # downstream instead. See llm/schema_json.py.
+    if args.constrain == "on":
+        from llm.schema_json import to_json_schema, to_flat_json_schema
+        if client.name.startswith("openai:"):
+            client.json_schema = to_flat_json_schema(schema)
+        elif client.name.startswith("ollama:"):
+            client.json_schema = to_json_schema(schema)
+    print(f"legend: {legend_note}")
+    print(f"constrained decoding: {args.constrain}")
 
     # few_shot/rag need in-context examples. build_prompt RAISES without them,
     # which run_once turns into a prompt_error and the arm never moves -- this
