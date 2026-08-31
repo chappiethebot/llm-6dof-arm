@@ -5,46 +5,36 @@ Isaac Sim 6.0 backend implementing the same seven schema verbs as
 sim/sim_backend.py (MuJoCo), so run_once() does not change.
 
 Differences from the MuJoCo backend, deliberate:
-  * Objects are REAL rigid bodies and are physically carried. The MuJoCo
-    backend mimed the motion without transporting anything.
-  * Object positions are QUERIED from the live stage, not hardcoded. Drag a
-    cube in the editor and the verbs pick it up where you left it.
-  * Coordinates are re-derived for a Franka at the origin. MuJoCo's Fetch
-    frame values (1.34, 0.75, 0.43) are meaningless here.
+  * Objects are REAL rigid bodies and are physically carried.
+  * Object positions are QUERIED from the live stage, so objects dragged by
+    hand in the editor are picked up where you left them.
+  * Coordinates re-derived for a Franka at the origin.
+  * Boxes hold ONE object; a second placement is refused, not dropped on top.
 
-SimulationApp must be constructed before any isaacsim import, so this module
-does its imports lazily. Call launch() first, then construct IsaacBackend.
+Boxes sit in a straight row, not on an arc. The earlier arc layout gave
+adjacent centres 0.16 m apart while each box spanned 0.172 m, so the walls
+interpenetrated.
 
-    from sim.isaac_backend import launch, IsaacBackend
-    launch(headless=False)
-    be = IsaacBackend()
-    print(be.pick_place("rubiks_cube", "box_1"))
-    be.close()
-
-Run directly for a self-test:
-    python sim/isaac_backend.py
+Self-test:  python sim/isaac_backend.py
 """
 
-import math
 import os
-
-# ---------------------------------------------------------------------------
-# Layout. All metres, Franka base at the origin, +x forward.
-# ---------------------------------------------------------------------------
 
 GRID_ROWS, GRID_COLS = 3, 3
 GRID_CENTRE_X = 0.50
-CELL = 0.18                 # 0.11 was too tight; the hand fouled neighbours
+CELL = 0.18
 TILE_THICKNESS = 0.002
 
-OBJ_SIZE = 0.0515           # the cube size Isaac's own Franka example uses
+OBJ_SIZE = 0.0515
 OBJ_MASS = 0.03
 
-# Boxes on an arc at constant radius, so no box is harder to reach than
-# another. Low walls: deep boxes make the hand collide on descent.
-BOX_RADIUS = 0.62
-BOX_ANGLES_DEG = {"box_1": 40.0, "box_2": 60.0, "box_3": 80.0}
-BOX_INNER = 0.16
+# Straight row, clear of the grid (grid spans y +/-0.18).
+BOX_POSITIONS = {
+    "box_1": (0.30, 0.40),
+    "box_2": (0.48, 0.40),
+    "box_3": (0.66, 0.40),
+}
+BOX_INNER = 0.14
 BOX_WALL = 0.006
 BOX_HEIGHT = 0.03
 
@@ -53,22 +43,20 @@ HANDOVER = (0.34, -0.34, 0.05)
 OBJECTS = {
     "rubiks_cube": {"cell": (0, 0), "color": (0.85, 0.15, 0.15)},
     "bottle":      {"cell": (1, 2), "color": (0.15, 0.45, 0.85)},
-    "toy_car":     {"cell": (2, 1), "color": (0.95, 0.75, 0.10)},
+    "toy_car":     {"cell": (1, 1), "color": (0.95, 0.75, 0.10)},
 }
 
-# Measured from the working grasp test: distance from the panda_hand frame to
-# the centre of a held object.
 EE_TO_OBJECT_DZ = 0.044
 EE_OFFSET_XY = (0.0, 0.005)
 
 STEP_LIMIT = 1500
-LIFT_EVENT = 6              # controller event by which the object is airborne
+LIFT_EVENT = 6
 
-CAM_POS = (0.95, -1.05, 0.70)
-CAM_EULER = (0.0, 22.0, 135.0)
+CAM_POS = (0.49, -1.30, 0.95)
+CAM_EULER = (0.0, 33.0, 90.0)
 
 _APP = None
-_M = {}                     # late-imported modules and classes
+_M = {}
 
 
 def cell_centre(row, col):
@@ -79,15 +67,13 @@ def cell_centre(row, col):
 
 
 def box_centre(name):
-    ang = math.radians(BOX_ANGLES_DEG[name])
-    return BOX_RADIUS * math.cos(ang), BOX_RADIUS * math.sin(ang)
+    return BOX_POSITIONS[name]
 
 
 def launch(headless=True):
     """Start Isaac. Must be called before constructing IsaacBackend.
 
-    headless=False opens the full editor window, where objects can be dragged
-    by hand; the verbs then act on wherever you left them.
+    headless=False opens the full editor, where objects can be dragged by hand.
     """
     global _APP
     if _APP is not None:
@@ -102,27 +88,23 @@ def launch(headless=True):
         apps = os.path.join(os.path.dirname(_pkg.__file__), "apps")
         _APP = SimulationApp(
             {"headless": False, "width": 1600, "height": 900},
-            experience=os.path.join(apps, "isaacsim.exp.full.kit"),
-        )
+            experience=os.path.join(apps, "isaacsim.exp.full.kit"))
 
     _late_imports()
     return _APP
 
 
 def _late_imports():
-    """Import isaacsim modules only after SimulationApp exists."""
     import numpy as np
     import omni.usd
     from pxr import UsdLux, Gf
 
     from isaacsim.core.api import World
     from isaacsim.core.api.objects import (
-        DynamicCuboid, VisualCuboid, GroundPlane,
-    )
+        DynamicCuboid, VisualCuboid, GroundPlane)
     from isaacsim.robot.manipulators.examples.franka import Franka
     from isaacsim.robot.manipulators.examples.franka.controllers import (
-        PickPlaceController,
-    )
+        PickPlaceController)
     from isaacsim.sensors.camera import Camera
     import isaacsim.core.utils.numpy.rotations as rot_utils
 
@@ -131,8 +113,7 @@ def _late_imports():
         World=World, DynamicCuboid=DynamicCuboid, VisualCuboid=VisualCuboid,
         GroundPlane=GroundPlane, Franka=Franka,
         PickPlaceController=PickPlaceController, Camera=Camera,
-        rot_utils=rot_utils,
-    )
+        rot_utils=rot_utils)
 
 
 class IsaacBackend:
@@ -155,33 +136,32 @@ class IsaacBackend:
         self._build_scene()
 
         self.franka = self.world.scene.add(
-            _M["Franka"](prim_path="/World/franka", name="franka")
-        )
+            _M["Franka"](prim_path="/World/franka", name="franka"))
         self._add_lights()
         self._add_camera()
 
         self.world.reset()
         self.camera.initialize()
 
-        # Required: without this the fingers start closed and the arm can only
-        # shove objects around. Isaac's own tutorials do it in post_reset().
+        # Required. Without this the fingers start closed and the arm can only
+        # shove objects. Isaac's own tutorials do this in post_reset().
         self.franka.gripper.set_joint_positions(
-            self.franka.gripper.joint_opened_positions
-        )
+            self.franka.gripper.joint_opened_positions)
 
         self.articulation_controller = self.franka.get_articulation_controller()
         self._settle(30)
 
-    # -- scene ----------------------------------------------------------
+        self.occupancy = dict((n, None) for n in BOX_POSITIONS)
+        self._sync_occupancy()
+
+    # -- scene ------------------------------------------------------------
 
     def _build_scene(self):
         np = self.np
         self.world.scene.add(
             _M["GroundPlane"](
                 prim_path="/World/ground", name="ground", size=10.0,
-                color=np.array([0.14, 0.14, 0.16]),
-            )
-        )
+                color=np.array([0.14, 0.14, 0.16])))
 
         for row in range(GRID_ROWS):
             for col in range(GRID_COLS):
@@ -189,17 +169,14 @@ class IsaacBackend:
                 shade = 0.90 if (row + col) % 2 == 0 else 0.20
                 self.world.scene.add(
                     _M["VisualCuboid"](
-                        prim_path=f"/World/tile_{row}_{col}",
-                        name=f"tile_{row}_{col}",
+                        prim_path="/World/tile_%d_%d" % (row, col),
+                        name="tile_%d_%d" % (row, col),
                         position=np.array([x, y, TILE_THICKNESS / 2.0]),
                         scale=np.array(
-                            [CELL * 0.92, CELL * 0.92, TILE_THICKNESS]
-                        ),
-                        color=np.array([shade, shade, shade]),
-                    )
-                )
+                            [CELL * 0.92, CELL * 0.92, TILE_THICKNESS]),
+                        color=np.array([shade, shade, shade])))
 
-        for box_name in BOX_ANGLES_DEG:
+        for box_name in BOX_POSITIONS:
             self._add_box(box_name)
 
         for name, spec in OBJECTS.items():
@@ -207,12 +184,10 @@ class IsaacBackend:
             x, y = cell_centre(row, col)
             self.world.scene.add(
                 _M["DynamicCuboid"](
-                    prim_path=f"/World/{name}", name=name,
+                    prim_path="/World/%s" % name, name=name,
                     position=np.array([x, y, OBJ_SIZE / 2.0 + 0.002]),
                     scale=np.array([OBJ_SIZE, OBJ_SIZE, OBJ_SIZE]),
-                    color=np.array(spec["color"]), mass=OBJ_MASS,
-                )
-            )
+                    color=np.array(spec["color"]), mass=OBJ_MASS))
 
     def _add_box(self, name):
         np = self.np
@@ -222,27 +197,22 @@ class IsaacBackend:
 
         self.world.scene.add(
             _M["VisualCuboid"](
-                prim_path=f"/World/{name}_floor", name=f"{name}_floor",
+                prim_path="/World/%s_floor" % name, name="%s_floor" % name,
                 position=np.array([cx, cy, BOX_WALL / 2.0]),
-                scale=np.array([span, span, BOX_WALL]), color=colour,
-            )
-        )
+                scale=np.array([span, span, BOX_WALL]), color=colour))
 
         half = (BOX_INNER + BOX_WALL) / 2.0
-        for tag, wx, wy, sx, sy in [
-            ("n", cx + half, cy, BOX_WALL, span),
-            ("s", cx - half, cy, BOX_WALL, span),
-            ("e", cx, cy + half, span, BOX_WALL),
-            ("w", cx, cy - half, span, BOX_WALL),
-        ]:
+        walls = [("n", cx + half, cy, BOX_WALL, span),
+                 ("s", cx - half, cy, BOX_WALL, span),
+                 ("e", cx, cy + half, span, BOX_WALL),
+                 ("w", cx, cy - half, span, BOX_WALL)]
+        for tag, wx, wy, sx, sy in walls:
             self.world.scene.add(
                 _M["VisualCuboid"](
-                    prim_path=f"/World/{name}_wall_{tag}",
-                    name=f"{name}_wall_{tag}",
+                    prim_path="/World/%s_wall_%s" % (name, tag),
+                    name="%s_wall_%s" % (name, tag),
                     position=np.array([wx, wy, BOX_HEIGHT / 2.0]),
-                    scale=np.array([sx, sy, BOX_HEIGHT]), color=colour,
-                )
-            )
+                    scale=np.array([sx, sy, BOX_HEIGHT]), color=colour))
 
     def _add_lights(self):
         stage = _M["omni_usd"].get_context().get_stage()
@@ -261,26 +231,19 @@ class IsaacBackend:
             prim_path="/World/demo_camera",
             position=np.array(CAM_POS), frequency=20, resolution=(1280, 720),
             orientation=_M["rot_utils"].euler_angles_to_quats(
-                np.array(CAM_EULER), degrees=True
-            ),
-        )
+                np.array(CAM_EULER), degrees=True))
 
-    # -- name resolution -------------------------------------------------
+    # -- name resolution ---------------------------------------------------
 
     def resolve(self, name):
-        """Schema name -> (x, y, z).
-
-        Movable objects report their LIVE pose, so hand-dragged positions are
-        honoured. Fixed locations are computed from the layout.
-        """
+        """Schema name -> (x, y, z). Objects report their LIVE pose."""
         np = self.np
 
         if name in OBJECTS:
-            obj = self.world.scene.get_object(name)
-            pos, _ = obj.get_world_pose()
+            pos, _ = self.world.scene.get_object(name).get_world_pose()
             return np.array(pos, dtype=float)
 
-        if name in BOX_ANGLES_DEG:
+        if name in BOX_POSITIONS:
             cx, cy = box_centre(name)
             return np.array([cx, cy, BOX_HEIGHT + OBJ_SIZE / 2.0])
 
@@ -295,9 +258,34 @@ class IsaacBackend:
             except (ValueError, IndexError):
                 pass
 
-        raise KeyError(f"unknown schema name: {name!r}")
+        raise KeyError("unknown schema name: %r" % (name,))
 
-    # -- motion primitives -----------------------------------------------
+    # -- occupancy ---------------------------------------------------------
+
+    def _in_box(self, obj_xy):
+        """Which box, if any, contains this (x, y)?"""
+        for box_name in BOX_POSITIONS:
+            cx, cy = box_centre(box_name)
+            half = BOX_INNER / 2.0
+            if abs(obj_xy[0] - cx) <= half and abs(obj_xy[1] - cy) <= half:
+                return box_name
+        return None
+
+    def _sync_occupancy(self):
+        """Rebuild occupancy from live positions.
+
+        Derived rather than tracked incrementally, so objects dragged by hand
+        in the editor are accounted for.
+        """
+        self.occupancy = dict((n, None) for n in BOX_POSITIONS)
+        for obj_name in OBJECTS:
+            pos, _ = self.world.scene.get_object(obj_name).get_world_pose()
+            box = self._in_box(pos)
+            if box is not None:
+                self.occupancy[box] = obj_name
+        return self.occupancy
+
+    # -- motion ------------------------------------------------------------
 
     def _settle(self, n):
         for _ in range(n):
@@ -314,26 +302,27 @@ class IsaacBackend:
         if rgba is not None and rgba.size > 0:
             from PIL import Image
             Image.fromarray(rgba[:, :, :3].astype("uint8")).save(
-                os.path.join(
-                    self.capture_dir, f"frame_{self._frame_index:05d}.png"
-                )
-            )
+                os.path.join(self.capture_dir,
+                             "frame_%05d.png" % self._frame_index))
         self._frame_index += 1
 
     def _transport(self, target_name, place_xyz, stop_after_lift=False):
         """Grasp `target_name` and carry it to `place_xyz`.
 
-        stop_after_lift=True holds the object in the air instead of placing it.
-        Returns (ok, steps, final_error_m).
+        The pick position is sampled ONCE before motion begins. Re-reading it
+        each step makes the controller chase the object after it is lifted,
+        which corrupts the approach on any object that has already moved.
         """
         np = self.np
         obj = self.world.scene.get_object(target_name)
 
+        self._settle(5)
+        pick_xyz, _ = obj.get_world_pose()
+        pick_xyz = np.array(pick_xyz, dtype=float)
+
         controller = _M["PickPlaceController"](
-            name=f"pp_{target_name}",
-            gripper=self.franka.gripper,
-            robot_articulation=self.franka,
-        )
+            name="pp_%s" % target_name, gripper=self.franka.gripper,
+            robot_articulation=self.franka)
         ee_offset = np.array([EE_OFFSET_XY[0], EE_OFFSET_XY[1], 0.0])
         place_xyz = np.asarray(place_xyz, dtype=float)
 
@@ -342,19 +331,15 @@ class IsaacBackend:
             self.world.step(render=True)
             self._maybe_capture()
 
-            obj_pos, _ = obj.get_world_pose()
             action = controller.forward(
-                picking_position=obj_pos,
-                placing_position=place_xyz,
+                picking_position=pick_xyz, placing_position=place_xyz,
                 current_joint_positions=self.franka.get_joint_positions(),
-                end_effector_offset=ee_offset,
-            )
+                end_effector_offset=ee_offset)
             self.articulation_controller.apply_action(action)
 
             if stop_after_lift and controller.get_current_event() >= LIFT_EVENT:
                 final, _ = obj.get_world_pose()
-                lifted = float(final[2]) > OBJ_SIZE
-                return lifted, steps, 0.0
+                return float(final[2]) > OBJ_SIZE, steps, 0.0
 
             if controller.is_done():
                 break
@@ -363,21 +348,17 @@ class IsaacBackend:
         err = float(np.linalg.norm(final[:2] - place_xyz[:2]))
         return err < 0.06, steps, err
 
-    # -- the seven schema verbs -------------------------------------------
+    # -- the seven schema verbs --------------------------------------------
 
     def move_to(self, location, gripper=0.0):
         """Hover the gripper above a named location."""
         np = self.np
-        try:
-            target = self.resolve(location)
-        except KeyError:
-            raise
+        target = self.resolve(location)
         hover = np.array([target[0], target[1], 0.25])
 
         controller = _M["PickPlaceController"](
             name="pp_move", gripper=self.franka.gripper,
-            robot_articulation=self.franka,
-        )
+            robot_articulation=self.franka)
         steps = 0
         for steps in range(1, min(self.step_limit, 400) + 1):
             self.world.step(render=True)
@@ -385,8 +366,7 @@ class IsaacBackend:
             action = controller.forward(
                 picking_position=hover, placing_position=hover,
                 current_joint_positions=self.franka.get_joint_positions(),
-                end_effector_offset=np.array([0.0, 0.005, 0.0]),
-            )
+                end_effector_offset=np.array([0.0, 0.005, 0.0]))
             self.articulation_controller.apply_action(action)
             if controller.get_current_event() >= 1:
                 break
@@ -398,10 +378,27 @@ class IsaacBackend:
                 "error_cm": round(err * 100, 1)}
 
     def pick_place(self, target, location):
-        """Grasp `target`, carry it, release at `location`."""
-        self.resolve(target)                      # KeyError on bad name
+        """Grasp `target`, carry it, release at `location`.
+
+        Refuses to place into an occupied box. Taking an object OUT of a box
+        needs no special verb: pick_place(obj, "cell_1_1") does it, and the
+        vacated box becomes free.
+        """
+        self.resolve(target)
         dst = self.resolve(location)
+
+        self._sync_occupancy()
+        if location in self.occupancy:
+            holder = self.occupancy[location]
+            if holder is not None and holder != target:
+                return {"verb": "pick_place", "target": target,
+                        "location": location, "ok": False, "steps": 0,
+                        "error_cm": 0.0, "refused": "box_occupied",
+                        "occupant": holder}
+
         ok, steps, err = self._transport(target, dst)
+        self._sync_occupancy()
+
         return {"verb": "pick_place", "target": target, "location": location,
                 "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
 
@@ -409,12 +406,12 @@ class IsaacBackend:
         """Grasp `target` and bring it to the fixed handover point."""
         self.resolve(target)
         ok, steps, err = self._transport(target, self.resolve("handover"))
+        self._sync_occupancy()
         return {"verb": "fetch", "target": target,
                 "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
 
     def hold(self, target):
         """Grasp `target`, lift, and keep holding it."""
-        self.resolve(target)
         pos = self.resolve(target)
         aloft = self.np.array([pos[0], pos[1], 0.30])
         ok, steps, err = self._transport(target, aloft, stop_after_lift=True)
@@ -423,12 +420,11 @@ class IsaacBackend:
                 "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
 
     def inspect(self, target):
-        """Grasp `target`, lift, and hold for a longer pause.
+        """Grasp `target`, lift, hold for a longer pause.
 
         NOTE: as in the MuJoCo backend, the 'rotate slowly' part of inspect is
         not modelled; in sim it is a pause.
         """
-        self.resolve(target)
         pos = self.resolve(target)
         aloft = self.np.array([pos[0], pos[1], 0.30])
         ok, steps, err = self._transport(target, aloft, stop_after_lift=True)
@@ -444,12 +440,10 @@ class IsaacBackend:
         """Out-of-scope request acknowledged; the arm does not move."""
         return {"verb": "reject", "ok": True, "steps": 0, "error_cm": 0.0}
 
-    # -- dispatch ---------------------------------------------------------
+    # -- dispatch ----------------------------------------------------------
 
     def dispatch(self, action):
-        """Execute a validated schema action dict, e.g.
-        {"verb": "pick_place", "target": "rubiks_cube", "location": "box_1"}
-        """
+        """Execute a validated schema action dict."""
         verb = action.get("verb")
         if verb == "move_to":
             return self.move_to(action["location"])
@@ -465,7 +459,7 @@ class IsaacBackend:
             return self.stop()
         if verb == "reject":
             return self.reject()
-        raise KeyError(f"unknown verb: {verb!r}")
+        raise KeyError("unknown verb: %r" % (verb,))
 
     def close(self):
         if _APP is not None:
@@ -473,26 +467,33 @@ class IsaacBackend:
 
 
 def _self_test():
-    launch(headless=True)
+    import sys
+    headless = "--window" not in sys.argv
+    launch(headless=headless)
     be = IsaacBackend(capture_dir=os.path.join("out", "isaac_backend"))
 
     print("[backend] reach check:")
-    for name in list(OBJECTS) + list(BOX_ANGLES_DEG) + ["handover"]:
+    for name in list(OBJECTS) + list(BOX_POSITIONS) + ["handover"]:
         p = be.resolve(name)
-        d = float(be.np.linalg.norm(p[:2]))
-        print(f"  {name:14s} {be.np.round(p, 3)}  dist={d:.3f}")
+        print("  %-14s %s  dist=%.3f"
+              % (name, be.np.round(p, 3), float(be.np.linalg.norm(p[:2]))))
     print("")
 
     print(be.pick_place("rubiks_cube", "box_1"))
-    print(be.pick_place("bottle", "box_2"))
-    print(be.pick_place("rubiks_cube", "box_3"))   # box -> box
-    print(be.hold("toy_car"))
+    print("occupancy:", be.occupancy)
+    print(be.pick_place("toy_car", "box_1"))
+    print(be.pick_place("rubiks_cube", "cell_1_1"))
+    print("occupancy:", be.occupancy)
+    print(be.pick_place("toy_car", "box_1"))
+    print(be.hold("bottle"))
     print(be.stop())
     print(be.reject())
     try:
         be.hold("dragon")
     except KeyError as e:
         print("invalid target ->", e)
+    print(be.pick_place("bottle", "box_3"))
+    
 
     be.close()
 

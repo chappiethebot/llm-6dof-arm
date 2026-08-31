@@ -39,3 +39,5 @@ audit/backup_tokens_v3/
 audit/discarded/*.csv
 audit/*.log
 out/
+.env
+bridge/
