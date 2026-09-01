@@ -1,4 +1,8 @@
-"""Diagnostic A: WHAT varied between repeats in the seen run?"""
+"""Diagnostic A: WHAT varied between repeats in the seen run?
+
+DATA VERSION: V1 ONLY. Reads bench/results_grid.csv. Nothing here reads V2,
+V3 or V4 files.
+"""
 import csv, collections, sys
 
 PATH = "bench/results_grid.csv"

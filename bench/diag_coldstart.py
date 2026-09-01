@@ -1,4 +1,8 @@
-"""Diagnostic A: is the variation entirely a run0 (cold-start) effect?"""
+"""Diagnostic A: is the variation entirely a run0 (cold-start) effect?
+
+DATA VERSION: V1 ONLY. Reads bench/results_grid.csv. Nothing here reads V2,
+V3 or V4 files.
+"""
 import csv, collections
 
 groups = collections.defaultdict(dict)

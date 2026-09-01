@@ -1,12 +1,0 @@
-Loading weights:   0%|          | 0/100 [00:00<?, ?it/s]Loading weights: 100%|##########| 100/100 [00:00<00:00, 11765.23it/s]
-[transformers] [1mDistilBertModel LOAD REPORT[0m from: distilbert-base-uncased
-Key                     | Status     |  | 
-------------------------+------------+--+-
-vocab_transform.weight  | UNEXPECTED |  | 
-vocab_layer_norm.bias   | UNEXPECTED |  | 
-vocab_layer_norm.weight | UNEXPECTED |  | 
-vocab_projector.bias    | UNEXPECTED |  | 
-vocab_transform.bias    | UNEXPECTED |  | 
-
-Notes:
-- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.

@@ -20,6 +20,11 @@ Usage:
     python bench/diag_cells.py
     python bench/diag_cells.py --model openai:gpt-4o-mini --matrix
     python bench/diag_cells.py --held bench/results_heldout_v2_scored.csv
+
+DATA VERSION: V2 ONLY. Reads results_grid_v2_scored.csv and
+results_heldout_v2_scored.csv. The collision it measures is what motivated the
+V4 legend conditions; for the V3/V4 successors see audit/vocab_conflicts.py,
+audit/check_legend_v5.py and audit/figures_v4.py.
 """
 
 import argparse

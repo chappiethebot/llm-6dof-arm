@@ -36,6 +36,11 @@ audit/backup_scored_v3/
 audit/backup_tokens_v3/
 !data/held_out_v4b.jsonl
 !data/held_out_v4c.jsonl
+
+# Pre-gate backup of seen_v2 (203 rows, before the container-row expansion that
+# took held_out_v3 to 217). map.md calls it provenance; provenance that lives on
+# one machine is not provenance. 31 KB, read by no code.
+!data/seen_v2_backup_203.jsonl
 audit/discarded/*.csv
 audit/*.log
 out/

@@ -26,6 +26,10 @@ Usage:
     python bench/diag_rowword.py
     python bench/diag_rowword.py --seen bench/results_grid_v2_scored.csv \
                                  --held bench/results_heldout_v2_scored.csv
+
+DATA VERSION: V2 ONLY. Reads the two V2 scored CSVs. The same question was
+re-asked against V3 with a controlled dataset rather than an inference --
+see audit/lora_vocab_test.py, audit/build_v4b.py and audit/build_v4c.py.
 """
 
 import argparse

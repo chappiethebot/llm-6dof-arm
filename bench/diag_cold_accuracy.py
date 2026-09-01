@@ -1,4 +1,8 @@
-"""Is the cold first call less accurate, or just different?"""
+"""Is the cold first call less accurate, or just different?
+
+DATA VERSION: V1 ONLY. Reads bench/results_grid.csv and
+bench/results_heldout.csv. Nothing here reads V2, V3 or V4 files.
+"""
 import csv, collections
 
 def tally(path, label):

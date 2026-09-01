@@ -21,6 +21,12 @@ Figures produced:
 Usage:
     python bench/figures.py
     python bench/figures.py --model openai:gpt-4o-mini --outdir bench/figures
+
+DATA VERSION: V1/V2 ONLY -- it defaults to the V2 scored CSVs and renders the
+five-figure V2 set. This is the provenance of the committed V2 figures and is
+deliberately NOT extended: audit/figures_v3.py and audit/figures_v3_style.py
+were written fresh against V3, and audit/figures_v4.py covers the V4
+conditions.
 """
 
 import argparse

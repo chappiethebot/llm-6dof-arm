@@ -42,6 +42,10 @@ USAGE (PowerShell, repo root)
     python -m bench.diag_score_edges --csv bench/results_grid_v2.csv
     python -m bench.diag_score_edges --csv bench/results_grid_v2.csv --show 5
     python -m bench.diag_score_edges --csv bench/results_grid_v2.csv --csv bench/results_heldout_v2.csv
+
+DATA VERSION: V2 ONLY. Reads results_grid_v2.csv and results_heldout_v2.csv.
+Kept as the provenance of the frozen scoring policy in llm/score.py; the V3
+leniency enumeration is audit/b1_leniency.py.
 """
 import argparse, csv, json, sys
 from collections import Counter, defaultdict

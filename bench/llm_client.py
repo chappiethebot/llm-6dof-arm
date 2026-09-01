@@ -13,46 +13,90 @@ WARNING: this is the DEMO path, not the measurement harness. RAG here uses
 token-overlap retrieval, not the embedding store used for the measured runs.
 Do not quote timings or accuracy from this script in the thesis.
 
+    python bench/llm_client.py --list
     python bench/llm_client.py --backend isaac  --model gpt-4o-mini --strategy rag
     python bench/llm_client.py --backend mujoco --model gpt-4o-mini --strategy rag
     python bench/llm_client.py --backend mujoco --model gpt-4o-mini --selftest
     python bench/llm_client.py --once "put the red cube in box 1"
     python bench/llm_client.py --script demo_script.txt
+
+
+RELATIONSHIP TO sim/run_demo.py  (READ THIS BEFORE CHANGING EITHER FILE)
+========================================================================
+sim/run_demo.py is the OTHER demo client. It drives MuJoCo in-process through
+llm/pipeline.py's run_once(); this file drives EITHER simulator out-of-process
+over the bridge/ file protocol, so a model crash cannot kill the simulator.
+
+They now SHARE:
+  * the client roster          llm.clients.all_clients()   (rungs 1-4)
+  * the verb/target/field-mask grammar, read from schema/schema_v2.json
+  * the voice front-end        asr/voice.py
+
+They deliberately DIFFER in two places, and both differences are load-bearing:
+
+1. LOCATION VOCABULARY. run_demo speaks schema_v2 (grid_A1..grid_C3, plus the
+   runtime symbols). This file speaks whichever simulator is attached: Isaac's
+   cell_R_C + handover, or the V1 table_* names that sim/sim_backend.py behind
+   mujoco_bridge.py actually implements. Neither is schema_v2, and unifying them
+   would mean editing schema_v2.json -- which is the provenance of 30,380
+   measured rows. See CANONICAL -> BACKEND TRANSLATION below for how rung-3/4
+   output crosses that line.
+
+2. JSON EXTRACTION POLICY -- the subtle one. The two extractors implement
+   OPPOSITE rules for the same input, on purpose:
+
+     llm/extract.py     takes the LAST balanced {...} that parses, because the
+                        cot prompt puts the answer on the final line and earlier
+                        braces are reasoning fragments or schema echoes. A
+                        benchmark must produce a verdict for every row.
+
+     _extract_json here REFUSES when more than one candidate parses, because
+                        multiple actions is ambiguity, not a menu. Small models
+                        emit three-to-five step plans, and any positional rule
+                        picks a wrong-but-legal action some of the time. A demo
+                        must not move a real arm on a guess.
+
+   Do NOT "unify" these. Changing either one changes either the measured numbers
+   or the demo's safety property. If you touch one, read the other first.
 """
 
-import argparse, json, os, re, time, uuid
+import argparse, json, os, re, sys, time, uuid
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)   # so llm/, schema/ and asr/ resolve when run as a script
+
 BRIDGE_DIR = os.path.join(_REPO_ROOT, "bridge")
 INBOX = os.path.join(BRIDGE_DIR, "inbox")
 OUTBOX = os.path.join(BRIDGE_DIR, "outbox")
 SEEN_JSONL = os.path.join(_REPO_ROOT, "data", "seen.jsonl")
+SCHEMA_V2 = os.path.join(_REPO_ROOT, "schema", "schema_v2.json")
 
 RESULT_TIMEOUT = 300.0
 POLL_SECONDS = 0.25
 
-MODELS = {
-    "gpt-4o-mini": {"kind": "cloud"},
-    "llama3.2:3b": {"kind": "ollama"},
-    "qwen2.5:3b": {"kind": "ollama"},
-    "qwen2.5:0.5b": {"kind": "ollama"},
-    "deepseek-r1:7b": {"kind": "ollama"},
-    "rules": {"kind": "rules"},
-}
+
+# ---------------------------------------------------------------------------
+# GRAMMAR -- read from schema_v2.json, never retyped.
+#
+# VERBS, TARGETS and FIELD_MASK used to be three hand-maintained literals in
+# this file, duplicating schema/schema_v2.json with nothing checking that they
+# agreed. Only `locations` is genuinely per-backend (see BACKENDS below); the
+# verb set, the target set and the required-field mask are the same everywhere
+# and now come from the one file that defines them.
+# ---------------------------------------------------------------------------
+def _load_grammar(path=SCHEMA_V2):
+    with open(path, "r", encoding="utf-8") as fh:
+        s = json.load(fh)
+    verbs = set(s["verbs"])
+    targets = set(s["targets"])
+    mask = {v: set(spec.get("required", [])) for v, spec in s["verbs"].items()}
+    return verbs, targets, mask, set(s["locations"])
+
+
+VERBS, TARGETS, FIELD_MASK, CANONICAL_LOCATIONS = _load_grammar()
+
 STRATEGIES = ("zero_shot", "few_shot", "cot", "role_based", "rag")
-
-VERBS = {"move_to", "pick_place", "fetch", "hold", "inspect", "stop", "reject"}
-TARGETS = {"rubiks_cube", "bottle", "toy_car"}
-
-FIELD_MASK = {
-    "move_to": {"location"},
-    "pick_place": {"target", "location"},
-    "fetch": {"target"},
-    "hold": {"target"},
-    "inspect": {"target"},
-    "stop": set(),
-    "reject": set(),
-}
 
 BACKENDS = {
     "isaac": {
@@ -80,41 +124,167 @@ def _set_backend(name):
     global BACKEND, LOCATIONS, SCHEMA_TEXT
     BACKEND = name
     LOCATIONS = BACKENDS[name]["locations"]
-    SCHEMA_TEXT = """Verbs: fetch, hold, inspect, move_to, pick_place, reject, stop
-Targets (objects): bottle, rubiks_cube, toy_car
+    required_lines = "\n".join(
+        "  %-10s -> %s" % (v, ", ".join(sorted(FIELD_MASK[v])) or "(none)")
+        for v in ("move_to", "pick_place", "fetch", "hold", "inspect", "stop", "reject"))
+    SCHEMA_TEXT = """Verbs: %s
+Targets (objects): %s
 Locations: %s
 
 Required fields per verb (emit EXACTLY these keys plus "verb", no others):
-  move_to    -> location
-  pick_place -> target, location
-  fetch      -> target
-  hold       -> target
-  inspect    -> target
-  stop       -> (none)
-  reject     -> (none)
+%s
 
 Object colours: rubiks_cube is red, bottle is blue, toy_car is yellow.
 
 Emit EXACTLY ONE JSON object. Do not emit a plan or a sequence of steps.""" % (
-        BACKENDS[name]["location_text"],)
+        ", ".join(sorted(VERBS)), ", ".join(sorted(TARGETS)),
+        BACKENDS[name]["location_text"], required_lines)
 
 
 _set_backend(BACKEND)
 
-FEW_SHOT_COMMON = [
-    ("put the red cube in box 1",
-     {"verb": "pick_place", "target": "rubiks_cube", "location": "box_1"}),
-    ("bring me the bottle", {"verb": "fetch", "target": "bottle"}),
-    ("pick up the yellow car and hold it",
-     {"verb": "hold", "target": "toy_car"}),
-    ("make me a sandwich", {"verb": "reject"}),
-]
+
+# ---------------------------------------------------------------------------
+# CLIENT ROSTER -- llm.clients.all_clients(), not a hardcoded list.
+#
+# This file used to carry its own MODELS dict and dispatch on {"kind": ...},
+# which meant rungs 3 and 4 were unreachable from the bridge demo: the two
+# merged LoRA models and the DistilBERT classifier simply were not in it. The
+# roster is now the same one the harness and sim/run_demo.py use, so the demo
+# cannot drift out of sync with what was measured.
+#
+# `rules` is not a model and is kept outside the roster: it takes the command
+# string directly, has no prompt, and exists so the bridge can be exercised with
+# no model server at all.
+# ---------------------------------------------------------------------------
+BASE_STRATEGIES = STRATEGIES
+LORA_STRATEGIES = ("zero_shot",)
+CLASSIFIER_STRATEGIES = ("classifier",)
+
+RULES = "rules"
+
+_ROSTER = None
 
 
-def _few_shot():
-    """Examples must use the ACTIVE backend's locations."""
-    extra = ("move to box 3", {"verb": "move_to", "location": "box_3"})
-    return FEW_SHOT_COMMON + [extra]
+def roster():
+    """[client] from llm.clients.all_clients(), constructed once."""
+    global _ROSTER
+    if _ROSTER is None:
+        from llm.clients import all_clients
+        _ROSTER = list(all_clients())
+    return _ROSTER
+
+
+def strategies_for(name):
+    """Allowed strategies for a client, keyed on its .name.
+
+    Mirrors sim/run_demo.py's table, for the same reason: the rung-3 adapters
+    were trained and measured on bare zero-shot prompts, so a cot or few_shot
+    prompt is off-distribution for them, and the rung-4 classifier is an encoder
+    over the command string with no prompt surface at all.
+    """
+    if name == RULES:
+        return ("zero_shot",)
+    if name.startswith("classifier:"):
+        return CLASSIFIER_STRATEGIES
+    if name.endswith("-lora"):
+        return LORA_STRATEGIES
+    return BASE_STRATEGIES
+
+
+def rung_of(name):
+    if name == RULES:
+        return "rules"
+    if name.startswith("classifier:"):
+        return "rung 4"
+    if name.endswith("-lora"):
+        return "rung 3"
+    return "rung 1/2"
+
+
+def model_names():
+    return [RULES] + [c.name for c in roster()]
+
+
+def resolve_model(arg):
+    """Full name ('ollama:qwen2.5:3b') or the bare name ('qwen2.5:3b')."""
+    if arg == RULES:
+        return RULES
+    for client in roster():
+        if client.name == arg:
+            return client
+    for client in roster():
+        bare = client.name.split(":", 1)[1] if ":" in client.name else client.name
+        if bare == arg:
+            return client
+    return None
+
+
+# ---------------------------------------------------------------------------
+# CANONICAL -> BACKEND TRANSLATION
+#
+# Rungs 3 and 4 cannot be prompted in a backend vocabulary: the LoRA adapters
+# were fine-tuned on llm/prompts.py zero-shot prompts over schema_v2, and the
+# classifier's label space IS schema_v2 -- it has no prompt to change. So they
+# are run canonically (schema_v2, "action" key, grid_A1..grid_C3) and their
+# output is translated here, at the edge, into the attached backend's names.
+# Rungs 1 and 2 are prompted in the backend vocabulary directly, as before.
+#
+# GRID MAPPING, AND ITS ONE UNVERIFIED HALF -- read before demoing Isaac:
+#   rows    schema_v2 A/B/C run FAR -> NEAR (sim/workspace.py: "far -> near").
+#           isaac_backend.cell_centre says "Row 0 is nearest the robot".
+#           So A->2, B->1, C->0. This half is certain, from both docstrings.
+#   columns schema_v2 1/2/3 run LEFT -> RIGHT. Isaac's col index runs -y -> +y.
+#           Whether Isaac's +y is the same "right" the legend means has NOT been
+#           confirmed against a running scene -- Isaac is not installed on the
+#           machine this was written on.
+#   VERIFY BEFORE USE: `--backend isaac --model rules --selftest` drives all
+#   four grid corners. If left/right come out mirrored, flip _COL below and
+#   nothing else changes.
+# ---------------------------------------------------------------------------
+_GRID_ROW = {"A": 2, "B": 1, "C": 0}      # far -> near  ==  isaac row 2 -> 0
+_GRID_COL = {"1": 0, "2": 1, "3": 2}      # left -> right ==  isaac col 0 -> 2
+
+GRID_TO_ISAAC = {
+    "grid_%s%s" % (r, c): "cell_%d_%d" % (_GRID_ROW[r], _GRID_COL[c])
+    for r in "ABC" for c in "123"
+}
+
+
+def _to_backend_location(loc):
+    if loc in LOCATIONS:
+        return loc                      # box_1..3 exist in both vocabularies
+    if BACKEND == "isaac" and loc in GRID_TO_ISAAC:
+        return GRID_TO_ISAAC[loc]
+    if loc in CANONICAL_LOCATIONS:
+        raise ValueError(
+            "%r is a schema_v2 location with no %s equivalent. Runtime symbols "
+            "(max_reach, nearest_free_cell) are resolved by the in-process "
+            "backend in sim/workspace.py and have no bridge protocol; the grid "
+            "cells exist in Isaac but not behind mujoco_bridge.py, which runs "
+            "the V1 SimBackend." % (loc, BACKEND))
+    raise ValueError("unknown location for backend %s: %r" % (BACKEND, loc))
+
+
+def to_backend_action(obj):
+    """Canonical schema_v2 object -> action in the attached backend's vocabulary.
+
+    Renames "action" to "verb", maps the location, and drops every field outside
+    the mask (schema_v2 carries "modifiers"; the bridge protocol does not).
+    """
+    if not isinstance(obj, dict):
+        raise ValueError("action must be a JSON object")
+    verb = obj.get("verb", obj.get("action"))
+    if verb not in FIELD_MASK:
+        raise ValueError("illegal verb: %r" % (verb,))
+    out = {"verb": verb}
+    for key in FIELD_MASK[verb]:
+        if obj.get(key) in (None, ""):
+            raise ValueError("%s is missing required field %r" % (verb, key))
+        out[key] = obj[key]
+    if "location" in out:
+        out["location"] = _to_backend_location(out["location"])
+    return out
 
 
 def validate(action):
@@ -134,6 +304,22 @@ def validate(action):
         raise ValueError("unknown location for backend %s: %r"
                          % (BACKEND, action["location"]))
     return action
+
+
+FEW_SHOT_COMMON = [
+    ("put the red cube in box 1",
+     {"verb": "pick_place", "target": "rubiks_cube", "location": "box_1"}),
+    ("bring me the bottle", {"verb": "fetch", "target": "bottle"}),
+    ("pick up the yellow car and hold it",
+     {"verb": "hold", "target": "toy_car"}),
+    ("make me a sandwich", {"verb": "reject"}),
+]
+
+
+def _few_shot():
+    """Examples must use the ACTIVE backend's locations."""
+    extra = ("move to box 3", {"verb": "move_to", "location": "box_3"})
+    return FEW_SHOT_COMMON + [extra]
 
 
 _SEEN_CACHE = None
@@ -239,6 +425,14 @@ def build_prompt(command, strategy):
     raise ValueError("unknown strategy: %r" % (strategy,))
 
 
+def canonical_prompt(command, client):
+    """The prompt rungs 3 and 4 were trained and measured on."""
+    if client.name.startswith("classifier:"):
+        return command      # classifier_client.complete(): the prompt IS the command
+    from llm.prompts import build_prompt as canon_build, load_schema
+    return canon_build(command, "zero_shot", load_schema(SCHEMA_V2))
+
+
 def _candidate_objects(text):
     """Every balanced {...} block, skipping braces inside string literals."""
     out, depth, start, in_str, esc = [], 0, -1, False, False
@@ -266,13 +460,17 @@ def _candidate_objects(text):
     return out
 
 
-def _extract_json(text):
+def _extract_json(text, key="verb"):
     """Pull the action object out of a model reply.
 
     If the model emits MULTIPLE candidate actions, that is ambiguity, not a
     menu. Selecting by position, or by 'first that validates', silently picks
     a wrong-but-legal action: small models emit three-to-five step plans and
     any positional rule gets it wrong some of the time.
+
+    This is deliberately NOT llm/extract.py's rule -- see the module docstring.
+    `key` is "verb" for backend-vocabulary replies and "action" for canonical
+    schema_v2 replies from rungs 3 and 4.
     """
     cleaned = re.sub(r"<think>.*?</think>", "", text, flags=re.S)
     cleaned = re.sub(r"<\|.*?\|>", "", cleaned)
@@ -287,40 +485,16 @@ def _extract_json(text):
             obj = json.loads(blk)
         except json.JSONDecodeError:
             continue
-        if isinstance(obj, dict) and "verb" in obj:
+        if isinstance(obj, dict) and key in obj:
             parsed.append(obj)
 
     if not parsed:
-        raise ValueError("no action object with a 'verb' key: %r"
-                         % (text[:300],))
+        raise ValueError("no action object with a %r key: %r" % (key, text[:300],))
     if len(parsed) > 1:
-        verbs = [str(p.get("verb")) for p in parsed]
+        verbs = [str(p.get(key)) for p in parsed]
         raise ValueError("model emitted %d actions (%s) -- ambiguous, "
                          "expected exactly one" % (len(parsed), ", ".join(verbs)))
     return parsed[0]
-
-
-def call_cloud(system, user, model="gpt-4o-mini"):
-    from openai import OpenAI
-    client = OpenAI()
-    resp = client.chat.completions.create(
-        model=model, temperature=0.0,
-        messages=[{"role": "system", "content": system},
-                  {"role": "user", "content": user}])
-    return resp.choices[0].message.content
-
-
-def call_ollama(system, user, model):
-    import requests
-    resp = requests.post(
-        "http://localhost:11434/api/chat",
-        json={"model": model, "stream": False,
-              "options": {"temperature": 0.0},
-              "messages": [{"role": "system", "content": system},
-                           {"role": "user", "content": user}]},
-        timeout=300)
-    resp.raise_for_status()
-    return resp.json()["message"]["content"]
 
 
 def call_rules(command):
@@ -384,12 +558,19 @@ def call_rules(command):
 
 def query(command, model, strategy):
     """Return (action_dict, raw_reply_or_None)."""
-    kind = MODELS[model]["kind"]
-    if kind == "rules":
+    client = resolve_model(model)
+    if client is None:
+        raise ValueError("unknown model: %r" % (model,))
+    if client is RULES:
         return call_rules(command), None
+
+    if rung_of(client.name) in ("rung 3", "rung 4"):
+        # Canonical prompt, canonical output, translated at the edge.
+        raw = client.complete(canonical_prompt(command, client))
+        return to_backend_action(_extract_json(raw, key="action")), raw
+
     system, user = build_prompt(command, strategy)
-    raw = (call_cloud(system, user, model) if kind == "cloud"
-           else call_ollama(system, user, model))
+    raw = client.complete(system + "\n\n" + user)
     return _extract_json(raw), raw
 
 
@@ -397,47 +578,17 @@ def to_action(command, model, strategy):
     return query(command, model, strategy)[0]
 
 
-_WHISPER = None
-
-
-def _find_mic(substring="Seiren"):
-    """Select by name substring, not device index -- indices shift."""
-    import sounddevice as sd
-    for idx, dev in enumerate(sd.query_devices()):
-        if dev["max_input_channels"] > 0 and substring.lower() in dev["name"].lower():
-            return idx, dev["name"]
-    default = sd.default.device[0]
-    return default, sd.query_devices(default)["name"]
-
-
 def listen(seconds=5.0, mic_substring="Seiren"):
-    global _WHISPER
-    import sounddevice as sd
-    os.environ.setdefault("HF_HUB_OFFLINE", "1")
-    if _WHISPER is None:
-        from faster_whisper import WhisperModel
-        try:
-            _WHISPER = WhisperModel("small.en", device="cpu",
-                                    compute_type="int8")
-        except Exception:
-            # Offline mode is right once cached, but it blocks the first
-            # download. Retry online, then stay offline afterwards.
-            print("  model not cached -- downloading once")
-            os.environ["HF_HUB_OFFLINE"] = "0"
-            _WHISPER = WhisperModel("small.en", device="cpu",
-                                    compute_type="int8")
-            os.environ["HF_HUB_OFFLINE"] = "1"
-    idx, name = _find_mic(mic_substring)
-    print("  mic: %s" % name)
-    print("  recording %.0fs -- speak now..." % seconds)
-    rate = 16000
-    audio = sd.rec(int(seconds * rate), samplerate=rate, channels=1,
-                   dtype="float32", device=idx)
-    sd.wait()
-    t0 = time.perf_counter()
-    segments, _ = _WHISPER.transcribe(audio.flatten(), language="en")
-    text = " ".join(s.text for s in segments).strip()
-    return text, time.perf_counter() - t0
+    """Record and transcribe. Thin wrapper over the shared asr/voice.py.
+
+    Kept as a function here so --voice keeps its fixed-window behaviour (a
+    scripted bridge run has nobody to press Enter); sim/run_demo.py calls the
+    same module with seconds=None for push-to-talk.
+    """
+    from asr import voice
+    text, asr_s = voice.listen(model="small.en", mic=mic_substring,
+                               seconds=seconds, quiet=True)
+    return (text or ""), asr_s
 
 
 def send(action, timeout=RESULT_TIMEOUT):
@@ -499,20 +650,38 @@ def run_one(text, model, strategy, asr_s=0.0, execute=True, show_raw=False):
 
 
 def selftest(model, show_raw=False):
-    """Check every strategy emits ONE valid, correct action.
+    """Check every legal strategy emits ONE valid, correct action.
 
     few_shot and rag were silently broken in the MuJoCo demo while working in
     the measurement harness. This gate exists so that cannot recur unnoticed.
+
+    On Isaac the grid corners are probed too: that is where the row/column
+    mapping in GRID_TO_ISAAC would show up as mirrored if it is wrong.
     """
-    probe = "put the red cube in box 1"
-    expect = {"verb": "pick_place", "target": "rubiks_cube",
-              "location": "box_1"}
-    print("[selftest] backend=%s model=%s probe=%r\n" % (BACKEND, model, probe))
+    client = resolve_model(model)
+    if client is None:
+        print("[selftest] unknown model %r" % (model,))
+        return False
+    name = RULES if client is RULES else client.name
+    strats = strategies_for(name)
+
+    probes = [("put the red cube in box 1",
+               {"verb": "pick_place", "target": "rubiks_cube",
+                "location": "box_1"})]
+    if BACKEND == "isaac":
+        for cell in ("grid_A1", "grid_A3", "grid_C1", "grid_C3"):
+            probes.append((None, {"verb": "move_to",
+                                  "location": GRID_TO_ISAAC[cell]}))
+
+    print("[selftest] backend=%s model=%s rung=%s" % (BACKEND, name, rung_of(name)))
     all_ok = True
-    for strat in STRATEGIES:
+
+    probe, expect = probes[0]
+    print("  probe: %r" % probe)
+    for strat in strats:
         raw = None
         try:
-            action, raw = query(probe, model, strat)
+            action, raw = query(probe, name, strat)
             action = validate(action)
             if action == expect:
                 print("  %-12s VALID   %s" % (strat, json.dumps(action)))
@@ -525,6 +694,17 @@ def selftest(model, show_raw=False):
             print("  %-12s BROKEN  %s" % (strat, exc))
         if show_raw and raw is not None:
             print("       raw: %r" % (raw[:400],))
+
+    if len(probes) > 1:
+        print("\n  grid corner mapping (schema_v2 -> %s):" % BACKEND)
+        for cell in ("grid_A1", "grid_A3", "grid_C1", "grid_C3"):
+            mapped = GRID_TO_ISAAC[cell]
+            print("    %-8s -> %-10s  (%s)" % (
+                cell, mapped,
+                "far" if cell[5] == "A" else "near"))
+        print("    drive these four and confirm left/right are not mirrored;")
+        print("    if they are, flip _GRID_COL in this file.")
+
     print("\n[selftest] %s" % ("all strategies valid and correct" if all_ok
                                else "FAILURES ABOVE"))
     return all_ok
@@ -534,8 +714,13 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--backend", default="isaac", choices=sorted(BACKENDS),
                    help="which simulator vocabulary to prompt and validate against")
-    p.add_argument("--model", default="rules", choices=sorted(MODELS))
-    p.add_argument("--strategy", default="zero_shot", choices=STRATEGIES)
+    p.add_argument("--model", default=RULES,
+                   help="client name, full ('ollama:qwen2.5:3b') or bare "
+                        "('qwen2.5:3b'), or 'rules'. See --list.")
+    p.add_argument("--strategy", default="zero_shot",
+                   help="must be legal for the chosen model; see --list")
+    p.add_argument("--list", action="store_true",
+                   help="print the model/strategy table and exit")
     p.add_argument("--voice", action="store_true")
     p.add_argument("--seconds", type=float, default=5.0)
     p.add_argument("--mic", default="Seiren")
@@ -548,19 +733,38 @@ def main():
 
     _set_backend(args.backend)
 
+    if args.list:
+        print("\nmodel                      rung       strategies")
+        for name in model_names():
+            print("%-26s %-10s %s" % (name, rung_of(name),
+                                      ", ".join(strategies_for(name))))
+        return
+
+    client = resolve_model(args.model)
+    if client is None:
+        sys.exit("unknown --model %r. Available:\n  %s"
+                 % (args.model, "\n  ".join(model_names())))
+    name = RULES if client is RULES else client.name
+    allowed = strategies_for(name)
+    if args.strategy not in allowed:
+        sys.exit("--strategy %r is not valid for %s.\n  %s supports: %s\n"
+                 "  (rung-3 LoRA models were trained and measured on zero_shot "
+                 "only; the rung-4 classifier has no prompt at all.)"
+                 % (args.strategy, name, name, ", ".join(allowed)))
+
     print("[client] backend  %s" % args.backend)
-    print("[client] model    %s" % args.model)
+    print("[client] model    %s  (%s)" % (name, rung_of(name)))
     print("[client] strategy %s" % args.strategy)
     print("[client] inbox    %s" % INBOX)
 
     if args.selftest:
-        selftest(args.model, show_raw=args.raw)
+        selftest(name, show_raw=args.raw)
         return
 
     execute = not args.no_exec
 
     if args.once:
-        run_one(args.once, args.model, args.strategy, execute=execute,
+        run_one(args.once, name, args.strategy, execute=execute,
                 show_raw=args.raw)
         return
 
@@ -569,13 +773,13 @@ def main():
             for line in fh:
                 line = line.strip()
                 if line and not line.startswith("#"):
-                    run_one(line, args.model, args.strategy, execute=execute,
+                    run_one(line, name, args.strategy, execute=execute,
                             show_raw=args.raw)
         return
 
     print("\nCommands: type text, 'v' to speak, 'quit' to exit.")
     print("Switch on the fly: 'model qwen2.5:3b' / 'strategy rag'")
-    model, strategy = args.model, args.strategy
+    model, strategy = name, args.strategy
     while True:
         try:
             text = input("\n[%s/%s/%s]> " % (BACKEND, model, strategy)).strip()
@@ -588,19 +792,24 @@ def main():
             break
         if text.lower().startswith("model "):
             cand = text.split(None, 1)[1].strip()
-            if cand in MODELS:
-                model = cand
+            picked = resolve_model(cand)
+            if picked is not None:
+                model = RULES if picked is RULES else picked.name
+                allowed = strategies_for(model)
+                if strategy not in allowed:
+                    strategy = allowed[0]
+                    print("  strategy -> %s (only option for %s)" % (strategy, model))
                 print("  model -> %s" % model)
             else:
-                print("  unknown model. options: %s" % sorted(MODELS))
+                print("  unknown model. options: %s" % model_names())
             continue
         if text.lower().startswith("strategy "):
             cand = text.split(None, 1)[1].strip()
-            if cand in STRATEGIES:
+            if cand in strategies_for(model):
                 strategy = cand
                 print("  strategy -> %s" % strategy)
             else:
-                print("  unknown strategy. options: %s" % list(STRATEGIES))
+                print("  %s supports: %s" % (model, list(strategies_for(model))))
             continue
         if text.lower() in ("v", "voice"):
             try:

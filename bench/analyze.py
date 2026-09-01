@@ -13,6 +13,11 @@ Figures written to bench/figures/:
 Usage:
     python -m bench.analyze
     python -m bench.analyze --seen bench/results_grid_scored.csv --held bench/results_heldout_scored.csv
+
+DATA VERSION: V1/V2 ONLY -- it defaults to the V2 scored CSVs. This is the
+provenance of the committed V2 tables and is not broken; it simply has no
+notion of the per-model effective-n correction the V3 work introduced. For V3
+see audit/figures_v3.py and audit/v4_results.py; for V4 see audit/figures_v4.py.
 """
 import argparse, csv, math, statistics
 from collections import defaultdict

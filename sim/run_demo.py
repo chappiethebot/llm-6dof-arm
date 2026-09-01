@@ -25,14 +25,36 @@ ASR AND THE GRID: Whisper transcribes speech to text, and the grid phrasings are
 ordinary English words, so no ASR change is needed. But spoken "A1" or "grid A1"
 will NOT work -- the schema has no such phrasing and the model was never shown
 one. Say the words: "the far left corner of the table".
+
+RELATIONSHIP TO bench/llm_client.py  (READ BEFORE CHANGING EITHER FILE)
+=======================================================================
+bench/llm_client.py is the OTHER demo client. It drives EITHER simulator
+out-of-process over the bridge/ file protocol; this file drives MuJoCo
+in-process through llm/pipeline.py's run_once().
+
+Shared: the client roster (llm.clients.all_clients()), the verb/target/field-mask
+grammar from schema/schema_v2.json, and the voice front-end (asr/voice.py).
+
+Deliberately different, and both differences are load-bearing:
+
+  * LOCATION VOCABULARY. This file speaks schema_v2 (grid_A1..grid_C3 plus the
+    runtime symbols). llm_client speaks whichever simulator is attached --
+    Isaac's cell_R_C, or the V1 table_* names behind mujoco_bridge.py. Unifying
+    them would mean editing schema_v2.json, which is the provenance of the
+    30,380 measured rows.
+
+  * JSON EXTRACTION. llm/extract.py, used here, takes the LAST balanced object
+    that parses, because the cot prompt puts the answer on the final line and a
+    benchmark must score every row. llm_client REFUSES when more than one
+    parses, because a demo must not move an arm on a guess. Opposite rules, both
+    correct for their context. Do not unify them.
 """
 import os
 os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
 
-import sys, time, wave, argparse
+import sys, time, argparse
 from pathlib import Path
-import numpy as np
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _ROOT = os.path.dirname(_HERE)
@@ -69,9 +91,9 @@ def load_sim():
     return FullGraspBackend, HAS_GRID, (drive, describe, print_legend, draw_box_markers)
 
 # --- audio config (proven Phase 4 steps 1-3) ---
+# Channel count and sample-rate fallbacks live in asr/voice.py now; only the
+# choices that are this demo's own stay here.
 MIC_NAME_HINT = "Seiren"
-CHANNELS      = 1
-PREFERRED_SR  = 16000
 WHISPER_MODEL = "base"
 LANGUAGE      = "en"
 CLIP_PATH     = Path(os.path.join(os.path.dirname(__file__), "voice_clip.wav"))
@@ -185,59 +207,19 @@ def choose_mode():
 
 
 # ---------- voice front-end (only used if mode 2 chosen) ----------
-def resolve_input_device():
-    if MIC_NAME_HINT:
-        for idx, dev in enumerate(sd.query_devices()):
-            if dev["max_input_channels"] > 0 and MIC_NAME_HINT.lower() in dev["name"].lower():
-                return idx
-    return sd.default.device[0]
-
-
-def pick_samplerate(device):
-    for sr in (PREFERRED_SR, 48000, 44100):
-        try:
-            sd.check_input_settings(device=device, samplerate=sr,
-                                    channels=CHANNELS, dtype="float32")
-            return sr
-        except Exception:
-            continue
-    raise RuntimeError("No supported sample rate for this input device.")
-
-
-def record_push_to_talk(device, sr):
-    """Record until Enter. t_mic_stop stamped at Enter = latency clock start."""
-    frames = []
-    def cb(indata, n, t, status): frames.append(indata.copy())
-    input("  Press Enter to START speaking...")
-    with sd.InputStream(samplerate=sr, channels=CHANNELS, dtype="float32",
-                        device=device, callback=cb):
-        input("  Speaking... press Enter to STOP.")
-        t_mic_stop = time.perf_counter()
-    audio = np.concatenate(frames, axis=0) if frames else np.zeros((1, CHANNELS), "float32")
-    return audio, t_mic_stop
-
-
-def save_wav(audio, sr):
-    pcm16 = (np.clip(audio, -1.0, 1.0) * 32767).astype(np.int16)
-    with wave.open(str(CLIP_PATH), "wb") as wf:
-        wf.setnchannels(CHANNELS); wf.setsampwidth(2); wf.setframerate(sr)
-        wf.writeframes(pcm16.tobytes())
-
-
-def get_voice_command(asr, device, sr):
-    """Returns (command_text, asr_ms) or (None, None) on near-silence."""
-    audio, t_mic_stop = record_push_to_talk(device, sr)
-    peak = float(np.max(np.abs(audio)))
-    dur = len(audio) / sr
-    if peak < 0.01:
-        print(f"  near-silence (peak {peak:.4f}) — skipped.")
+# The mic resolver, the push-to-talk recorder and the Whisper block used to live
+# here AND in bench/llm_client.py, and the two copies had already drifted: this
+# one had push-to-talk but no offline-cache retry, that one had the retry but a
+# fixed 5-second window. Both now call asr/voice.py, which is the union.
+def get_voice_command():
+    """(command_text, asr_ms), or (None, None) on near-silence."""
+    from asr import voice
+    text, asr_s = voice.listen(model=WHISPER_MODEL, mic=MIC_NAME_HINT,
+                               seconds=None, save_to=CLIP_PATH,
+                               language=LANGUAGE)
+    if text is None:
         return None, None
-    save_wav(audio, sr)
-    segments, info = asr.transcribe(str(CLIP_PATH), language=LANGUAGE)
-    text = " ".join(s.text for s in segments).strip()
-    asr_ms = (time.perf_counter() - t_mic_stop) * 1000
-    print(f"  heard: {text!r}  (spoke {dur:.1f}s, lang={info.language})")
-    return text, asr_ms
+    return text, asr_s * 1000
 
 
 def main():
@@ -316,18 +298,7 @@ def main():
     if strategy is None:
         strategy = choose_strategy(client, allowed)
 
-    # Constrained decoding: attach the JSON Schema to the chosen client. Ollama
-    # takes the full per-verb oneOf form; OpenAI rejects oneOf at the root, so it
-    # gets the flat form and the field mask is enforced by validate_object
-    # downstream instead. See llm/schema_json.py.
-    if args.constrain == "on":
-        from llm.schema_json import to_json_schema, to_flat_json_schema
-        if client.name.startswith("openai:"):
-            client.json_schema = to_flat_json_schema(schema)
-        elif client.name.startswith("ollama:"):
-            client.json_schema = to_json_schema(schema)
     print(f"legend: {legend_note}")
-    print(f"constrained decoding: {args.constrain}")
 
     # few_shot/rag need in-context examples. build_prompt RAISES without them,
     # which run_once turns into a prompt_error and the arm never moves -- this
@@ -363,20 +334,33 @@ def main():
     schema = load_schema(os.path.join(root, "schema", name))
     print(f"schema: {name}  ({len(schema['locations'])} locations)")
 
+    # Constrained decoding: attach the JSON Schema to the chosen client. Ollama
+    # takes the full per-verb oneOf form; OpenAI rejects oneOf at the root, so it
+    # gets the flat form and the field mask is enforced by validate_object
+    # downstream instead. See llm/schema_json.py.
+    #
+    # MUST stay below load_schema(): this block used to sit above it and read
+    # `schema` before it was assigned, so the default `--constrain on` raised
+    # UnboundLocalError for every openai:/ollama: client before the viewer opened.
+    if args.constrain == "on":
+        from llm.schema_json import to_json_schema, to_flat_json_schema
+        if client.name.startswith("openai:"):
+            client.json_schema = to_flat_json_schema(schema)
+        elif client.name.startswith("ollama:"):
+            client.json_schema = to_json_schema(schema)
+    print(f"constrained decoding: {args.constrain}")
+
     backend = FullGraspBackend(render=True, gain=3.0)   # opens viewer on main thread
     backend.set_object([1.30, 0.72, 0.425])
 
     # --- THEN set up voice (mode 2 only) ---
-    asr = device = sr = None
+    # Loaded up front, not on the first spoken command, so the model-load cost
+    # never lands inside a measured-looking ASR latency. asr/voice.py caches it.
     if mode == "voice":
-        global sd
-        import sounddevice as sd
-        from faster_whisper import WhisperModel
-        device = resolve_input_device()
-        sr = pick_samplerate(device)
+        from asr import voice
         print("Loading Whisper (offline)...")
         t = time.perf_counter()
-        asr = WhisperModel(WHISPER_MODEL, device="cpu", compute_type="int8")
+        voice.load_whisper(WHISPER_MODEL)
         print(f"Whisper loaded in {time.perf_counter()-t:.2f}s")
 
     print(f"\nModel: {client.name} | Strategy: {strategy} | Input: {mode.upper()}")
@@ -395,7 +379,7 @@ def main():
                 if command.lower() in {"quit", "exit", ""}:
                     break
             else:
-                command, asr_ms = get_voice_command(asr, device, sr)
+                command, asr_ms = get_voice_command()
                 if command is None:
                     continue
 
