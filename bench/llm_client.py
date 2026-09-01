@@ -1,3 +1,25 @@
+"""
+bench/llm_client.py
+
+LLM-side half of the bridge: model selection, prompt strategies, text or
+voice input, per-stage latency timing. Runs in conda env `thesis`.
+Never imports isaacsim.
+
+Works with EITHER simulator via --backend. The two have different location
+vocabularies; prompting one while the other executes reproduces exactly the
+silent symbol mismatch the V4 runs were about, so it is selected explicitly.
+
+WARNING: this is the DEMO path, not the measurement harness. RAG here uses
+token-overlap retrieval, not the embedding store used for the measured runs.
+Do not quote timings or accuracy from this script in the thesis.
+
+    python bench/llm_client.py --backend isaac  --model gpt-4o-mini --strategy rag
+    python bench/llm_client.py --backend mujoco --model gpt-4o-mini --strategy rag
+    python bench/llm_client.py --backend mujoco --model gpt-4o-mini --selftest
+    python bench/llm_client.py --once "put the red cube in box 1"
+    python bench/llm_client.py --script demo_script.txt
+"""
+
 import argparse, json, os, re, time, uuid
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,9 +43,7 @@ STRATEGIES = ("zero_shot", "few_shot", "cot", "role_based", "rag")
 
 VERBS = {"move_to", "pick_place", "fetch", "hold", "inspect", "stop", "reject"}
 TARGETS = {"rubiks_cube", "bottle", "toy_car"}
-LOCATIONS = {"box_1", "box_2", "box_3", "handover"} | {
-    "cell_%d_%d" % (r, c) for r in range(3) for c in range(3)
-}
+
 FIELD_MASK = {
     "move_to": {"location"},
     "pick_place": {"target", "location"},
@@ -34,9 +54,35 @@ FIELD_MASK = {
     "reject": set(),
 }
 
-SCHEMA_TEXT = """Verbs: fetch, hold, inspect, move_to, pick_place, reject, stop
+BACKENDS = {
+    "isaac": {
+        "locations": {"box_1", "box_2", "box_3", "handover"} | set(
+            "cell_%d_%d" % (r, c) for r in range(3) for c in range(3)),
+        "location_text": ("box_1, box_2, box_3, handover, "
+                          "cell_R_C where R and C are 0-2"),
+    },
+    "mujoco": {
+        "locations": {"table_center", "table_left", "table_right",
+                      "table_front", "table_back",
+                      "box_1", "box_2", "box_3"},
+        "location_text": ("box_1, box_2, box_3, table_center, table_left, "
+                          "table_right, table_front, table_back"),
+    },
+}
+
+BACKEND = "isaac"
+LOCATIONS = set()
+SCHEMA_TEXT = ""
+
+
+def _set_backend(name):
+    """Point the validator and the prompt at one backend's vocabulary."""
+    global BACKEND, LOCATIONS, SCHEMA_TEXT
+    BACKEND = name
+    LOCATIONS = BACKENDS[name]["locations"]
+    SCHEMA_TEXT = """Verbs: fetch, hold, inspect, move_to, pick_place, reject, stop
 Targets (objects): bottle, rubiks_cube, toy_car
-Locations: box_1, box_2, box_3, handover, cell_R_C where R and C are 0-2
+Locations: %s
 
 Required fields per verb (emit EXACTLY these keys plus "verb", no others):
   move_to    -> location
@@ -49,17 +95,26 @@ Required fields per verb (emit EXACTLY these keys plus "verb", no others):
 
 Object colours: rubiks_cube is red, bottle is blue, toy_car is yellow.
 
-Emit EXACTLY ONE JSON object. Do not emit a plan or a sequence of steps."""
+Emit EXACTLY ONE JSON object. Do not emit a plan or a sequence of steps.""" % (
+        BACKENDS[name]["location_text"],)
 
-FEW_SHOT = [
+
+_set_backend(BACKEND)
+
+FEW_SHOT_COMMON = [
     ("put the red cube in box 1",
      {"verb": "pick_place", "target": "rubiks_cube", "location": "box_1"}),
     ("bring me the bottle", {"verb": "fetch", "target": "bottle"}),
-    ("move to box 3", {"verb": "move_to", "location": "box_3"}),
     ("pick up the yellow car and hold it",
      {"verb": "hold", "target": "toy_car"}),
     ("make me a sandwich", {"verb": "reject"}),
 ]
+
+
+def _few_shot():
+    """Examples must use the ACTIVE backend's locations."""
+    extra = ("move to box 3", {"verb": "move_to", "location": "box_3"})
+    return FEW_SHOT_COMMON + [extra]
 
 
 def validate(action):
@@ -76,7 +131,8 @@ def validate(action):
     if "target" in action and action["target"] not in TARGETS:
         raise ValueError("unknown target: %r" % (action["target"],))
     if "location" in action and action["location"] not in LOCATIONS:
-        raise ValueError("unknown location: %r" % (action["location"],))
+        raise ValueError("unknown location for backend %s: %r"
+                         % (BACKEND, action["location"]))
     return action
 
 
@@ -102,13 +158,13 @@ def _load_seen():
 
 
 def _normalise_label(row):
-    """seen.jsonl label -> Isaac field-mask action, or None.
+    """seen.jsonl label -> active field-mask action, or None.
 
     Stored rows look like:
       {"command": ..., "expected": {"action": "pick_place", "target": ...,
                                     "location": ..., "modifiers": []}}
-    The Isaac mask uses "verb" not "action" and has no "modifiers" field, so
-    raw rows injected as RAG examples teach the model the wrong shape.
+    The mask uses "verb" not "action" and has no "modifiers" field, so raw
+    rows injected as RAG examples teach the model the wrong shape.
     """
     label = row.get("expected") or row.get("action") or row
     if not isinstance(label, dict):
@@ -132,7 +188,7 @@ def _normalise_label(row):
 
 
 def _retrieve(command, k=5):
-    """Retrieve similar seen.jsonl examples, normalised to the Isaac mask.
+    """Retrieve similar seen.jsonl examples, normalised to the active mask.
 
     NOTE: token-overlap retrieval, NOT the embedding store used in the
     measured RAG runs. Demo approximation only.
@@ -141,7 +197,7 @@ def _retrieve(command, k=5):
     if _SEEN_CACHE is None:
         _SEEN_CACHE = _load_seen()
     if not _SEEN_CACHE:
-        return FEW_SHOT
+        return _few_shot()
 
     q = set(re.findall(r"[a-z0-9]+", command.lower()))
     scored = []
@@ -160,7 +216,7 @@ def _retrieve(command, k=5):
         out.append((row["command"], clean))
         if len(out) >= k:
             break
-    return out or FEW_SHOT
+    return out or _few_shot()
 
 
 def build_prompt(command, strategy):
@@ -170,7 +226,7 @@ def build_prompt(command, strategy):
     if strategy == "zero_shot":
         return base, command
     if strategy in ("few_shot", "rag"):
-        examples = FEW_SHOT if strategy == "few_shot" else _retrieve(command)
+        examples = _few_shot() if strategy == "few_shot" else _retrieve(command)
         lines = ["%s -> %s" % (c, json.dumps(a)) for c, a in examples]
         return base + "\n\nExamples:\n" + "\n".join(lines), command
     if strategy == "cot":
@@ -185,11 +241,7 @@ def build_prompt(command, strategy):
 
 def _candidate_objects(text):
     """Every balanced {...} block, skipping braces inside string literals."""
-    out = []
-    depth = 0
-    start = -1
-    in_str = False
-    esc = False
+    out, depth, start, in_str, esc = [], 0, -1, False, False
     for i, ch in enumerate(text):
         if in_str:
             if esc:
@@ -219,9 +271,8 @@ def _extract_json(text):
 
     If the model emits MULTIPLE candidate actions, that is ambiguity, not a
     menu. Selecting by position, or by 'first that validates', silently picks
-    a wrong-but-legal action: qwen2.5:3b emits three-to-five step plans, and
-    any positional rule gets it wrong some of the time. Ambiguity is reported
-    as a failure rather than resolved by guesswork.
+    a wrong-but-legal action: small models emit three-to-five step plans and
+    any positional rule gets it wrong some of the time.
     """
     cleaned = re.sub(r"<think>.*?</think>", "", text, flags=re.S)
     cleaned = re.sub(r"<\|.*?\|>", "", cleaned)
@@ -278,6 +329,7 @@ def call_rules(command):
     t = command.lower().strip()
     if t in ("stop", "halt"):
         return {"verb": "stop"}
+
     target = None
     if "blue" in t:
         target = "bottle"
@@ -291,18 +343,32 @@ def call_rules(command):
         target = "toy_car"
     elif "cube" in t or "rubik" in t:
         target = "rubiks_cube"
+
     location = None
     for n in (1, 2, 3):
         if ("box %d" % n) in t or ("box_%d" % n) in t:
             location = "box_%d" % n
             break
-    if location is None:
+
+    if location is None and BACKEND == "isaac":
         for r in range(3):
             for c in range(3):
                 if ("cell %d %d" % (r, c)) in t or ("cell_%d_%d" % (r, c)) in t:
                     location = "cell_%d_%d" % (r, c)
-    if location is None and ("hand" in t or "handover" in t):
-        location = "handover"
+        if location is None and ("hand" in t or "handover" in t):
+            location = "handover"
+
+    if location is None and BACKEND == "mujoco":
+        for word, loc in (("center", "table_center"),
+                          ("centre", "table_center"),
+                          ("left", "table_left"),
+                          ("right", "table_right"),
+                          ("front", "table_front"),
+                          ("back", "table_back")):
+            if word in t:
+                location = loc
+                break
+
     if any(w in t for w in ("bring", "fetch", "give")) and target:
         return {"verb": "fetch", "target": target}
     if "hold" in t and target:
@@ -354,7 +420,9 @@ def listen(seconds=5.0, mic_substring="Seiren"):
             _WHISPER = WhisperModel("small.en", device="cpu",
                                     compute_type="int8")
         except Exception:
-            print("  model not cached -- downloading once (HF_HUB_OFFLINE=0)")
+            # Offline mode is right once cached, but it blocks the first
+            # download. Retry online, then stay offline afterwards.
+            print("  model not cached -- downloading once")
             os.environ["HF_HUB_OFFLINE"] = "0"
             _WHISPER = WhisperModel("small.en", device="cpu",
                                     compute_type="int8")
@@ -388,7 +456,7 @@ def send(action, timeout=RESULT_TIMEOUT):
             with open(result_path, "r", encoding="utf-8") as fh:
                 return json.load(fh)
         time.sleep(POLL_SECONDS)
-    raise TimeoutError("no result after %ss -- is sim/isaac_bridge.py running, "
+    raise TimeoutError("no result after %ss -- is a bridge running, "
                        "and is it watching %s?" % (timeout, INBOX))
 
 
@@ -439,7 +507,7 @@ def selftest(model, show_raw=False):
     probe = "put the red cube in box 1"
     expect = {"verb": "pick_place", "target": "rubiks_cube",
               "location": "box_1"}
-    print("[selftest] model=%s probe=%r\n" % (model, probe))
+    print("[selftest] backend=%s model=%s probe=%r\n" % (BACKEND, model, probe))
     all_ok = True
     for strat in STRATEGIES:
         raw = None
@@ -464,6 +532,8 @@ def selftest(model, show_raw=False):
 
 def main():
     p = argparse.ArgumentParser()
+    p.add_argument("--backend", default="isaac", choices=sorted(BACKENDS),
+                   help="which simulator vocabulary to prompt and validate against")
     p.add_argument("--model", default="rules", choices=sorted(MODELS))
     p.add_argument("--strategy", default="zero_shot", choices=STRATEGIES)
     p.add_argument("--voice", action="store_true")
@@ -476,6 +546,9 @@ def main():
     p.add_argument("--raw", action="store_true")
     args = p.parse_args()
 
+    _set_backend(args.backend)
+
+    print("[client] backend  %s" % args.backend)
     print("[client] model    %s" % args.model)
     print("[client] strategy %s" % args.strategy)
     print("[client] inbox    %s" % INBOX)
@@ -505,7 +578,7 @@ def main():
     model, strategy = args.model, args.strategy
     while True:
         try:
-            text = input("\n[%s/%s]> " % (model, strategy)).strip()
+            text = input("\n[%s/%s/%s]> " % (BACKEND, model, strategy)).strip()
         except (EOFError, KeyboardInterrupt):
             print()
             break
