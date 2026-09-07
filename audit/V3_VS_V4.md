@@ -2,8 +2,8 @@
 
 Source data: `audit/v4_cells.csv` (59 cells), `audit/DEFENCE_NUMBERS.md`,
 `audit/PREREGISTRATION_v4.md` (commit `48b838a`, written before any V4 run).
-Figures: `audit/figures/fig_v4_{1,2,3}_*.png`, from
-`audit/figures_v4_compare.py`. No model was run to produce this document.
+Figures: `audit/figures/fig5_v3_vs_v4a.png`, `fig6_llama_failure_modes.png`,
+`fig7_v4c_row_vs_column.png`. No model was run to produce this document.
 
 ---
 
@@ -149,7 +149,7 @@ no CI.
 ## 5. V4a — what the fix changed, and what it cost per model
 
 V4a rewrote the legend to address all three bugs at once, adding an explicit
-disambiguation rule. Figure: `fig_v4_1_delta_vs_v3.png`.
+disambiguation rule. Figure: `fig5_v3_vs_v4a.png`.
 
 **The headline is that almost nothing moved. 20 of 27 cells sit inside the
 ±6-point band.**
@@ -226,7 +226,7 @@ V4a alone could not tell apart:
    object wrong. 22 of 40 lost few_shot rows are this, not the first problem.
 
 V4a-lite removed the literal cell id and the arrows, keeping the rule as prose.
-Figure: `fig_v4_2_llama_v4a_lite.png`.
+Figure: `fig6_llama_failure_modes.png`.
 
 | llama3.2:3b | V3 | V4a | V4a-lite | Δ lite vs V3 |
 |---|---|---|---|---|
@@ -257,7 +257,7 @@ V4c uses *front*/*back* — row vocabulary present in **neither** the training
 split nor the evaluation split. If the adapters learned a concept, accuracy
 should hold. If they memorised `far`/`near`, it should not.
 
-Overall action match, from `v4_cells.csv` (figure: `fig_v4_3_lora_v4c.png`):
+Overall action match, from `v4_cells.csv` (figure: `fig7_v4c_row_vs_column.png`):
 
 | model | V3 | V4c | Δ (pts) | verdict |
 |---|---|---|---|---|
@@ -265,8 +265,19 @@ Overall action match, from `v4_cells.csv` (figure: `fig_v4_3_lora_v4c.png`):
 | qwen2.5-3b-lora | 0.6544 [0.590, 0.719] | 0.6435 [0.574, 0.708] | −1.1 | [noise] |
 
 **Overall accuracy is not where the answer lives.** The pre-registered
-hypothesis was about *row* accuracy, and the row-level figures — 3B at 0.364,
-0.5B at 0.495 — are **not in `v4_cells.csv` and carry no interval here**. On the
+hypothesis was about *row* accuracy, plotted in `fig7_v4c_row_vs_column.png`
+against the two pre-registered bands. Those row figures are **not in
+`v4_cells.csv` and carry no interval**, so they cannot be put on the same
+axis as the overall accuracies above.
+
+| model | V3 row | V4c row | V3 col | V4c col |
+|---|---|---|---|---|
+| qwen2.5-0.5b-lora | 31% | 50% | 90% | 79% |
+| qwen2.5-3b-lora | 41% | 36% | 86% | 91% |
+
+Columns stay near ceiling under vocabulary neither adapter has seen; rows sit
+at or near chance (33.3%). The adapters read the side-to-side axis and guess
+the front-to-back one. On the
 pre-registered bands, 3B's 0.364 supports memorisation and 0.5B's 0.495 falls
 between the bands and is **inconclusive**. The verdict is a genuine split, and
 the 0.5B result must be reported as inconclusive rather than rounded toward the
@@ -316,6 +327,14 @@ only ever confirms is not doing any work.
 The three methods disagree on *which* seven — the band and the CI test swap
 `gpt-4o-mini / cot` for `qwen2.5:0.5b / few_shot` — but every method returns
 seven. Fix the figure in both files before either is quoted.
+
+**`fig5_v3_vs_v4a.png` carries the wrong count in its own caption** — it reads
+"21 of 27" and "the six that move". The figure is otherwise correct; only the
+caption text needs regenerating. Do not ship it as-is.
+
+**`fig7_v4c_row_vs_column.png` has a label collision**: the `36` on the
+qwen2.5-3b-lora V4c bar is overprinted by the "pre-registered: memorised
+strings" annotation.
 
 **Also flagged:** `DEFENCE_NUMBERS.md` §4 attributes gpt-4o-mini's −0.159 to
 few_shot, which `v4_cells.csv` confirms. `session_record_v3.md` §2.13 states the
