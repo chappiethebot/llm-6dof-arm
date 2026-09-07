@@ -9,67 +9,88 @@ Works with EITHER simulator via --backend. The two have different location
 vocabularies; prompting one while the other executes reproduces exactly the
 silent symbol mismatch the V4 runs were about, so it is selected explicitly.
 
-WARNING: this is the DEMO path, not the measurement harness. RAG here uses
-token-overlap retrieval, not the embedding store used for the measured runs.
-Do not quote timings or accuracy from this script in the thesis.
+WARNING: this is the DEMO path, not the measurement harness. Do not quote
+timings or accuracy from this script in the thesis.
 
     python bench/llm_client.py --list
     python bench/llm_client.py --backend isaac  --model gpt-4o-mini --strategy rag
-    python bench/llm_client.py --backend mujoco --model gpt-4o-mini --strategy rag
+    python bench/llm_client.py --backend isaac  --model classifier:distilbert
     python bench/llm_client.py --backend mujoco --model gpt-4o-mini --selftest
     python bench/llm_client.py --once "put the red cube in box 1"
     python bench/llm_client.py --script demo_script.txt
 
 
-RELATIONSHIP TO sim/run_demo.py  (READ THIS BEFORE CHANGING EITHER FILE)
-========================================================================
+PARITY WITH sim/run_demo.py  (READ THIS BEFORE CHANGING EITHER FILE)
+=====================================================================
 sim/run_demo.py is the OTHER demo client. It drives MuJoCo in-process through
 llm/pipeline.py's run_once(); this file drives EITHER simulator out-of-process
 over the bridge/ file protocol, so a model crash cannot kill the simulator.
 
-They now SHARE:
-  * the client roster          llm.clients.all_clients()   (rungs 1-4)
+They SHARE, and must keep sharing:
+  * the client roster           llm.clients.all_clients()   (rungs 1-4)
+  * the legend                  bench.run_cell.apply_legend(), v5 by default
+  * constrained decoding        llm.schema_json, on by default
   * the verb/target/field-mask grammar, read from schema/schema_v2.json
-  * the voice front-end        asr/voice.py
+  * the few-shot exemplars      bench.dataset.load_seen_split(data/seen_v2.jsonl)
+  * the RAG retriever           llm.retrieve.Retriever
+  * the voice front-end         asr/voice.py
 
-They deliberately DIFFER in two places, and both differences are load-bearing:
+VOCABULARY -- the one place they still differ, and it is now a FLAG.
+--------------------------------------------------------------------
+Earlier versions of this file prompted rungs 1 and 2 in the ATTACHED BACKEND's
+location vocabulary (Isaac's cell_R_C, or the V1 table_* names behind
+mujoco_bridge.py) while rungs 3 and 4 ran canonically over schema_v2. That made
+three things impossible at once:
 
-1. LOCATION VOCABULARY. run_demo speaks schema_v2 (grid_A1..grid_C3, plus the
-   runtime symbols). This file speaks whichever simulator is attached: Isaac's
-   cell_R_C + handover, or the V1 table_* names that sim/sim_backend.py behind
-   mujoco_bridge.py actually implements. Neither is schema_v2, and unifying them
-   would mean editing schema_v2.json -- which is the provenance of 30,380
-   measured rows. See CANONICAL -> BACKEND TRANSLATION below for how rung-3/4
-   output crosses that line.
+  * the legend could not be applied to rungs 1/2 (it is written in schema_v2
+    grid terms, not cell_R_C terms);
+  * constrained decoding could not be attached to rungs 1/2 on Isaac, because
+    the schema_v2 JSON Schema forbids every legal Isaac location;
+  * a rung-1 answer and a rung-4 answer to the same command were not produced
+    under the same prompt, so the demo's headline comparison -- 19 ms classifier
+    beside a cloud model -- was not like for like.
 
-2. JSON EXTRACTION POLICY -- the subtle one. The two extractors implement
-   OPPOSITE rules for the same input, on purpose:
+So `--vocab canonical` now prompts EVERY rung in schema_v2 (grid_A1..grid_C3)
+and translates to the backend's names at the edge, through the same
+to_backend_action() that rungs 3 and 4 already used. Nothing edits
+schema_v2.json; nothing touches the 30,380 measured rows. It is the default on
+Isaac, where every grid cell has an exact equivalent.
 
-     llm/extract.py     takes the LAST balanced {...} that parses, because the
-                        cot prompt puts the answer on the final line and earlier
-                        braces are reasoning fragments or schema echoes. A
-                        benchmark must produce a verdict for every row.
+`--vocab backend` keeps the old behaviour and is the default on MuJoCo, whose
+table_center / table_left / table_right / table_front / table_back have NO
+schema_v2 equivalent and cannot be reached canonically.
 
-     _extract_json here REFUSES when more than one candidate parses, because
-                        multiple actions is ambiguity, not a menu. Small models
-                        emit three-to-five step plans, and any positional rule
-                        picks a wrong-but-legal action some of the time. A demo
-                        must not move a real arm on a guess.
+Known cost of canonical mode on Isaac: `handover` has no schema_v2 name, so it
+is unreachable from rungs 1 and 2. Use --vocab backend to demo it.
 
-   Do NOT "unify" these. Changing either one changes either the measured numbers
-   or the demo's safety property. If you touch one, read the other first.
+JSON EXTRACTION POLICY -- still deliberately different from llm/extract.py:
+
+  llm/extract.py     takes the LAST balanced {...} that parses, because the cot
+                     prompt puts the answer on the final line and earlier braces
+                     are reasoning fragments. A benchmark must produce a verdict
+                     for every row.
+
+  _extract_json here REFUSES when more than one candidate parses, because
+                     multiple actions is ambiguity, not a menu. Small models
+                     emit three-to-five step plans, and any positional rule
+                     picks a wrong-but-legal action some of the time. A demo
+                     must not move an arm on a guess.
+
+Do NOT "unify" these. Changing either one changes either the measured numbers
+or the demo's safety property. If you touch one, read the other first.
 """
 
 import argparse, json, os, re, sys, time, uuid
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _REPO_ROOT not in sys.path:
-    sys.path.insert(0, _REPO_ROOT)   # so llm/, schema/ and asr/ resolve when run as a script
+    sys.path.insert(0, _REPO_ROOT)   # so llm/, schema/, bench/ and asr/ resolve
 
 BRIDGE_DIR = os.path.join(_REPO_ROOT, "bridge")
 INBOX = os.path.join(BRIDGE_DIR, "inbox")
 OUTBOX = os.path.join(BRIDGE_DIR, "outbox")
 SEEN_JSONL = os.path.join(_REPO_ROOT, "data", "seen.jsonl")
+SEEN_V2_JSONL = os.path.join(_REPO_ROOT, "data", "seen_v2.jsonl")
 SCHEMA_V2 = os.path.join(_REPO_ROOT, "schema", "schema_v2.json")
 
 RESULT_TIMEOUT = 300.0
@@ -100,10 +121,36 @@ STRATEGIES = ("zero_shot", "few_shot", "cot", "role_based", "rag")
 
 BACKENDS = {
     "isaac": {
-        "locations": {"box_1", "box_2", "box_3", "handover"} | set(
-            "cell_%d_%d" % (r, c) for r in range(3) for c in range(3)),
-        "location_text": ("box_1, box_2, box_3, handover, "
+        # max_reach and nearest_free_cell are RUNTIME symbols: the model emits
+        # the symbol and sim/isaac_backend.py resolves it against the live
+        # scene, by the same rules as sim/workspace.py. They are legal Isaac
+        # locations, so they belong in this set; the backend reports which cell
+        # each became in a "resolved" field.
+        "locations": ({"box_1", "box_2", "box_3", "handover",
+                       "max_reach", "nearest_free_cell"}
+                      | set("cell_%d_%d" % (r, c)
+                            for r in range(3) for c in range(3))),
+        "location_text": ("box_1, box_2, box_3, handover, max_reach, "
+                          "nearest_free_cell, "
                           "cell_R_C where R and C are 0-2"),
+        # Every symbol named above MUST be defined here. Listing a symbol with
+        # no definition is the defect audit/V3_VS_V4.md section 4 prices at a
+        # 55.1% failure rate for nearest_free_cell: the model is told a word
+        # exists and never told what it means. Adding the two runtime symbols
+        # to this backend re-created that defect until these lines were added.
+        "location_notes": (
+            "cell_R_C is a square on the table. R is the row: 0 is the row "
+            "nearest the robot, 2 is the row furthest away. C is the column, "
+            "0 to 2 across the table.\n"
+            "handover is the point where the robot hands an object to a "
+            "person. Use it for \"give it to me\" or \"hand it over\".\n"
+            "max_reach is the square the arm can still touch at its farthest. "
+            "Use it for \"as far as you can reach\".\n"
+            "nearest_free_cell is any square that is free; the robot picks "
+            "which one. Use it for \"anywhere you want\" or \"anywhere free\"."),
+        # Isaac's grid maps 1:1 onto schema_v2's, so canonical prompting works
+        # and is what makes legend + constrained decoding available.
+        "default_vocab": "canonical",
     },
     "mujoco": {
         "locations": {"table_center", "table_left", "table_right",
@@ -111,18 +158,26 @@ BACKENDS = {
                       "box_1", "box_2", "box_3"},
         "location_text": ("box_1, box_2, box_3, table_center, table_left, "
                           "table_right, table_front, table_back"),
+        "location_notes": (
+            "table_left, table_right, table_front and table_back are fixed "
+            "spots at the edges of the table; table_center is the middle."),
+        # The V1 table_* names exist in no schema_v2 vocabulary. Canonical
+        # prompting cannot reach them, so this backend stays on its own names.
+        "default_vocab": "backend",
     },
 }
 
 BACKEND = "isaac"
+VOCAB = "canonical"
 LOCATIONS = set()
 SCHEMA_TEXT = ""
 
 
-def _set_backend(name):
-    """Point the validator and the prompt at one backend's vocabulary."""
-    global BACKEND, LOCATIONS, SCHEMA_TEXT
+def _set_backend(name, vocab="auto"):
+    """Point the validator, the prompt and the vocabulary mode at one backend."""
+    global BACKEND, VOCAB, LOCATIONS, SCHEMA_TEXT
     BACKEND = name
+    VOCAB = BACKENDS[name]["default_vocab"] if vocab == "auto" else vocab
     LOCATIONS = BACKENDS[name]["locations"]
     required_lines = "\n".join(
         "  %-10s -> %s" % (v, ", ".join(sorted(FIELD_MASK[v])) or "(none)")
@@ -131,6 +186,9 @@ def _set_backend(name):
 Targets (objects): %s
 Locations: %s
 
+What the location symbols mean:
+%s
+
 Required fields per verb (emit EXACTLY these keys plus "verb", no others):
 %s
 
@@ -138,7 +196,8 @@ Object colours: rubiks_cube is red, bottle is blue, toy_car is yellow.
 
 Emit EXACTLY ONE JSON object. Do not emit a plan or a sequence of steps.""" % (
         ", ".join(sorted(VERBS)), ", ".join(sorted(TARGETS)),
-        BACKENDS[name]["location_text"], required_lines)
+        BACKENDS[name]["location_text"],
+        BACKENDS[name]["location_notes"], required_lines)
 
 
 _set_backend(BACKEND)
@@ -220,15 +279,26 @@ def resolve_model(arg):
     return None
 
 
+def uses_canonical(name):
+    """True when this client is prompted in schema_v2 vocabulary.
+
+    Rungs 3 and 4 are ALWAYS canonical and this is not a choice: the LoRA
+    adapters were fine-tuned on llm/prompts.py zero-shot prompts over schema_v2,
+    and the classifier's label space IS schema_v2 -- it has no prompt to change.
+    Rungs 1 and 2 follow --vocab.
+    """
+    if name == RULES:
+        return False        # the rules fallback emits backend names directly
+    if rung_of(name) in ("rung 3", "rung 4"):
+        return True
+    return VOCAB == "canonical"
+
+
 # ---------------------------------------------------------------------------
 # CANONICAL -> BACKEND TRANSLATION
 #
-# Rungs 3 and 4 cannot be prompted in a backend vocabulary: the LoRA adapters
-# were fine-tuned on llm/prompts.py zero-shot prompts over schema_v2, and the
-# classifier's label space IS schema_v2 -- it has no prompt to change. So they
-# are run canonically (schema_v2, "action" key, grid_A1..grid_C3) and their
-# output is translated here, at the edge, into the attached backend's names.
-# Rungs 1 and 2 are prompted in the backend vocabulary directly, as before.
+# Canonically-prompted output (schema_v2, "action" key, grid_A1..grid_C3) is
+# translated here, at the edge, into the attached backend's names.
 #
 # GRID MAPPING, AND ITS ONE UNVERIFIED HALF -- read before demoing Isaac:
 #   rows    schema_v2 A/B/C run FAR -> NEAR (sim/workspace.py: "far -> near").
@@ -236,11 +306,18 @@ def resolve_model(arg):
 #           So A->2, B->1, C->0. This half is certain, from both docstrings.
 #   columns schema_v2 1/2/3 run LEFT -> RIGHT. Isaac's col index runs -y -> +y.
 #           Whether Isaac's +y is the same "right" the legend means has NOT been
-#           confirmed against a running scene -- Isaac is not installed on the
-#           machine this was written on.
-#   VERIFY BEFORE USE: `--backend isaac --model rules --selftest` drives all
-#   four grid corners. If left/right come out mirrored, flip _COL below and
+#           confirmed against a running scene.
+#
+#   A MIRRORED COLUMN MAP PRODUCES PLAUSIBLE MOTION AND WRONG SEMANTICS WITH NO
+#   ERROR. Nothing downstream can catch it. Verify physically:
+#       --backend isaac --model rules --selftest
+#   drives grid_A1 / grid_A3 / grid_C1 / grid_C3. A1 and A3 are the SAME ROW and
+#   OPPOSITE COLUMNS, so they isolate the column half: if the arm reaches the
+#   wrong side for those two while the rows are right, flip _GRID_COL below and
 #   nothing else changes.
+#
+#   Also settle WHOSE left "left" is -- the legend says left/right without ever
+#   naming the viewpoint. Write the answer into the thesis, not just the code.
 # ---------------------------------------------------------------------------
 _GRID_ROW = {"A": 2, "B": 1, "C": 0}      # far -> near  ==  isaac row 2 -> 0
 _GRID_COL = {"1": 0, "2": 1, "3": 2}      # left -> right ==  isaac col 0 -> 2
@@ -252,31 +329,51 @@ GRID_TO_ISAAC = {
 
 
 def _to_backend_location(loc):
+    # box_1..3 exist in both vocabularies, and on Isaac so do max_reach and
+    # nearest_free_cell -- the backend resolves those against the live scene.
     if loc in LOCATIONS:
-        return loc                      # box_1..3 exist in both vocabularies
+        return loc
     if BACKEND == "isaac" and loc in GRID_TO_ISAAC:
         return GRID_TO_ISAAC[loc]
     if loc in CANONICAL_LOCATIONS:
         raise ValueError(
-            "%r is a schema_v2 location with no %s equivalent. Runtime symbols "
-            "(max_reach, nearest_free_cell) are resolved by the in-process "
-            "backend in sim/workspace.py and have no bridge protocol; the grid "
-            "cells exist in Isaac but not behind mujoco_bridge.py, which runs "
-            "the V1 SimBackend." % (loc, BACKEND))
+            "%r is a schema_v2 location with no %s equivalent. The grid cells "
+            "and the runtime symbols exist in Isaac but not behind "
+            "mujoco_bridge.py, which runs the V1 SimBackend."
+            % (loc, BACKEND))
     raise ValueError("unknown location for backend %s: %r" % (BACKEND, loc))
 
 
 def to_backend_action(obj):
     """Canonical schema_v2 object -> action in the attached backend's vocabulary.
 
-    Renames "action" to "verb", maps the location, and drops every field outside
-    the mask (schema_v2 carries "modifiers"; the bridge protocol does not).
+    Renames "action" to "verb" and maps the location.
+
+    ON EXTRA FIELDS. `modifiers` is DROPPED: schema_v2 carries it legitimately,
+    the scorer ignores it when falsy, and the bridge protocol has no slot for
+    it. Any OTHER field outside the verb's mask is REFUSED, not dropped.
+
+    That distinction matters and was wrong here until it was tested. Dropping
+    silently made {"action": "stop", "target": "bottle"} succeed as
+    {"verb": "stop"} -- a field-mask violation quietly repaired. The
+    measurement path does not repair it: schema/validate_object.py rejects it
+    and the scorer counts the row wrong. A demo that is MORE FORGIVING than the
+    harness will appear to work on exactly the outputs the results chapter
+    counted as failures, which overstates how well the system runs live. The
+    demo must fail where the measurement failed.
     """
     if not isinstance(obj, dict):
         raise ValueError("action must be a JSON object")
     verb = obj.get("verb", obj.get("action"))
     if verb not in FIELD_MASK:
         raise ValueError("illegal verb: %r" % (verb,))
+
+    allowed = FIELD_MASK[verb] | {"verb", "action", "modifiers"}
+    extra = sorted(set(obj) - allowed)
+    if extra:
+        raise ValueError("field mask violation for %s: %s not allowed (mask is %s)"
+                         % (verb, extra, sorted(FIELD_MASK[verb]) or "no fields"))
+
     out = {"verb": verb}
     for key in FIELD_MASK[verb]:
         if obj.get(key) in (None, ""):
@@ -306,6 +403,87 @@ def validate(action):
     return action
 
 
+# ---------------------------------------------------------------------------
+# CANONICAL PROMPTING -- the same code path sim/run_demo.py uses.
+#
+# The legend is applied once at startup by bench.run_cell.apply_legend(), which
+# is what llm/prompts.py's build_prompt() reads. Applying it is the whole reason
+# rungs 1 and 2 moved onto this path: the legend is written in grid_A1..grid_C3
+# terms and cannot be expressed in cell_R_C terms at all.
+# ---------------------------------------------------------------------------
+_CANON_SCHEMA = None
+_CANON_FEWSHOT = None
+_RETRIEVER = None
+
+
+def canonical_schema():
+    global _CANON_SCHEMA
+    if _CANON_SCHEMA is None:
+        from llm.prompts import load_schema
+        _CANON_SCHEMA = load_schema(SCHEMA_V2)
+    return _CANON_SCHEMA
+
+
+def warm_retriever():
+    """Construct the Retriever without retrieving anything.
+
+    Separate from canonical_examples() so callers can pay the one-off weight
+    load outside a timed block without also firing a retrieval and printing a
+    second `retrieved:` line for the same command.
+    """
+    global _RETRIEVER
+    if _RETRIEVER is None:
+        from llm.retrieve import Retriever
+        print("  building retriever (once; ~2-3 s model load)...")
+        _RETRIEVER = Retriever(quiet=True)
+        print("  retrieval corpus: %s (%d rows)"
+              % (_RETRIEVER.corpus_path, len(_RETRIEVER.rows)))
+    return _RETRIEVER
+
+
+def canonical_examples(strategy, command):
+    """In-context examples for the canonical path, or None.
+
+    few_shot: the three fixed exemplars from data/seen_v2.jsonl -- the same
+    split bench/dataset.py hands the harness, and the same call sim/run_demo.py
+    makes. NEVER held_out.
+
+    rag: llm.retrieve.Retriever, selected per command. This replaces the
+    token-overlap approximation this file used to carry, which was the reason
+    the old docstring said RAG numbers here were not comparable.
+    """
+    global _CANON_FEWSHOT, _RETRIEVER
+    if strategy == "few_shot":
+        if _CANON_FEWSHOT is None:
+            from bench.dataset import load_seen_split
+            _CANON_FEWSHOT, _ = load_seen_split(k=3, seen_path=SEEN_V2_JSONL)
+            print("  few-shot exemplars: %d from data/seen_v2.jsonl"
+                  % len(_CANON_FEWSHOT))
+        return _CANON_FEWSHOT
+    if strategy == "rag":
+        res = warm_retriever().retrieve(command, k=3)
+        print("  retrieved:     %s  (%.0f ms)" % (res.ids, res.latency_s * 1000))
+        return res.examples
+    return None
+
+
+def canonical_prompt(command, client, strategy):
+    """The prompt the canonical path builds, legend already applied."""
+    if client.name.startswith("classifier:"):
+        return command      # classifier_client.complete(): the prompt IS the command
+    from llm.prompts import build_prompt as canon_build
+    if rung_of(client.name) == "rung 3":
+        strategy = "zero_shot"      # the only prompt the adapters ever saw
+    examples = canonical_examples(strategy, command)
+    schema = canonical_schema()
+    if examples is None:
+        return canon_build(command, strategy, schema)
+    return canon_build(command, strategy, schema, examples=examples)
+
+
+# ---------------------------------------------------------------------------
+# BACKEND-VOCABULARY PROMPTING -- --vocab backend only (MuJoCo by default).
+# ---------------------------------------------------------------------------
 FEW_SHOT_COMMON = [
     ("put the red cube in box 1",
      {"verb": "pick_place", "target": "rubiks_cube", "location": "box_1"}),
@@ -376,8 +554,9 @@ def _normalise_label(row):
 def _retrieve(command, k=5):
     """Retrieve similar seen.jsonl examples, normalised to the active mask.
 
-    NOTE: token-overlap retrieval, NOT the embedding store used in the
-    measured RAG runs. Demo approximation only.
+    NOTE: token-overlap retrieval, NOT the embedding store used in the measured
+    RAG runs. Backend-vocabulary mode only -- the canonical path uses the real
+    llm.retrieve.Retriever. Demo approximation; do not quote.
     """
     global _SEEN_CACHE
     if _SEEN_CACHE is None:
@@ -425,12 +604,68 @@ def build_prompt(command, strategy):
     raise ValueError("unknown strategy: %r" % (strategy,))
 
 
-def canonical_prompt(command, client):
-    """The prompt rungs 3 and 4 were trained and measured on."""
-    if client.name.startswith("classifier:"):
-        return command      # classifier_client.complete(): the prompt IS the command
-    from llm.prompts import build_prompt as canon_build, load_schema
-    return canon_build(command, "zero_shot", load_schema(SCHEMA_V2))
+# ---------------------------------------------------------------------------
+# CONSTRAINED DECODING
+#
+# Same converters sim/run_demo.py uses, from llm/schema_json.py. Ollama takes
+# the full per-verb oneOf form; OpenAI rejects oneOf at the root, so it gets the
+# flat form and the field mask is enforced by validate() downstream instead.
+# Constrained decoding is the belt; the validator is the braces.
+#
+# TWO DIFFERENCES from run_demo.py, both forced by this file's shape:
+#
+#   1. The schema is attached to EVERY eligible client in the roster, not just
+#      the one chosen at startup, because this file lets you switch models mid
+#      session with `model <name>`. Attaching to one client would leave the
+#      others silently unconstrained after a switch.
+#
+#   2. In --vocab backend mode the location enum must come from the BACKEND's
+#      vocabulary, and the verb key is "verb" rather than schema_v2's "action".
+#      _to_backend_schema() re-points both. It also drops "modifiers", which
+#      schema_v2 allows but validate() rejects for bridge actions.
+# ---------------------------------------------------------------------------
+def _rename_action_key(branch):
+    props = {("verb" if k == "action" else k): v
+             for k, v in branch["properties"].items()}
+    props.pop("modifiers", None)
+    req = ["verb" if k == "action" else k for k in branch["required"]]
+    out = dict(branch)
+    out["properties"] = props
+    out["required"] = req
+    return out
+
+
+def _to_backend_form(js):
+    """schema_v2-shaped JSON Schema -> the shape backend-vocabulary prompts ask for."""
+    if "oneOf" in js:
+        return {"type": "object", "oneOf": [_rename_action_key(b) for b in js["oneOf"]]}
+    return _rename_action_key(js)
+
+
+def apply_constraints(mode):
+    """Attach or clear client.json_schema across the whole roster."""
+    from llm.schema_json import to_json_schema, to_flat_json_schema
+    canon = canonical_schema()
+    backend_src = {"verbs": canon["verbs"],
+                   "targets": sorted(TARGETS),
+                   "locations": sorted(LOCATIONS)}
+    attached = []
+    for client in roster():
+        if mode == "off":
+            client.json_schema = None
+            continue
+        canonical = uses_canonical(client.name)
+        src = canon if canonical else backend_src
+        if client.name.startswith("openai:"):
+            js = to_flat_json_schema(src)
+        elif client.name.startswith("ollama:"):
+            js = to_json_schema(src)
+        else:
+            client.json_schema = None    # classifier has no decoder to constrain
+            continue
+        client.json_schema = js if canonical else _to_backend_form(js)
+        attached.append(client.name)
+    return attached
 
 
 def _candidate_objects(text):
@@ -469,8 +704,8 @@ def _extract_json(text, key="verb"):
     any positional rule gets it wrong some of the time.
 
     This is deliberately NOT llm/extract.py's rule -- see the module docstring.
-    `key` is "verb" for backend-vocabulary replies and "action" for canonical
-    schema_v2 replies from rungs 3 and 4.
+    `key` is "action" for canonical schema_v2 replies and "verb" for
+    backend-vocabulary replies.
     """
     cleaned = re.sub(r"<think>.*?</think>", "", text, flags=re.S)
     cleaned = re.sub(r"<\|.*?\|>", "", cleaned)
@@ -557,36 +792,45 @@ def call_rules(command):
 
 
 def query(command, model, strategy):
-    """Return (action_dict, raw_reply_or_None)."""
+    """Return (action_dict, raw_reply_or_None). Result is in BACKEND vocabulary."""
     client = resolve_model(model)
     if client is None:
         raise ValueError("unknown model: %r" % (model,))
     if client is RULES:
         return call_rules(command), None
 
-    if rung_of(client.name) in ("rung 3", "rung 4"):
-        # Canonical prompt, canonical output, translated at the edge.
-        raw = client.complete(canonical_prompt(command, client))
+    if uses_canonical(client.name):
+        raw = client.complete(canonical_prompt(command, client, strategy))
         return to_backend_action(_extract_json(raw, key="action")), raw
 
     system, user = build_prompt(command, strategy)
     raw = client.complete(system + "\n\n" + user)
-    return _extract_json(raw), raw
+    return _extract_json(raw, key="verb"), raw
 
 
 def to_action(command, model, strategy):
     return query(command, model, strategy)[0]
 
 
-def listen(seconds=5.0, mic_substring="Seiren"):
+def listen(seconds=None, mic_substring="Seiren", model="small.en"):
     """Record and transcribe. Thin wrapper over the shared asr/voice.py.
 
-    Kept as a function here so --voice keeps its fixed-window behaviour (a
-    scripted bridge run has nobody to press Enter); sim/run_demo.py calls the
-    same module with seconds=None for push-to-talk.
+    seconds=None -> push-to-talk: Enter to start, Enter to stop. This is the
+    DEFAULT and the right mode for a live demo, because the speaker decides
+    when the sentence is finished. The previous fixed 5-second window cut
+    people off mid-command and forced them to pad short ones with silence.
+
+    seconds=N -> fixed N-second window, kept for scripted or unattended runs
+    where there is nobody to press Enter.
+
+    `model` is Whisper's size. asr/voice.py defaults to "base"; this client
+    asks for "small.en", which is more accurate on short English commands.
+    CHECK sim/run_demo.py PASSES THE SAME ONE -- a different ASR model on the
+    two demo paths is a parity gap, and it is the kind that shows up as one
+    demo mishearing a word the other gets right.
     """
     from asr import voice
-    text, asr_s = voice.listen(model="small.en", mic=mic_substring,
+    text, asr_s = voice.listen(model=model, mic=mic_substring,
                                seconds=seconds, quiet=True)
     return (text or ""), asr_s
 
@@ -613,6 +857,16 @@ def send(action, timeout=RESULT_TIMEOUT):
 
 def run_one(text, model, strategy, asr_s=0.0, execute=True, show_raw=False):
     print("\n> %s" % text)
+    # Warm the retriever OUTSIDE the timer. Its first call loads embedding
+    # weights (~2-3 s); leaving that inside llm_s inflates the first rag command
+    # of every session by an order of magnitude and makes the printed latency a
+    # lie. Retrieval per command is ~5 ms and stays inside the measurement,
+    # which is correct -- it is part of the strategy's real cost.
+    client = resolve_model(model)
+    if (client is not None and client is not RULES
+            and strategy == "rag" and uses_canonical(client.name)):
+        warm_retriever()
+
     timings = {"asr_s": round(asr_s, 3)}
     raw = None
     t0 = time.perf_counter()
@@ -655,8 +909,8 @@ def selftest(model, show_raw=False):
     few_shot and rag were silently broken in the MuJoCo demo while working in
     the measurement harness. This gate exists so that cannot recur unnoticed.
 
-    On Isaac the grid corners are probed too: that is where the row/column
-    mapping in GRID_TO_ISAAC would show up as mirrored if it is wrong.
+    On Isaac the grid corners are printed too: that is where the column half of
+    GRID_TO_ISAAC would show up as mirrored if it is wrong.
     """
     client = resolve_model(model)
     if client is None:
@@ -665,19 +919,39 @@ def selftest(model, show_raw=False):
     name = RULES if client is RULES else client.name
     strats = strategies_for(name)
 
-    probes = [("put the red cube in box 1",
-               {"verb": "pick_place", "target": "rubiks_cube",
-                "location": "box_1"})]
-    if BACKEND == "isaac":
-        for cell in ("grid_A1", "grid_A3", "grid_C1", "grid_C3"):
-            probes.append((None, {"verb": "move_to",
-                                  "location": GRID_TO_ISAAC[cell]}))
-
-    print("[selftest] backend=%s model=%s rung=%s" % (BACKEND, name, rung_of(name)))
+    print("[selftest] backend=%s vocab=%s model=%s rung=%s"
+          % (BACKEND, "canonical" if uses_canonical(name) else "backend",
+             name, rung_of(name)))
+    if name != RULES:
+        print("[selftest] constrained=%s"
+              % ("on" if getattr(client, "json_schema", None) else "off"))
     all_ok = True
 
-    probe, expect = probes[0]
+    # THE PROBE MUST MATCH THE ACTIVE VOCABULARY.
+    #
+    # "the red cube" is answerable only in backend mode, whose SCHEMA_TEXT
+    # carries a colour glossary ("rubiks_cube is red"). The canonical legend in
+    # llm/prompts.py has no colour mapping at all -- it is the measurement
+    # legend, and the measured datasets name objects, not colours. Probing
+    # canonically with a colour word makes `reject` the CORRECT answer and the
+    # selftest reports a failure that is really a badly chosen probe.
+    #
+    # Do not "fix" this by adding colours to llm/prompts.py. That file is the
+    # provenance of the 30,380 measured rows.
+    if uses_canonical(name):
+        probe = "put the rubiks cube in box 1"
+    else:
+        probe = "put the red cube in box 1"
+    expect = {"verb": "pick_place", "target": "rubiks_cube", "location": "box_1"}
     print("  probe: %r" % probe)
+
+    # Build the retriever BEFORE the timed calls. canonical_examples()
+    # constructs it lazily inside query(), so on a rag run the one-off HF weight
+    # load lands inside llm_s and reports gpt-4o-mini at ~10 s against a
+    # measured p50 of 699 ms. The demo's whole point is a latency comparison;
+    # a warm-up cost inside the visible number destroys it.
+    if "rag" in strats and uses_canonical(name):
+        warm_retriever()
     for strat in strats:
         raw = None
         try:
@@ -695,15 +969,17 @@ def selftest(model, show_raw=False):
         if show_raw and raw is not None:
             print("       raw: %r" % (raw[:400],))
 
-    if len(probes) > 1:
-        print("\n  grid corner mapping (schema_v2 -> %s):" % BACKEND)
+    if BACKEND == "isaac":
+        print("\n  grid corner mapping (schema_v2 -> isaac):")
         for cell in ("grid_A1", "grid_A3", "grid_C1", "grid_C3"):
-            mapped = GRID_TO_ISAAC[cell]
-            print("    %-8s -> %-10s  (%s)" % (
-                cell, mapped,
-                "far" if cell[5] == "A" else "near"))
-        print("    drive these four and confirm left/right are not mirrored;")
-        print("    if they are, flip _GRID_COL in this file.")
+            print("    %-8s -> %-10s  (row: %s)"
+                  % (cell, GRID_TO_ISAAC[cell],
+                     "far" if cell[5] == "A" else "near"))
+        print("    ROW half is verified from two docstrings. COLUMN half is not.")
+        print("    Drive grid_A1 and grid_A3 -- same row, opposite columns, so")
+        print("    they isolate the column axis. If the arm reaches the wrong")
+        print("    side for those two, flip _GRID_COL in this file.")
+        print("    Decide and record WHOSE left the legend means.")
 
     print("\n[selftest] %s" % ("all strategies valid and correct" if all_ok
                                else "FAILURES ABOVE"))
@@ -713,7 +989,12 @@ def selftest(model, show_raw=False):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--backend", default="isaac", choices=sorted(BACKENDS),
-                   help="which simulator vocabulary to prompt and validate against")
+                   help="which simulator vocabulary to validate and execute against")
+    p.add_argument("--vocab", default="auto", choices=["auto", "canonical", "backend"],
+                   help="which vocabulary rungs 1/2 are PROMPTED in. auto = "
+                        "canonical on isaac, backend on mujoco. canonical is "
+                        "what makes the legend and constrained decoding "
+                        "available; it cannot reach isaac's `handover`.")
     p.add_argument("--model", default=RULES,
                    help="client name, full ('ollama:qwen2.5:3b') or bare "
                         "('qwen2.5:3b'), or 'rules'. See --list.")
@@ -721,8 +1002,25 @@ def main():
                    help="must be legal for the chosen model; see --list")
     p.add_argument("--list", action="store_true",
                    help="print the model/strategy table and exit")
+    # ---- demo defaults, matched to sim/run_demo.py. NOT measurement settings.
+    # Every measured row in this repo was produced with legend v3 and no
+    # constraint; both remain reachable by flag.
+    p.add_argument("--legend", default="v5", choices=["v3", "v4", "v4lite", "v5"],
+                   help="prompt legend, applied to the canonical path. v5 "
+                        "(default) is the demo legend: the only one passing all "
+                        "four checks in audit/check_legend_v5.py. v3 is what "
+                        "produced the 30,380 measured rows.")
+    p.add_argument("--constrain", default="on", choices=["on", "off"],
+                   help="constrained decoding via Ollama `format` / OpenAI "
+                        "structured outputs. on by default for the demo; "
+                        "measurements were all run off.")
     p.add_argument("--voice", action="store_true")
-    p.add_argument("--seconds", type=float, default=5.0)
+    p.add_argument("--seconds", type=float, default=None,
+                   help="fixed recording window in seconds. Omitted (the "
+                        "default) means PUSH-TO-TALK: Enter to start, Enter to "
+                        "stop. Pass a number only for unattended runs.")
+    p.add_argument("--whisper", default="small.en",
+                   help="faster-whisper model size for voice input")
     p.add_argument("--mic", default="Seiren")
     p.add_argument("--once", default=None)
     p.add_argument("--script", default=None)
@@ -731,14 +1029,36 @@ def main():
     p.add_argument("--raw", action="store_true")
     args = p.parse_args()
 
-    _set_backend(args.backend)
+    # Legend first: llm/prompts.py's build_prompt() reads whatever this sets, so
+    # it must run before any prompt is built. Same ordering as sim/run_demo.py.
+    from bench.run_cell import apply_legend
+    legend_note = apply_legend(args.legend)
+
+    _set_backend(args.backend, args.vocab)
 
     if args.list:
-        print("\nmodel                      rung       strategies")
+        print("\nmodel                      rung       vocab      strategies")
         for name in model_names():
-            print("%-26s %-10s %s" % (name, rung_of(name),
-                                      ", ".join(strategies_for(name))))
+            print("%-26s %-10s %-10s %s"
+                  % (name, rung_of(name),
+                     "canonical" if uses_canonical(name) else "backend",
+                     ", ".join(strategies_for(name))))
         return
+
+    # ---- GUARDS. Found by enumerating all 16 (backend, vocab, rung) paths and
+    # asking which of the model's LEGAL outputs can actually be executed. Isaac
+    # is reachable on all 8 of its paths; MuJoCo has two dead ones. Both failed
+    # mid-command rather than at startup, which on stage is the worst possible
+    # time to find out.
+    if BACKEND == "mujoco" and VOCAB == "canonical":
+        sys.exit(
+            "--vocab canonical is not usable with --backend mujoco.\n"
+            "  Canonical prompting emits schema_v2 locations (grid_A1..grid_C3,\n"
+            "  max_reach, nearest_free_cell). Behind mujoco_bridge.py sits the V1\n"
+            "  SimBackend, whose vocabulary is table_center / table_left /\n"
+            "  table_right / table_front / table_back -- 11 of the 14 canonical\n"
+            "  symbols have no equivalent, so only the three box_N commands would\n"
+            "  run. Use --vocab backend, or --backend isaac.")
 
     client = resolve_model(args.model)
     if client is None:
@@ -746,16 +1066,39 @@ def main():
                  % (args.model, "\n  ".join(model_names())))
     name = RULES if client is RULES else client.name
     allowed = strategies_for(name)
+
+    if BACKEND == "mujoco" and rung_of(name) in ("rung 3", "rung 4"):
+        sys.exit(
+            "%s cannot drive --backend mujoco from this client.\n"
+            "  Rungs 3 and 4 are ALWAYS canonical -- the LoRA adapters were\n"
+            "  fine-tuned on schema_v2 prompts and the classifier's label space\n"
+            "  IS schema_v2, so neither has a prompt that could be switched to\n"
+            "  table_* names. 11 of their 14 possible locations are unreachable\n"
+            "  here. Use --backend isaac, or sim/run_demo.py, which drives the\n"
+            "  MuJoCo backend in-process over the schema_v2 vocabulary." % name)
+
     if args.strategy not in allowed:
         sys.exit("--strategy %r is not valid for %s.\n  %s supports: %s\n"
                  "  (rung-3 LoRA models were trained and measured on zero_shot "
                  "only; the rung-4 classifier has no prompt at all.)"
                  % (args.strategy, name, name, ", ".join(allowed)))
 
+    attached = apply_constraints(args.constrain)
+
     print("[client] backend  %s" % args.backend)
+    print("[client] vocab    %s  (rungs 1/2; rungs 3/4 are always canonical)" % VOCAB)
+    print("[client] legend   %s  -- %s" % (args.legend, legend_note))
+    print("[client] constrain %s  (%d client%s)"
+          % (args.constrain, len(attached), "" if len(attached) == 1 else "s"))
     print("[client] model    %s  (%s)" % (name, rung_of(name)))
     print("[client] strategy %s" % args.strategy)
+    print("[client] voice    %s (whisper %s, mic ~%r)"
+          % ("push-to-talk" if args.seconds is None
+             else "fixed %.0fs window" % args.seconds, args.whisper, args.mic))
     print("[client] inbox    %s" % INBOX)
+    if BACKEND == "isaac" and VOCAB == "canonical":
+        print("[client] NOTE     `handover` is unreachable in canonical mode; "
+              "use --vocab backend to demo it")
 
     if args.selftest:
         selftest(name, show_raw=args.raw)
@@ -778,7 +1121,7 @@ def main():
         return
 
     print("\nCommands: type text, 'v' to speak, 'quit' to exit.")
-    print("Switch on the fly: 'model qwen2.5:3b' / 'strategy rag'")
+    print("Switch on the fly: 'model classifier:distilbert' / 'strategy rag'")
     model, strategy = name, args.strategy
     while True:
         try:
@@ -794,12 +1137,23 @@ def main():
             cand = text.split(None, 1)[1].strip()
             picked = resolve_model(cand)
             if picked is not None:
-                model = RULES if picked is RULES else picked.name
+                cand_name = RULES if picked is RULES else picked.name
+                if BACKEND == "mujoco" and rung_of(cand_name) in ("rung 3", "rung 4"):
+                    # Same guard as startup. Without it, switching to the
+                    # classifier mid-session on the MuJoCo backend leaves 11 of
+                    # its 14 locations unexecutable and the next grid command
+                    # dies in translation.
+                    print("  %s is canonical-only and cannot drive the mujoco "
+                          "backend; staying on %s" % (cand_name, model))
+                    continue
+                model = cand_name
                 allowed = strategies_for(model)
                 if strategy not in allowed:
                     strategy = allowed[0]
                     print("  strategy -> %s (only option for %s)" % (strategy, model))
-                print("  model -> %s" % model)
+                print("  model -> %s  (%s, %s vocab)"
+                      % (model, rung_of(model),
+                         "canonical" if uses_canonical(model) else "backend"))
             else:
                 print("  unknown model. options: %s" % model_names())
             continue
@@ -813,7 +1167,7 @@ def main():
             continue
         if text.lower() in ("v", "voice"):
             try:
-                spoken, asr_s = listen(args.seconds, args.mic)
+                spoken, asr_s = listen(args.seconds, args.mic, args.whisper)
             except Exception as exc:
                 print("  voice error: %s" % exc)
                 continue

@@ -40,6 +40,21 @@ BOX_HEIGHT = 0.03
 
 HANDOVER = (0.34, -0.34, 0.05)
 
+# Table top. Its TOP SURFACE sits at z = 0, so it is purely cosmetic: every
+# coordinate in this file is measured from z = 0 and none of them change. It is
+# a VisualCuboid, so it has no collider either -- objects still rest on the
+# GroundPlane at z = 0, which is exactly coplanar with the table surface. That
+# means adding it cannot alter a single pick height, drop height or physics
+# result, and the 0.1-0.5 cm placement figure stays valid.
+#
+# Extent covers the grid (x 0.32-0.68, y -0.18-0.18), the three boxes
+# (y ~0.32-0.48) and the handover point (0.34, -0.34), while stopping short of
+# the Franka base at the origin so the robot is not embedded in the tabletop.
+TABLE_CENTRE = (0.52, 0.0)
+TABLE_SIZE = (0.86, 1.16)
+TABLE_THICKNESS = 0.02
+TABLE_COLOR = (0.58, 0.54, 0.48)
+
 OBJECTS = {
     "rubiks_cube": {"cell": (0, 0), "color": (0.85, 0.15, 0.15)},
     "bottle":      {"cell": (1, 2), "color": (0.15, 0.45, 0.85)},
@@ -51,6 +66,20 @@ EE_OFFSET_XY = (0.0, 0.005)
 
 STEP_LIMIT = 1500
 LIFT_EVENT = 6
+
+# move_to convergence. See move_to() for why the old `event >= 1` break was
+# wrong and why these exist.
+MOVE_TOL = 0.02          # 2 cm in XY counts as arrived
+MOVE_STEP_CAP = 900      # hard ceiling; ~7x the old fixed 125
+MOVE_STALL_STEPS = 150   # give up if the error stops improving for this long
+MOVE_HOVER_Z = 0.25
+
+# Runtime symbols. Values copied from sim/workspace.py, not re-chosen: a cell
+# counts as occupied when an object sits within FREE_RADIUS of its centre.
+# CELL is 0.18, so 0.10 blocks exactly the cell an object stands in and no
+# neighbour -- the same property it has on the MuJoCo grid.
+RUNTIME_SYMBOLS = ("max_reach", "nearest_free_cell")
+FREE_RADIUS = 0.10
 
 CAM_POS = (0.49, -1.30, 0.95)
 CAM_EULER = (0.0, 33.0, 90.0)
@@ -151,6 +180,11 @@ class IsaacBackend:
         self.articulation_controller = self.franka.get_articulation_controller()
         self._settle(30)
 
+        # max_reach is measured from the base, so read it rather than assume
+        # the Franka is at the origin.
+        base, _ = self.franka.get_world_pose()
+        self.robot_xy = (float(base[0]), float(base[1]))
+
         self.occupancy = dict((n, None) for n in BOX_POSITIONS)
         self._sync_occupancy()
 
@@ -162,6 +196,8 @@ class IsaacBackend:
             _M["GroundPlane"](
                 prim_path="/World/ground", name="ground", size=10.0,
                 color=np.array([0.14, 0.14, 0.16])))
+
+        self._add_table()
 
         for row in range(GRID_ROWS):
             for col in range(GRID_COLS):
@@ -214,6 +250,25 @@ class IsaacBackend:
                     position=np.array([wx, wy, BOX_HEIGHT / 2.0]),
                     scale=np.array([sx, sy, BOX_HEIGHT]), color=colour))
 
+    def _add_table(self):
+        """A visual slab whose top surface is exactly z = 0.
+
+        Deliberately a VisualCuboid, not a DynamicCuboid or a collider: the
+        GroundPlane at z = 0 already carries the contact physics, and the table
+        is coplanar with it. Giving the table a collider would put two contact
+        surfaces at the same height and change how objects settle, which would
+        invalidate the measured placement accuracy for no visual gain.
+        """
+        np = self.np
+        cx, cy = TABLE_CENTRE
+        sx, sy = TABLE_SIZE
+        self.world.scene.add(
+            _M["VisualCuboid"](
+                prim_path="/World/table_top", name="table_top",
+                position=np.array([cx, cy, -TABLE_THICKNESS / 2.0]),
+                scale=np.array([sx, sy, TABLE_THICKNESS]),
+                color=np.array(TABLE_COLOR)))
+
     def _add_lights(self):
         stage = _M["omni_usd"].get_context().get_stage()
         UsdLux, Gf = _M["UsdLux"], _M["Gf"]
@@ -235,7 +290,71 @@ class IsaacBackend:
 
     # -- name resolution ---------------------------------------------------
 
-    def resolve(self, name):
+    def _grid_cells(self):
+        """{cell_id: (x, y)} for all nine cells."""
+        return dict(("cell_%d_%d" % (r, c), cell_centre(r, c))
+                    for r in range(GRID_ROWS) for c in range(GRID_COLS))
+
+    def resolve_runtime(self, symbol, exclude=None):
+        """Runtime symbol -> cell id, by the SAME rules as sim/workspace.py.
+
+        Mirrors workspace.resolve() deliberately, rather than inventing an Isaac
+        rule. If the two ever disagree, the same command means two different
+        physical places on the two backends, with no error raised -- the
+        `_GRID_COL` failure mode again.
+
+        workspace.py's rules, reproduced:
+          max_reach          -> the cell furthest from the robot base.
+          nearest_free_cell  -> the unoccupied cell closest to the gripper;
+                                a cell is occupied if an object sits within
+                                FREE_RADIUS of it; if nothing is free, fall back
+                                to the full cell list rather than failing.
+
+        `exclude` drops one object from the occupancy test. It exists because
+        "put the cube anywhere free" must not treat the cube's own current cell
+        as blocked -- the cube will have been lifted before anything is placed.
+        workspace.py delegates this to the caller through `occupied_xy`, so the
+        convention lives in the MuJoCo caller. CHECK sim/sim_backend.py PASSES
+        THE TARGET THE SAME WAY; if it does not, one of the two is wrong.
+        """
+        np = self.np
+        cells = self._grid_cells()
+
+        if symbol == "max_reach":
+            # TIES ARE REAL HERE AND THE TIE-BREAK IS DELIBERATE. With the
+            # Franka at the origin and the grid symmetric about y = 0,
+            # cell_2_0 and cell_2_2 are both 0.703420 m from the base --
+            # exactly equal. A bare max() would resolve that by dict insertion
+            # order, which is deterministic but arbitrary and invisible.
+            # Sorting on (-distance, cell id) makes the choice explicit and
+            # reproducible: among equally distant cells, the lowest id wins.
+            # sim/workspace.py has no tie because the MuJoCo grid is not
+            # symmetric about the base, so this is an Isaac-only property and
+            # belongs in the write-up as one, not as a shared rule.
+            return sorted(cells,
+                          key=lambda c: (-float(np.hypot(
+                              cells[c][0] - self.robot_xy[0],
+                              cells[c][1] - self.robot_xy[1])), c))[0]
+
+        occupied = []
+        for obj_name in OBJECTS:
+            if obj_name == exclude:
+                continue
+            pos, _ = self.world.scene.get_object(obj_name).get_world_pose()
+            occupied.append((float(pos[0]), float(pos[1])))
+
+        ee, _ = self.franka.end_effector.get_world_pose()
+        origin = (float(ee[0]), float(ee[1]))
+
+        free = [c for c, xy in cells.items()
+                if all(float(np.hypot(xy[0] - ox, xy[1] - oy)) > FREE_RADIUS
+                       for ox, oy in occupied)]
+        if not free:
+            free = list(cells)
+        return min(free, key=lambda c: float(
+            np.hypot(cells[c][0] - origin[0], cells[c][1] - origin[1])))
+
+    def resolve(self, name, exclude=None):
         """Schema name -> (x, y, z). Objects report their LIVE pose."""
         np = self.np
 
@@ -249,6 +368,9 @@ class IsaacBackend:
 
         if name == "handover":
             return np.array(HANDOVER, dtype=float)
+
+        if name in RUNTIME_SYMBOLS:
+            return self.resolve(self.resolve_runtime(name, exclude=exclude))
 
         if name.startswith("cell_"):
             try:
@@ -351,16 +473,50 @@ class IsaacBackend:
     # -- the seven schema verbs --------------------------------------------
 
     def move_to(self, location, gripper=0.0):
-        """Hover the gripper above a named location."""
+        """Hover the gripper above a named location.
+
+        WHY THIS LOOP IS SHAPED LIKE THIS. The previous version broke out on
+        `controller.get_current_event() >= 1`, which is the moment
+        PickPlaceController LEAVES its approach phase -- not the moment the arm
+        arrives anywhere. Phase 0 runs for a fixed number of steps from the
+        controller's own `events_dt` schedule, so every call returned exactly
+        125 steps regardless of target, stopped mid-approach, and reported
+        whatever XY error it happened to have (4-5 cm observed). The old
+        `ok` gate of 0.08 m then passed that as success.
+
+        Now the loop watches the actual end-effector pose and stops on one of
+        three conditions, in priority order:
+          * arrived      -- XY error under MOVE_TOL;
+          * descended    -- the controller has run past its descent phase
+                            (event >= 2), so continuing would close the gripper
+                            on empty air;
+          * stalled      -- the error stopped improving for MOVE_STALL_STEPS,
+                            which means the target is unreachable rather than
+                            slow. Reporting that honestly is better than
+                            spinning to the step cap.
+
+        `steps` is now genuinely informative: it varies with distance. A
+        constant value across different targets means this broke again.
+        """
         np = self.np
-        target = self.resolve(location)
-        hover = np.array([target[0], target[1], 0.25])
+        resolved = location
+        if location in RUNTIME_SYMBOLS:
+            resolved = self.resolve_runtime(location)
+        target = self.resolve(resolved)
+        hover = np.array([target[0], target[1], MOVE_HOVER_Z])
 
         controller = _M["PickPlaceController"](
             name="pp_move", gripper=self.franka.gripper,
             robot_articulation=self.franka)
+
+        err = float("inf")
+        best = float("inf")
+        stalled = 0
+        reason = "step_cap"
         steps = 0
-        for steps in range(1, min(self.step_limit, 400) + 1):
+        cap = min(self.step_limit, MOVE_STEP_CAP)
+
+        for steps in range(1, cap + 1):
             self.world.step(render=True)
             self._maybe_capture()
             action = controller.forward(
@@ -368,14 +524,34 @@ class IsaacBackend:
                 current_joint_positions=self.franka.get_joint_positions(),
                 end_effector_offset=np.array([0.0, 0.005, 0.0]))
             self.articulation_controller.apply_action(action)
-            if controller.get_current_event() >= 1:
+
+            ee, _ = self.franka.end_effector.get_world_pose()
+            err = float(np.linalg.norm(np.array(ee)[:2] - hover[:2]))
+
+            if err < best - 1e-4:
+                best = err
+                stalled = 0
+            else:
+                stalled += 1
+
+            if err < MOVE_TOL:
+                reason = "arrived"
+                break
+            if controller.get_current_event() >= 2:
+                reason = "descended"
+                break
+            if stalled >= MOVE_STALL_STEPS:
+                reason = "stalled"
                 break
 
-        ee, _ = self.franka.end_effector.get_world_pose()
-        err = float(np.linalg.norm(np.array(ee)[:2] - hover[:2]))
-        return {"verb": "move_to", "location": location,
-                "ok": err < 0.08, "steps": steps,
-                "error_cm": round(err * 100, 1)}
+        out = {"verb": "move_to", "location": location,
+               "ok": err < MOVE_TOL, "steps": steps,
+               "error_cm": round(err * 100, 1),
+               "best_cm": round(best * 100, 1),
+               "stop": reason}
+        if resolved != location:
+            out["resolved"] = resolved
+        return out
 
     def pick_place(self, target, location):
         """Grasp `target`, carry it, release at `location`.
@@ -385,7 +561,10 @@ class IsaacBackend:
         vacated box becomes free.
         """
         self.resolve(target)
-        dst = self.resolve(location)
+        resolved = location
+        if location in RUNTIME_SYMBOLS:
+            resolved = self.resolve_runtime(location, exclude=target)
+        dst = self.resolve(resolved)
 
         self._sync_occupancy()
         if location in self.occupancy:
@@ -399,8 +578,11 @@ class IsaacBackend:
         ok, steps, err = self._transport(target, dst)
         self._sync_occupancy()
 
-        return {"verb": "pick_place", "target": target, "location": location,
-                "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
+        out = {"verb": "pick_place", "target": target, "location": location,
+               "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
+        if resolved != location:
+            out["resolved"] = resolved
+        return out
 
     def fetch(self, target):
         """Grasp `target` and bring it to the fixed handover point."""
@@ -471,6 +653,14 @@ def _self_test():
     headless = "--window" not in sys.argv
     launch(headless=headless)
     be = IsaacBackend(capture_dir=os.path.join("out", "isaac_backend"))
+
+    print("[backend] runtime symbols:")
+    for sym in RUNTIME_SYMBOLS:
+        print("  %-18s -> %s" % (sym, be.resolve_runtime(sym)))
+    print("  %-18s -> %s  (rubiks_cube excluded)"
+          % ("nearest_free_cell", be.resolve_runtime("nearest_free_cell",
+                                                     exclude="rubiks_cube")))
+    print("")
 
     print("[backend] reach check:")
     for name in list(OBJECTS) + list(BOX_POSITIONS) + ["handover"]:
