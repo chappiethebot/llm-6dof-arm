@@ -19,6 +19,7 @@ Self-test:  python sim/isaac_backend.py
 """
 
 import os
+import traceback
 
 GRID_ROWS, GRID_COLS = 3, 3
 GRID_CENTRE_X = 0.50
@@ -80,6 +81,62 @@ MOVE_HOVER_Z = 0.25
 # neighbour -- the same property it has on the MuJoCo grid.
 RUNTIME_SYMBOLS = ("max_reach", "nearest_free_cell")
 FREE_RADIUS = 0.10
+
+# The seven schema verbs this backend implements, checked in dispatch() BEFORE
+# the try block so an unknown verb still raises KeyError rather than being
+# classified as an execution failure. Mirrors schema/schema_v2.json; that file
+# is frozen and is not read here on purpose -- the backend must not acquire a
+# load-time dependency on the measurement schema.
+DISPATCH_VERBS = ("move_to", "pick_place", "fetch", "hold", "inspect",
+                  "stop", "reject")
+
+# ---------------------------------------------------------------------------
+# FAILURE TAXONOMY
+#
+# Every unsuccessful result carries a `failure` key from this set. It exists
+# because "execution_failed" told a supervisor watching a demo nothing at all:
+# an arm that cannot reach a cell, an arm that reached it and dropped the cube,
+# and an Isaac exception all looked identical.
+#
+# ADDITIVE ONLY. `failure` appears alongside the existing ok/steps/error_cm
+# keys and only when ok is False. No existing key changes name, type or
+# meaning. The demo path writes no CSV, so nothing downstream is affected.
+# ---------------------------------------------------------------------------
+FAIL_UNREACHABLE = "unreachable"     # arm could not servo to the commanded pose
+FAIL_GRASP = "grasp_failed"          # object was never picked up
+FAIL_PLACEMENT = "placement_error"   # carried, but released too far from target
+FAIL_BLOCKED = "blocked"             # collision or obstructed path
+FAIL_TIMEOUT = "timeout"             # hit the step cap still trying
+FAIL_UNKNOWN = "execution_failed"    # genuine unknown; traceback is logged
+
+# An object that ends within this of where it was picked up never moved, which
+# means the gripper closed on nothing. Half a cube; well outside settle jitter.
+GRASP_MOVED_MIN = OBJ_SIZE / 2.0
+
+# Exception-message signatures. HEURISTIC and deliberately narrow: Isaac
+# publishes no exception taxonomy, so type name and message text are the only
+# route. A wrong specific label is worse than an honest generic one, so anything
+# unmatched keeps FAIL_UNKNOWN and logs a traceback.
+_EXC_PATTERNS = (
+    (FAIL_UNREACHABLE, ("inverse kinematic", " ik ", "ik solver", "no solution",
+                        "unreachable", "out of range", "joint limit")),
+    (FAIL_BLOCKED, ("collision", "penetrat", "contact force", "obstructed")),
+    (FAIL_TIMEOUT, ("timeout", "timed out", "deadline")),
+)
+
+
+def classify_exception(exc):
+    """Best-effort failure label for an exception raised during motion.
+
+    Returns FAIL_UNKNOWN when nothing matches, which is the correct answer far
+    more often than a guess would be.
+    """
+    text = ("%s %s" % (type(exc).__name__, exc)).lower()
+    for label, needles in _EXC_PATTERNS:
+        if any(n in text for n in needles):
+            return label
+    return FAIL_UNKNOWN
+
 
 CAM_POS = (0.49, -1.30, 0.95)
 CAM_EULER = (0.0, 33.0, 90.0)
@@ -449,6 +506,7 @@ class IsaacBackend:
         place_xyz = np.asarray(place_xyz, dtype=float)
 
         steps = 0
+        hit_cap = True
         for steps in range(1, self.step_limit + 1):
             self.world.step(render=True)
             self._maybe_capture()
@@ -461,14 +519,36 @@ class IsaacBackend:
 
             if stop_after_lift and controller.get_current_event() >= LIFT_EVENT:
                 final, _ = obj.get_world_pose()
-                return float(final[2]) > OBJ_SIZE, steps, 0.0
+                lifted = float(final[2]) > OBJ_SIZE
+                # A lift that did not lift is a grasp failure, not a near miss.
+                return lifted, steps, 0.0, (None if lifted else FAIL_GRASP)
 
             if controller.is_done():
+                hit_cap = False
                 break
 
         final, _ = obj.get_world_pose()
         err = float(np.linalg.norm(final[:2] - place_xyz[:2]))
-        return err < 0.06, steps, err
+        ok = err < 0.06
+        return ok, steps, err, self._why_transport_failed(
+            ok, hit_cap, np.array(final, dtype=float), pick_xyz)
+
+    def _why_transport_failed(self, ok, hit_cap, final_xyz, pick_xyz):
+        """Which of the failure labels fits this transport outcome.
+
+        Order matters. The object not having moved is the most informative
+        answer available and outranks the step cap: an arm that spends 1500
+        steps failing to close on a cube has a grasp problem, and calling that
+        a timeout would send the next person to look at the wrong thing.
+        """
+        if ok:
+            return None
+        moved = float(self.np.linalg.norm(final_xyz - pick_xyz))
+        if moved < GRASP_MOVED_MIN:
+            return FAIL_GRASP
+        if hit_cap:
+            return FAIL_TIMEOUT
+        return FAIL_PLACEMENT
 
     # -- the seven schema verbs --------------------------------------------
 
@@ -544,11 +624,23 @@ class IsaacBackend:
                 reason = "stalled"
                 break
 
+        ok = err < MOVE_TOL
         out = {"verb": "move_to", "location": location,
-               "ok": err < MOVE_TOL, "steps": steps,
+               "ok": ok, "steps": steps,
                "error_cm": round(err * 100, 1),
                "best_cm": round(best * 100, 1),
                "stop": reason}
+        if not ok:
+            # move_to already distinguished its own stop conditions; this maps
+            # them onto the shared taxonomy without discarding the finer detail,
+            # which stays in `stop`.
+            #   stalled    the error stopped improving -> genuinely unreachable
+            #   descended  the controller ran past its descent phase before the
+            #              arm arrived, so it went down somewhere else
+            #   step_cap   still improving when the cap hit -> a timeout
+            out["failure"] = {"stalled": FAIL_UNREACHABLE,
+                              "descended": FAIL_UNREACHABLE,
+                              "step_cap": FAIL_TIMEOUT}.get(reason, FAIL_UNKNOWN)
         if resolved != location:
             out["resolved"] = resolved
         return out
@@ -573,13 +665,15 @@ class IsaacBackend:
                 return {"verb": "pick_place", "target": target,
                         "location": location, "ok": False, "steps": 0,
                         "error_cm": 0.0, "refused": "box_occupied",
-                        "occupant": holder}
+                        "failure": FAIL_BLOCKED, "occupant": holder}
 
-        ok, steps, err = self._transport(target, dst)
+        ok, steps, err, failure = self._transport(target, dst)
         self._sync_occupancy()
 
         out = {"verb": "pick_place", "target": target, "location": location,
                "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
+        if failure:
+            out["failure"] = failure
         if resolved != location:
             out["resolved"] = resolved
         return out
@@ -587,19 +681,25 @@ class IsaacBackend:
     def fetch(self, target):
         """Grasp `target` and bring it to the fixed handover point."""
         self.resolve(target)
-        ok, steps, err = self._transport(target, self.resolve("handover"))
+        ok, steps, err, failure = self._transport(target, self.resolve("handover"))
         self._sync_occupancy()
-        return {"verb": "fetch", "target": target,
-                "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
+        out = {"verb": "fetch", "target": target,
+               "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
+        if failure:
+            out["failure"] = failure
+        return out
 
     def hold(self, target):
         """Grasp `target`, lift, and keep holding it."""
         pos = self.resolve(target)
         aloft = self.np.array([pos[0], pos[1], 0.30])
-        ok, steps, err = self._transport(target, aloft, stop_after_lift=True)
+        ok, steps, err, failure = self._transport(target, aloft, stop_after_lift=True)
         self._settle(40)
-        return {"verb": "hold", "target": target,
-                "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
+        out = {"verb": "hold", "target": target,
+               "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
+        if failure:
+            out["failure"] = failure
+        return out
 
     def inspect(self, target):
         """Grasp `target`, lift, hold for a longer pause.
@@ -609,10 +709,13 @@ class IsaacBackend:
         """
         pos = self.resolve(target)
         aloft = self.np.array([pos[0], pos[1], 0.30])
-        ok, steps, err = self._transport(target, aloft, stop_after_lift=True)
+        ok, steps, err, failure = self._transport(target, aloft, stop_after_lift=True)
         self._settle(90)
-        return {"verb": "inspect", "target": target,
-                "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
+        out = {"verb": "inspect", "target": target,
+               "ok": bool(ok), "steps": steps, "error_cm": round(err * 100, 1)}
+        if failure:
+            out["failure"] = failure
+        return out
 
     def stop(self):
         """Halt. Nothing to interrupt in this synchronous model."""
@@ -625,23 +728,56 @@ class IsaacBackend:
     # -- dispatch ----------------------------------------------------------
 
     def dispatch(self, action):
-        """Execute a validated schema action dict."""
+        """Execute a validated schema action dict.
+
+        Exceptions raised INSIDE a verb are classified here rather than left to
+        the bridge, which could only ever say "execution_failed". Two kinds are
+        deliberately NOT caught:
+
+          KeyError     resolve() raises it for an unknown schema name, and the
+                       bridge already reports that as unknown_name_or_verb --
+                       a different and more useful answer than any label here.
+          unknown verb re-raised below, same reason.
+
+        Everything else becomes a normal result dict with a `failure` label, so
+        a failed command prints like a failed command instead of a traceback.
+        An unrecognised exception keeps FAIL_UNKNOWN and logs its traceback --
+        it is never swallowed.
+        """
         verb = action.get("verb")
-        if verb == "move_to":
-            return self.move_to(action["location"])
-        if verb == "pick_place":
-            return self.pick_place(action["target"], action["location"])
-        if verb == "fetch":
-            return self.fetch(action["target"])
-        if verb == "hold":
-            return self.hold(action["target"])
-        if verb == "inspect":
-            return self.inspect(action["target"])
-        if verb == "stop":
-            return self.stop()
-        if verb == "reject":
+        if verb not in DISPATCH_VERBS:
+            raise KeyError("unknown verb: %r" % (verb,))
+
+        try:
+            if verb == "move_to":
+                return self.move_to(action["location"])
+            if verb == "pick_place":
+                return self.pick_place(action["target"], action["location"])
+            if verb == "fetch":
+                return self.fetch(action["target"])
+            if verb == "hold":
+                return self.hold(action["target"])
+            if verb == "inspect":
+                return self.inspect(action["target"])
+            if verb == "stop":
+                return self.stop()
             return self.reject()
-        raise KeyError("unknown verb: %r" % (verb,))
+        except KeyError:
+            raise                      # unknown schema name; the bridge labels it
+        except Exception as exc:       # noqa: BLE001 -- classified, never silent
+            label = classify_exception(exc)
+            if label == FAIL_UNKNOWN:
+                # Genuinely unrecognised. Log it loudly; a demo failure nobody
+                # can diagnose afterwards is the thing this replaced.
+                print("[backend] UNCLASSIFIED failure in %r:" % (verb,))
+                traceback.print_exc()
+            out = {"verb": verb, "ok": False, "steps": 0, "error_cm": 0.0,
+                   "failure": label,
+                   "detail": "%s: %s" % (type(exc).__name__, exc)}
+            for key in ("target", "location"):
+                if key in action:
+                    out[key] = action[key]
+            return out
 
     # -- scene control -----------------------------------------------------
     #
