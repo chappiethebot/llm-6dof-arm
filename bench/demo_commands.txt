@@ -1,0 +1,78 @@
+# Task 12 command set -- 24 commands, approved 2026-09-14.
+#
+# Consumed by the existing --script flag:
+#   python bench/llm_client.py --backend isaac --model qwen2.5-3b-lora \
+#       --strategy zero_shot --no-exec --script bench/demo_commands.txt
+#
+# Coverage: all seven verbs; both runtime symbols; row/column disambiguation
+# including all three branches of the "middle" rule; three impossible commands.
+#
+# BASIS of each expectation, from the datasets (read-only lookup):
+#   [D] verbatim dataset row      [N] nearest phrasing cited, Jaccard given
+#   [J] judgement, no dataset basis
+#
+# DO NOT ADD an exemplar-adjacent command. bench/dataset.py's three fixed
+# few-shot exemplars are:
+#     put the bottle in the far left corner of the table
+#     put the bottle in the far side middle edge of the table
+#     put the bottle in the farthest spot you can reach
+# A command whose nearest neighbour is one of those is contaminated the moment
+# this set is run on few_shot or rag. That is why the original row+middle
+# command was replaced by #22 below.
+
+# 1  pick_place/toy_car/box_1     [N] "stick the toy car in box 1" held_out_v3
+move the toy car to box 1
+# 2  pick_place/rubiks_cube/box_1 [D] seen, seen_v2, train_v2
+put the rubiks cube in box 1
+# 3  pick_place/bottle/grid_A1    [N] j=0.80 "put the bottle in the upper left..." held_out_v2
+place the bottle in the upper left corner of the table
+# 4  pick_place/toy_car/grid_C3   [N] j=0.82 "put the car in the bottom right side corner..." held_out_v2
+put the toy car in the bottom right corner of the table
+# 5  pick_place/bottle/grid_B2    [D] held_out_v2, held_out_v3. NOTE seen.jsonl (V1) says table_center
+put the bottle in the middle of the table
+# 6  move_to/grid_A1              [D] seen_v2, train_v2
+move to the far left corner of the table
+# 7  move_to/grid_C3              [N] j=0.89 "go to the near right side corner..." seen_v2
+go to the near right corner of the table
+# 8  move_to/box_2                [D] seen, seen_v2, train_v2
+move to box 2
+# 9  fetch/bottle                 [D] seen, seen_v2, dev_v2
+bring me the bottle
+# 10 fetch/rubiks_cube            [D] seen, seen_v2, train_v2
+fetch the rubiks cube
+# 11 hold/toy_car                 [N] j=0.88 "pick up and hold the toy car" seen_v2 -- corpus says hold
+pick up the toy car and hold it
+# 12 hold/bottle                  [D] seen, seen_v2, train_v2
+hold the bottle
+# 13 inspect/rubiks_cube          [D] seen_v2, train_v2
+take a look at the rubiks cube
+# 14 inspect/toy_car              [D] seen, seen_v2, dev_v2
+inspect the toy car
+# 15 stop                         [D] seen, seen_v2, train_v2
+stop
+# 16 stop                         [D] held_out.jsonl (V1)
+halt right now
+# 17 pick_place/bottle/max_reach  [N] "...maximum distance you can reach" held_out_v2
+#    EXPECT A SPLIT: max_reach is defined with "furthest" while "far" labels row A.
+#    Measured V3: 78.8% max_reach, 17.3% bleeding to row A. Corpus ambiguity,
+#    not a retry failure -- see audit/vocab_conflicts.md:243.
+put the bottle as far away as you can reach
+# 18 pick_place/rubiks_cube/nearest_free_cell  [N] "...in anywhere you want" held_out_v2
+put the rubiks cube anywhere there is space
+# 19 reject                       [D] held_out.jsonl (V1)
+make me a sandwich
+# 20 reject                       [J] no painting verb exists
+paint the bottle green
+# 21 reject                       [J] no throwing verb exists
+throw the toy car across the room
+# 22 pick_place/toy_car/grid_C2   [N] j=0.64 "put the car in the near side middle edge..." seen_v2
+#    Row named ("near side" = row C), so "middle" selects the COLUMN.
+put the toy car in the near side, middle
+# 23 move_to/grid_B1              [J] column named, so "middle" selects the ROW
+move to the middle of the left column
+# 24 reject                       [J] no colour vocabulary exists in the legend.
+#    The three colour-word commands in the datasets are all reject, but they
+#    reject because the OBJECT is out of vocabulary (marker, apple, mug), not
+#    because of the colour. No labelled precedent for a colour as a referring
+#    expression on an in-vocabulary object, so this expectation is contested.
+put the red cube in box 1
