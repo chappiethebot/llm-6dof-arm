@@ -108,34 +108,22 @@ CLIP_PATH     = Path(os.path.join(os.path.dirname(__file__), "voice_clip.wav"))
 # anything else -- including "classifier:distilbert", which would then fail at
 # call time rather than at selection time.
 #
-# NOT EVERY CLIENT SUPPORTS EVERY STRATEGY, and the table below is the single
-# place that says so. It mirrors how each rung was actually trained and
-# measured; offering a combination outside it would produce output that looks
-# plausible and means nothing.
+# NOT EVERY CLIENT SUPPORTS EVERY STRATEGY. This file used to carry its own
+# copy of that table. It no longer does: the copy went stale for a whole
+# measurement round -- it forbade every rung-3 strategy except zero_shot while
+# bench/run_grid.py was measuring all five, and the published V5 numbers include
+# cells this demo refused to run. Two copies is how that happens.
 #
-#   base models (rung 1/2)  zero_shot, few_shot, cot, role_based, rag
-#   merged LoRA (rung 3)    zero_shot ONLY -- the adapters were trained on
-#                           bare zero-shot prompts and measured that way. A cot
-#                           or few_shot prompt is off-distribution for them.
-#   classifier  (rung 4)    classifier ONLY -- it is an encoder over the command
-#                           string with no prompt surface at all.
-BASE_STRATEGIES = ("zero_shot", "few_shot", "cot", "role_based", "rag")
-LORA_STRATEGIES = ("zero_shot",)
-CLASSIFIER_STRATEGIES = ("classifier",)
+# bench/llm_client.py is now the ONE table. Read its strategies_for() docstring
+# for why the classifier and rules entries are load-bearing and rung 3 is not.
+# The import is stdlib-only and never touches isaacsim or MuJoCo.
+from bench.llm_client import (BASE_STRATEGIES, LORA_STRATEGIES,
+                              CLASSIFIER_STRATEGIES, strategies_for)
 
 # Strategies that need in-context examples supplied by the caller. build_prompt
 # RAISES for these when `examples` is empty, which run_once records as
 # prompt_error -- the arm silently never moves. See wire_examples().
 NEEDS_EXAMPLES = {"few_shot", "rag"}
-
-
-def strategies_for(name: str) -> tuple:
-    """Allowed strategies for a client, keyed on its .name."""
-    if name.startswith("classifier:"):
-        return CLASSIFIER_STRATEGIES
-    if name.endswith("-lora"):
-        return LORA_STRATEGIES
-    return BASE_STRATEGIES
 
 
 def build_roster():

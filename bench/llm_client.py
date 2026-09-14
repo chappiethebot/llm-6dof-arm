@@ -217,7 +217,16 @@ _set_backend(BACKEND)
 # no model server at all.
 # ---------------------------------------------------------------------------
 BASE_STRATEGIES = STRATEGIES
-LORA_STRATEGIES = ("zero_shot",)
+# Rung 3 runs the FULL set. This was ("zero_shot",) until the V5 measurement, on
+# the belief that the adapters had only ever been measured zero-shot. That is
+# false: results_v5_qwen3.csv.manifest.json and results_v5_qwen05.csv.manifest.json
+# each record 10 cells -- both adapters x all five strategies -- and those results
+# are published. The client is not entitled to forbid a combination the
+# measurement reports.
+#
+# Best cell is still zero_shot (0.958); rag is the worst thing in that row
+# (0.745). Unlocked for consistency, not because every option is worth demoing.
+LORA_STRATEGIES = STRATEGIES
 CLASSIFIER_STRATEGIES = ("classifier",)
 
 RULES = "rules"
@@ -237,10 +246,24 @@ def roster():
 def strategies_for(name):
     """Allowed strategies for a client, keyed on its .name.
 
-    Mirrors sim/run_demo.py's table, for the same reason: the rung-3 adapters
-    were trained and measured on bare zero-shot prompts, so a cot or few_shot
-    prompt is off-distribution for them, and the rung-4 classifier is an encoder
-    over the command string with no prompt surface at all.
+    THE ONLY per-model strategy table in the repo. sim/run_demo.py imports this
+    function rather than keeping a second copy -- two copies is how the rung-3
+    entry went stale for a whole measurement round.
+
+    bench/run_grid.py has no equivalent table and never did: it validates
+    strategy NAMES against llm.prompts.ALL_STRATEGIES (run_grid.py:238) and then
+    takes the full model x strategy cross-product (run_grid.py:282). So this is
+    not a mirror of the harness. It is a DEMO-SIDE GUARD, and it may only forbid
+    combinations that cannot produce a meaningful answer at all:
+
+      classifier  llm/prompts.py:145 returns the BARE COMMAND for the
+                  "classifier" strategy. DistilBERT is an encoder with three
+                  classification heads and no prompt surface; handing it a schema
+                  prompt yields a confident WRONG INDEX, not an error. Silent
+                  failure is precisely what a guard is for.
+      rules       a keyword baseline. There is no prompt to vary.
+
+    Rung 3 is NOT such a case -- see LORA_STRATEGIES above.
     """
     if name == RULES:
         return ("zero_shot",)
