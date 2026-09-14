@@ -1112,6 +1112,22 @@ def diagnose(command, action, exc):
     prompt, so it must state the INCONSISTENCY and never the fix.
     """
     if exc is not None:
+        # ONLY CONTENT FAILURES ARE RETRYABLE.
+        #
+        # Everything in the parse/validate family raises ValueError:
+        # _extract_json, to_backend_action and validate. A transport failure
+        # arrives as ConnectionError from complete_with_retry, and anything else
+        # (auth, a missing checkpoint) is its own type. None of those are things
+        # the model can fix by being asked again.
+        #
+        # This was wrong in the first version and the Task 12 run caught it: an
+        # unreachable cloud model was reported to the model as "your answer was
+        # rejected by the schema validator", it burned a second set of three
+        # cloud attempts, and on one command the re-ask produced a confidently
+        # WRONG action where the honest outcome was "the model is unreachable".
+        # A retry must never manufacture an answer out of a network failure.
+        if not isinstance(exc, ValueError):
+            return None
         text = str(exc)
         if "no JSON object" in text or "no action object" in text:
             return ("Your reply did not contain a JSON object. "
