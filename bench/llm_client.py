@@ -1042,6 +1042,196 @@ def complete_with_retry(client, prompt):
 
 
 # ---------------------------------------------------------------------------
+# VALIDATOR-FEEDBACK RETRY (task 10) -- DEMO ONLY
+#
+# When the first answer looks wrong, the model is handed its OWN output plus a
+# statement of what is inconsistent, and asked again. CODE NEVER EDITS THE JSON.
+# Nothing here repairs, maps or patches a model's output.
+#
+# UNREACHABLE FROM THE MEASUREMENT PATH. bench/run_grid.py and bench/run_cell.py
+# do not import this module. The only import of bench.llm_client anywhere in the
+# repo is sim/run_demo.py, which takes four strategy constants and nothing else.
+# query_with_retry() is called only from run_one() and preflight(), both in this
+# file. A measured row cannot acquire a second attempt.
+#
+# WHY THIS IS NOT "REPAIR": the correction names the INCONSISTENCY, never the
+# answer. It says move_to carries no target while the command named an object;
+# it does not say "use pick_place with target=toy_car". If the model cannot act
+# on that, the demo shows it failing, which is the honest outcome.
+# ---------------------------------------------------------------------------
+RETRY_ENABLED = True
+
+# Nouns that name a schema target in ordinary speech. Written out rather than
+# derived from schema_v2.json because the schema stores identifiers
+# ("rubiks_cube"), not the words people say.
+#
+# COLOUR WORDS ARE DELIBERATELY ABSENT. The canonical v5 legend carries no
+# colour glossary, so "the red cube" is genuinely unanswerable canonically and
+# `reject` is the correct response. Treating a colour as a target noun would
+# fire this detector on a right answer. (The backend-vocab SCHEMA_TEXT in this
+# file does define colours; the detector ignores them in both modes so its
+# behaviour does not depend on --vocab.)
+TARGET_NOUNS = {
+    "rubiks_cube": ("rubiks cube", "rubik's cube", "rubiks_cube", "rubik cube",
+                    "the cube", "cube"),
+    "bottle": ("bottle",),
+    "toy_car": ("toy car", "toy_car", "the car", "car"),
+}
+
+# Verbs whose field mask has no "target", derived from the schema so it cannot
+# drift.
+_TARGETLESS = {v for v, mask in FIELD_MASK.items() if "target" not in mask}
+
+# `reject` is EXCLUDED even though it takes no target. An impossible command
+# usually still names an object ("put the bottle on the ceiling", "paint the
+# bottle green"), and `reject` is the CORRECT answer to those. Firing a retry
+# there asks the model to talk itself out of its safest answer, and refusal is
+# the behaviour that most needs to be stable. move_to and stop still fire.
+SEMANTIC_TRIGGER_VERBS = _TARGETLESS - {"reject"}
+
+
+def names_target(command):
+    """Which schema target this command names in plain words, or None.
+
+    Longest phrase wins, so "toy car" is not matched as the bare "car" of a
+    different entry and "rubiks cube" beats "cube".
+    """
+    low = " %s " % " ".join(re.sub(r"[^a-z0-9 ]", " ", command.lower()).split())
+    best = (0, None)
+    for target, phrases in TARGET_NOUNS.items():
+        for phrase in phrases:
+            if (" %s " % phrase) in low and len(phrase) > best[0]:
+                best = (len(phrase), target)
+    return best[1]
+
+
+def diagnose(command, action, exc):
+    """Why this first answer should be re-asked, as one factual sentence.
+
+    None when the answer is fine. The string goes verbatim into the correction
+    prompt, so it must state the INCONSISTENCY and never the fix.
+    """
+    if exc is not None:
+        text = str(exc)
+        if "no JSON object" in text or "no action object" in text:
+            return ("Your reply did not contain a JSON object. "
+                    "The parser reported: %s" % text.split(":")[0].strip())
+        if "ambiguous" in text:
+            return ("Your reply contained more than one action object, so it is "
+                    "ambiguous which one to execute. %s" % text)
+        # Trigger 2: the validator's own words, not a paraphrase of them.
+        return "Your answer was rejected by the schema validator: %s" % text
+
+    # Trigger 3: valid JSON, legal verb, wrong action.
+    if isinstance(action, dict):
+        verb = action.get("verb")
+        if verb in SEMANTIC_TRIGGER_VERBS and names_target(command) is not None:
+            return ("Your answer used %s, which carries no target, but the "
+                    "command names an object. If the object is to be relocated, "
+                    "the verb is pick_place." % verb)
+    return None
+
+
+def correction_prompt(command, first_raw, reason):
+    """Original command + the model's own JSON + what is inconsistent.
+
+    Short and factual. No examples, no schema restatement, no correct answer --
+    any of those would make this a different prompt strategy rather than a
+    validator feeding its error back.
+    """
+    shown = (first_raw or "").strip()
+    if len(shown) > 600:
+        shown = shown[:600] + " ...[truncated]"
+    return ("Command: %s\n\n"
+            "Your previous answer:\n%s\n\n"
+            "%s\n\n"
+            "Answer again with exactly one JSON object."
+            % (command, shown, reason))
+
+
+def _retry_prompt_for(client, strategy, correction):
+    """Wrap the correction in the SAME prompt shape attempt one used.
+
+    Legend and constrained decoding are untouched between attempts: changing
+    either would make attempt two a different experimental condition and the
+    before/after comparison meaningless.
+    """
+    if uses_canonical(client.name):
+        return canonical_prompt(correction, client, strategy)
+    system, _ = build_prompt(correction, strategy)
+    return system + "\n\n" + correction
+
+
+def query_with_retry(command, model, strategy, allow_retry=True):
+    """query(), plus at most ONE re-ask when the first answer looks wrong.
+
+    Returns (action, raw, info). info is None when no retry happened, else a
+    dict describing both attempts. Raises only if the SECOND attempt fails --
+    the caller must never fall back to the first answer.
+    """
+    first_action = first_raw = None
+    first_exc = None
+    try:
+        first_action, first_raw = query(command, model, strategy)
+        validate(first_action)
+    except Exception as exc:
+        first_exc = exc
+
+    reason = None if not allow_retry else diagnose(command, first_action, first_exc)
+    if reason is None:
+        if first_exc is not None:
+            raise first_exc
+        return first_action, first_raw, None
+
+    client = resolve_model(model)
+
+    # `rules` is a keyword baseline: re-asking returns the same string.
+    if client is RULES:
+        print("  note: no retry possible, `rules` has no prompt surface")
+        if first_exc is not None:
+            raise first_exc
+        return first_action, first_raw, None
+
+    # The classifier is an encoder over the command string with three argmax
+    # heads. There is no prompt on which a correction could be expressed, so
+    # "no retry is possible here" is the true state of the world, not an error.
+    # Say so and let the first answer stand.
+    if client.name.startswith("classifier:"):
+        print("  note: no retry possible, the classifier has no prompt surface")
+        if first_exc is not None:
+            raise first_exc
+        return first_action, first_raw, None
+
+    print("  RETRY  first answer: %s"
+          % (json.dumps(first_action) if first_action is not None
+             else "<%s: %s>" % (type(first_exc).__name__, first_exc)))
+    print("  RETRY  reason: %s" % reason)
+
+    info = {"retried": True, "reason": reason, "first": first_action,
+            "first_error": None if first_exc is None else str(first_exc)}
+
+    try:
+        prompt = _retry_prompt_for(client, strategy,
+                                   correction_prompt(command, first_raw, reason))
+        raw2 = complete_with_retry(client, prompt)
+        action2 = (to_backend_action(_extract_json(raw2, key="action"))
+                   if uses_canonical(client.name)
+                   else _extract_json(raw2, key="verb"))
+        validate(action2)
+    except Exception as exc2:
+        # Execute NOTHING. Falling back to the first answer would run output the
+        # validator already refused, or an action the command contradicts.
+        print("  RETRY  second answer ALSO failed: %s" % exc2)
+        raise RuntimeError(
+            "both attempts failed, nothing executed. first: %s | second: %s"
+            % (first_exc or "semantic mismatch", exc2))
+
+    print("  RETRY  second answer: %s" % json.dumps(action2))
+    info["second"] = action2
+    return action2, raw2, info
+
+
+# ---------------------------------------------------------------------------
 # STARTUP PRECONDITIONS (task 8) -- verify, do not assume.
 #
 # A demo that dies three commands in because Ollama was not running is
@@ -1221,9 +1411,11 @@ def run_one(text, model, strategy, asr_s=0.0, execute=True, show_raw=False):
 
     timings = {"asr_s": round(asr_s, 3)}
     raw = None
+    retry_info = None
     t0 = time.perf_counter()
     try:
-        action, raw = query(text, model, strategy)
+        action, raw, retry_info = query_with_retry(
+            text, model, strategy, allow_retry=RETRY_ENABLED)
     except Exception as exc:
         print("  model error: %s" % exc)
         return None
@@ -1239,6 +1431,11 @@ def run_one(text, model, strategy, asr_s=0.0, execute=True, show_raw=False):
         return None
     timings["validate_s"] = round(time.perf_counter() - t0, 4)
     print("  action: %s" % json.dumps(action))
+    if retry_info:
+        print("  note: executing the SECOND answer; the first was %s"
+              % (json.dumps(retry_info.get("first"))
+                 if retry_info.get("first") is not None
+                 else retry_info.get("first_error")))
     if not execute:
         print("  timing: %s" % json.dumps(timings))
         return action
@@ -1250,6 +1447,11 @@ def run_one(text, model, strategy, asr_s=0.0, execute=True, show_raw=False):
         return None
     timings["motion_s"] = round(time.perf_counter() - t0, 3)
     timings["total_s"] = round(sum(timings.values()), 3)
+    if retry_info:
+        # Recorded so a retry is inspectable after the fact. ADDITIVE: no
+        # existing key changes name, type or meaning, and the demo path writes
+        # no CSV, so no column anywhere is affected.
+        result["retry"] = retry_info
     print("  result: %s" % json.dumps(result))
     print("  timing: %s" % json.dumps(timings))
     return result
@@ -1446,7 +1648,7 @@ def selftest(model, show_raw=False):
 
 
 def main():
-    global RESULT_TIMEOUT          # --bridge-timeout rebinds it; see send()
+    global RESULT_TIMEOUT, RETRY_ENABLED
     p = argparse.ArgumentParser()
     p.add_argument("--backend", default="isaac", choices=sorted(BACKENDS),
                    help="which simulator vocabulary to validate and execute against")
@@ -1495,6 +1697,9 @@ def main():
                    help="seconds to wait for the bridge to answer before giving "
                         "the prompt back (default 60; see the RESULT_TIMEOUT "
                         "note in this file for how that was chosen)")
+    p.add_argument("--no-retry", action="store_true",
+                   help="disable the validator-feedback retry (on by default "
+                        "for the demo; the measurement path cannot reach it)")
     p.add_argument("--skip-checks", action="store_true",
                    help="skip the startup precondition banner")
     args = p.parse_args()
@@ -1577,6 +1782,10 @@ def main():
         print("[client] bridge wait %.0fs (overridden)" % RESULT_TIMEOUT)
     else:
         print("[client] bridge wait %.0fs" % RESULT_TIMEOUT)
+
+    RETRY_ENABLED = not args.no_retry
+    print("[client] retry    %s  (one re-ask on extract / schema / semantic "
+          "failure)" % ("on" if RETRY_ENABLED else "off"))
 
     if not args.skip_checks:
         preconditions(name, execute=execute)
