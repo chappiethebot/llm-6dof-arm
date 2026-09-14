@@ -80,7 +80,24 @@ Do NOT "unify" these. Changing either one changes either the measured numbers
 or the demo's safety property. If you touch one, read the other first.
 """
 
-import argparse, json, os, re, sys, time, uuid
+import argparse, contextlib, json, os, re, sys, time, uuid
+
+# ---------------------------------------------------------------------------
+# OFFLINE BY DEFAULT -- set BEFORE any HuggingFace import can read it.
+#
+# A demo machine may have no internet, and a supervisor should never watch a
+# progress bar. Any HF asset that is not already cached must fail loudly and
+# name itself, not reach out.
+#
+# This is an os.environ default, not a hard override: HF_HUB_OFFLINE=0 in the
+# environment still wins, so a deliberate first-time download on a connected
+# machine is one env var away. Nothing here touches the measurement path --
+# bench/run_cell.py and bench/run_grid.py do not import this module.
+# ---------------------------------------------------------------------------
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
+os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
 
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _REPO_ROOT not in sys.path:
@@ -93,7 +110,23 @@ SEEN_JSONL = os.path.join(_REPO_ROOT, "data", "seen.jsonl")
 SEEN_V2_JSONL = os.path.join(_REPO_ROOT, "data", "seen_v2.jsonl")
 SCHEMA_V2 = os.path.join(_REPO_ROOT, "schema", "schema_v2.json")
 
-RESULT_TIMEOUT = 300.0
+# BRIDGE WAIT BOUND.
+#
+# Was 300 s. Technically bounded, but five minutes of dead air on camera is
+# indistinguishable from a hang. 60 s instead:
+#
+#   ~17 s  slowest motion observed in the dry run
+#    25 s  the backend's own hard ceiling -- _transport caps at STEP_LIMIT=1500
+#          steps and move_to at MOVE_STEP_CAP=900 (sim/isaac_backend.py), so a
+#          step-capped run cannot legitimately take much longer than this
+#    60 s  3.5x the slowest observation, past the step cap with room for a
+#          reset's world.reset() plus settle, and short enough that a dead
+#          bridge hands the prompt back inside a minute
+#
+# This bounds MOTION only. The model call happens client-side before send() and
+# is bounded separately by CLOUD_ATTEMPTS / CLOUD_BACKOFF. Override per run with
+# --bridge-timeout.
+RESULT_TIMEOUT = 60.0
 POLL_SECONDS = 0.25
 
 
@@ -822,12 +855,16 @@ def query(command, model, strategy):
     if client is RULES:
         return call_rules(command), None
 
+    # complete_with_retry() is transparent when the first attempt succeeds and
+    # re-raises non-transport errors immediately, so a local model is unaffected
+    # in practice -- but an Ollama server that went down mid-demo gets the same
+    # three tries as the cloud, which is what you want at 10pm the night before.
     if uses_canonical(client.name):
-        raw = client.complete(canonical_prompt(command, client, strategy))
+        raw = complete_with_retry(client, canonical_prompt(command, client, strategy))
         return to_backend_action(_extract_json(raw, key="action")), raw
 
     system, user = build_prompt(command, strategy)
-    raw = client.complete(system + "\n\n" + user)
+    raw = complete_with_retry(client, system + "\n\n" + user)
     return _extract_json(raw, key="verb"), raw
 
 
@@ -858,7 +895,12 @@ def listen(seconds=None, mic_substring="Seiren", model="small.en"):
     return (text or ""), asr_s
 
 
-def send(action, timeout=RESULT_TIMEOUT):
+def send(action, timeout=None):
+    # Resolved at CALL time, not def time. --bridge-timeout rebinds the module
+    # global, and a default argument would have captured the old value at import
+    # and silently ignored the flag.
+    if timeout is None:
+        timeout = RESULT_TIMEOUT
     os.makedirs(INBOX, exist_ok=True)
     os.makedirs(OUTBOX, exist_ok=True)
     name = "%s_%s.json" % (time.strftime("%H%M%S"), uuid.uuid4().hex[:6])
@@ -878,7 +920,249 @@ def send(action, timeout=RESULT_TIMEOUT):
                        "and is it watching %s?" % (timeout, INBOX))
 
 
-def send_control(name, timeout=RESULT_TIMEOUT):
+# ---------------------------------------------------------------------------
+# DEMO HYGIENE: quiet loads, offline assets, bounded cloud calls
+# ---------------------------------------------------------------------------
+
+@contextlib.contextmanager
+def quiet_transformers():
+    """Silence the transformers LOAD REPORT for the duration of one load.
+
+    DistilBERT prints a five-row "UNEXPECTED key" table on first use --
+    vocab_transform, vocab_layer_norm, vocab_projector. They are the masked-LM
+    head of distilbert-base-uncased, which a 3-head classifier legitimately does
+    not use, so the report is noise. It lands in screen recordings.
+
+    Scoped to the `with` block and restored afterwards. This is NOT a global
+    warning filter and NOT warnings.simplefilter("ignore"): it moves the
+    transformers logger's own verbosity and puts it back. Anything logged
+    outside the block, by any library, is unaffected.
+    """
+    try:
+        from transformers.utils import logging as hf_logging
+    except Exception:
+        yield                      # transformers absent; nothing to quieten
+        return
+    previous = hf_logging.get_verbosity()
+    hf_logging.set_verbosity_error()
+    try:
+        yield
+    finally:
+        hf_logging.set_verbosity(previous)
+
+
+def warm_classifier(client, verbose=True):
+    """Force the rung-4 weight load now, quietly, instead of mid-demo.
+
+    The load is lazy by design (llm/classifier_client.py explains why), so
+    without this the 268 MB load and its LOAD REPORT happen on the first
+    classifier command -- on camera, inside the visible latency.
+    """
+    if client is None or client is RULES or not client.name.startswith("classifier:"):
+        return True, "not a classifier"
+    ensure = getattr(client, "_ensure_loaded", None)
+    if ensure is None:
+        return True, "no loader"
+    t0 = time.perf_counter()
+    try:
+        with quiet_transformers():
+            ensure()
+    except FileNotFoundError as exc:
+        return False, str(exc).splitlines()[0]
+    except Exception as exc:
+        return False, _offline_hint(exc)
+    if verbose:
+        print("  classifier weights loaded in %.1fs" % (time.perf_counter() - t0))
+    return True, "loaded in %.1fs" % (time.perf_counter() - t0)
+
+
+def _offline_hint(exc):
+    """Turn an offline-cache miss into a message that names the missing asset.
+
+    HF_HUB_OFFLINE is on by default here, so a missing asset raises instead of
+    downloading. The raw exception buries the asset name in a paragraph about
+    connection errors; this pulls it out.
+    """
+    text = "%s: %s" % (type(exc).__name__, exc)
+    offline_markers = ("offline", "couldn't connect", "could not connect",
+                       "local_files_only", "cached", "connection error")
+    if not any(m in text.lower() for m in offline_markers):
+        return text.splitlines()[0][:200]
+    asset = None
+    for pat in (r"'([\w\-./]+/[\w\-.]+)'", r'"([\w\-./]+/[\w\-.]+)"'):
+        m = re.search(pat, text)
+        if m:
+            asset = m.group(1)
+            break
+    return ("asset not in the local cache: %s -- the demo runs with "
+            "HF_HUB_OFFLINE=1 and will not download. Pre-cache it, or rerun "
+            "with HF_HUB_OFFLINE=0 on a connected machine."
+            % (asset or "<name not in the error text>"))
+
+
+CLOUD_ATTEMPTS = 3
+CLOUD_BACKOFF = (1.0, 3.0)          # seconds before attempts 2 and 3
+
+
+def complete_with_retry(client, prompt):
+    """client.complete() with a bounded retry on transport failure.
+
+    The live dry run produced a bare `model error: Connection error.` and the
+    demo stopped. Three attempts with a short backoff covers the transient case
+    without making the audience wait: worst case 4 s of added delay.
+
+    ONLY transport-shaped failures are retried. A refusal, a bad request or a
+    schema rejection is deterministic -- retrying it wastes the audience's time
+    and the money. NEVER swaps models: the printed message names a local
+    alternative and the operator decides.
+    """
+    transport = ("connection", "timeout", "timed out", "temporarily",
+                 "unavailable", "502", "503", "504", "rate limit", "overloaded")
+    last = None
+    for attempt in range(1, CLOUD_ATTEMPTS + 1):
+        try:
+            return client.complete(prompt)
+        except Exception as exc:
+            last = exc
+            text = ("%s %s" % (type(exc).__name__, exc)).lower()
+            if not any(t in text for t in transport):
+                raise                      # deterministic; do not burn retries
+            if attempt == CLOUD_ATTEMPTS:
+                break
+            wait = CLOUD_BACKOFF[min(attempt - 1, len(CLOUD_BACKOFF) - 1)]
+            print("  cloud call failed (attempt %d/%d): %s -- retrying in %.0fs"
+                  % (attempt, CLOUD_ATTEMPTS, type(last).__name__, wait))
+            time.sleep(wait)
+    raise ConnectionError(
+        "%s is unreachable after %d attempts (%s: %s).\n"
+        "  The demo does NOT switch models on your behalf. To continue locally, "
+        "type:  model qwen2.5-3b-lora   (0.958 zero-shot, no network)"
+        % (getattr(client, "name", "the cloud model"), CLOUD_ATTEMPTS,
+           type(last).__name__, last))
+
+
+# ---------------------------------------------------------------------------
+# STARTUP PRECONDITIONS (task 8) -- verify, do not assume.
+#
+# A demo that dies three commands in because Ollama was not running is
+# avoidable. Each check is one pass/fail line in the banner. None of them is
+# fatal: they report and let the operator decide, because a MuJoCo-less or
+# bridge-less session is still useful for showing the language layer with
+# --no-exec.
+# ---------------------------------------------------------------------------
+OK, BAD, WARN = "ok  ", "FAIL", "warn"
+
+
+def check_ollama(required):
+    """Is the server up, and are the tagged models actually pulled?"""
+    try:
+        import requests
+        r = requests.get("http://localhost:11434/api/tags", timeout=3)
+        r.raise_for_status()
+        have = set(m["name"] for m in r.json().get("models", []))
+    except Exception as exc:
+        return BAD, ("ollama unreachable at localhost:11434 (%s). Start it with "
+                     "`ollama serve`." % type(exc).__name__)
+    # Ollama resolves a bare name to :latest; compare both ways.
+    def present(tag):
+        return tag in have or ("%s:latest" % tag) in have or any(
+            h.split(":", 1)[0] == tag for h in have)
+    missing = sorted(t for t in required if not present(t))
+    if missing:
+        return BAD, ("ollama up, %d models, MISSING: %s (`ollama pull` them)"
+                     % (len(have), ", ".join(missing)))
+    return OK, "ollama up, %d models, all %d required present" % (len(have), len(required))
+
+
+def check_bridge():
+    """Is anything consuming bridge/inbox?
+
+    There is no handshake in the protocol, so this is inferred: drop a
+    no-op control message and see whether it is picked up. A live bridge
+    answers in well under a second; a dead one leaves the file sitting there,
+    and we clean it up so the inbox does not accumulate probes.
+    """
+    probe = {"control": "ping"}
+    os.makedirs(INBOX, exist_ok=True)
+    os.makedirs(OUTBOX, exist_ok=True)
+    name = "ping_%s.json" % uuid.uuid4().hex[:6]
+    path = os.path.join(INBOX, name)
+    try:
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(probe, fh)
+    except Exception as exc:
+        return BAD, "cannot write %s (%s)" % (INBOX, exc)
+
+    deadline = time.time() + 2.0
+    result_path = os.path.join(OUTBOX, name)
+    while time.time() < deadline:
+        if os.path.exists(result_path):
+            # The bridge answers "unknown_control" for ping, which is a perfectly
+            # good liveness signal: something read the file and replied.
+            try:
+                os.remove(result_path)
+            except OSError:
+                pass
+            return OK, "bridge alive, consuming %s" % INBOX
+        if not os.path.exists(path):
+            return OK, "bridge alive (probe consumed)"
+        time.sleep(0.1)
+    try:
+        os.remove(path)                      # do not leave probes in the inbox
+    except OSError:
+        pass
+    return BAD, ("nothing is consuming %s -- start `python sim/isaac_bridge.py` "
+                 "in the isaac6 env, or run with --no-exec" % INBOX)
+
+
+def check_openai(model_name):
+    if not model_name.startswith("openai:"):
+        return None, None
+    if os.environ.get("OPENAI_API_KEY"):
+        return OK, "OPENAI_API_KEY set"
+    return BAD, ("OPENAI_API_KEY not set and %s is selected -- put it in .env "
+                 "or pick a local model" % model_name)
+
+
+def check_offline():
+    off = os.environ.get("HF_HUB_OFFLINE", "0") == "1"
+    return (OK if off else WARN), (
+        "HF_HUB_OFFLINE=1, no downloads mid-demo" if off else
+        "HF_HUB_OFFLINE is OFF -- a cache miss will try to download on camera")
+
+
+def preconditions(model_name, execute=True):
+    """Print the banner. Returns True when nothing failed."""
+    print("\nstartup checks")
+    rows = []
+
+    needed = [c.name.split(":", 1)[1] for c in roster()
+              if c.name.startswith("ollama:")]
+    if model_name.startswith("ollama:"):
+        needed = [model_name.split(":", 1)[1]]
+    rows.append(("ollama", ) + check_ollama(needed))
+
+    if execute:
+        rows.append(("bridge", ) + check_bridge())
+    else:
+        rows.append(("bridge", WARN, "--no-exec: nothing will be sent"))
+
+    state, msg = check_openai(model_name)
+    if state:
+        rows.append(("openai", state, msg))
+
+    rows.append(("hf cache", ) + check_offline())
+
+    for label, state, msg in rows:
+        print("  [%s] %-9s %s" % (state, label, msg))
+    failed = [r for r in rows if r[1] == BAD]
+    if failed:
+        print("  -> %d check(s) failed. The client still starts; fix them or "
+              "use --no-exec." % len(failed))
+    return not failed
+
+
+def send_control(name, timeout=None):
     """Scene control over the bridge. NOT a schema verb and NOT a model action.
 
     Carries a top-level "control" key instead of "verb". sim/isaac_bridge.py
@@ -971,6 +1255,113 @@ def run_one(text, model, strategy, asr_s=0.0, execute=True, show_raw=False):
     return result
 
 
+# The pairs a demo actually shows. Deliberately short: the point is to catch
+# breakage before an audience does, not to re-run the grid. Each is one model
+# and one strategy, chosen as the cell that model is worth demoing on.
+#
+#   qwen2.5-3b-lora / zero_shot   0.958 -- the headline local result
+#   gpt-4o-mini / rag             0.938 -- the headline cloud result
+#   gpt-4o-mini / role_based      0.913 -- the cheap cloud point on the frontier
+#   classifier:distilbert         0.747 at ~18 ms -- the latency argument
+#   rules                         no model server; proves the bridge alone
+PREFLIGHT_PAIRS = (
+    ("ollama:qwen2.5-3b-lora", "zero_shot"),
+    ("openai:gpt-4o-mini", "rag"),
+    ("openai:gpt-4o-mini", "role_based"),
+    ("classifier:distilbert", "classifier"),
+    ("rules", "zero_shot"),
+)
+
+PREFLIGHT_PROBE = "put the rubiks cube in box 1"
+PREFLIGHT_EXPECT = {"verb": "pick_place", "target": "rubiks_cube",
+                    "location": "box_1"}
+
+
+def preflight(pairs=PREFLIGHT_PAIRS, show_raw=False):
+    """Exercise everything the demo will touch, without moving the arm.
+
+    WHAT --selftest AND --no-exec ALREADY DO, and why this is still needed:
+
+      --selftest  takes ONE model and probes every strategy it allows, never
+                  executing, and already warms the retriever. It is the right
+                  shape -- this reuses its probe and its never-send property --
+                  but it covers one model per invocation, so five runs and five
+                  cold starts are still five chances to fail on camera.
+      --no-exec   only suppresses send(). It loads nothing ahead of time and
+                  reports nothing.
+
+    Neither loads DistilBERT's 268 MB, and neither prints a table. This does
+    both, in one pass, across the pairs the demo will actually use.
+
+    Cold starts eliminated here, so none of them lands on camera:
+      * every Ollama model is called once, so its weights are resident
+      * the retriever is built once (~2-3 s of HF weight load)
+      * DistilBERT is loaded once, quietly (see quiet_transformers)
+      * the cloud path is exercised, so a dead key or dead network shows now
+    """
+    print("\npreflight -- loading everything the demo touches, arm stays still")
+    print("probe: %r" % PREFLIGHT_PROBE)
+
+    # Warm the shared machinery first so its cost is not charged to whichever
+    # pair happens to come first in the table.
+    if any(s == "rag" for _, s in pairs):
+        warm_retriever()
+    for name, _ in pairs:
+        client = resolve_model(name)
+        if client is not None and client is not RULES:
+            ok, msg = warm_classifier(client, verbose=False)
+            if not ok:
+                print("  classifier preload FAILED: %s" % msg)
+
+    rows = []
+    for name, strategy in pairs:
+        client = resolve_model(name)
+        if client is None:
+            rows.append((name, strategy, "FAIL", 0.0, "not in the roster"))
+            continue
+        resolved = RULES if client is RULES else client.name
+        if strategy not in strategies_for(resolved):
+            rows.append((resolved, strategy, "FAIL", 0.0,
+                         "strategy not legal for this model"))
+            continue
+
+        t0 = time.perf_counter()
+        try:
+            action, raw = query(PREFLIGHT_PROBE, resolved, strategy)
+            action = validate(action)
+            ms = (time.perf_counter() - t0) * 1000
+            if action == PREFLIGHT_EXPECT:
+                rows.append((resolved, strategy, "PASS", ms, json.dumps(action)))
+            else:
+                # A wrong-but-legal answer is not a broken demo. The model is
+                # allowed to be wrong; that is what the results chapter measures.
+                rows.append((resolved, strategy, "WRONG", ms, json.dumps(action)))
+            if show_raw and raw:
+                print("    raw[%s/%s]: %r" % (resolved, strategy, raw[:200]))
+        except Exception as exc:
+            ms = (time.perf_counter() - t0) * 1000
+            rows.append((resolved, strategy, "FAIL", ms,
+                         "%s: %s" % (type(exc).__name__, str(exc)[:120])))
+
+    print("\n%-26s %-11s %-6s %9s  %s"
+          % ("model", "strategy", "state", "ms", "answer / reason"))
+    print("-" * 100)
+    for name, strategy, state, ms, detail in rows:
+        print("%-26s %-11s %-6s %9.0f  %s" % (name, strategy, state, ms, detail))
+
+    n_fail = sum(1 for r in rows if r[2] == "FAIL")
+    n_wrong = sum(1 for r in rows if r[2] == "WRONG")
+    print("-" * 100)
+    print("%d pairs: %d pass, %d wrong-but-working, %d BROKEN"
+          % (len(rows), len(rows) - n_fail - n_wrong, n_wrong, n_fail))
+    if n_fail:
+        print("BROKEN means the pair raised. Fix those before demoing.")
+    elif n_wrong:
+        print("Nothing is broken. WRONG rows are the model being wrong, which "
+              "is a measured property, not a fault.")
+    return n_fail == 0
+
+
 def selftest(model, show_raw=False):
     """Check every legal strategy emits ONE valid, correct action.
 
@@ -1055,6 +1446,7 @@ def selftest(model, show_raw=False):
 
 
 def main():
+    global RESULT_TIMEOUT          # --bridge-timeout rebinds it; see send()
     p = argparse.ArgumentParser()
     p.add_argument("--backend", default="isaac", choices=sorted(BACKENDS),
                    help="which simulator vocabulary to validate and execute against")
@@ -1093,8 +1485,18 @@ def main():
     p.add_argument("--once", default=None)
     p.add_argument("--script", default=None)
     p.add_argument("--selftest", action="store_true")
+    p.add_argument("--preflight", action="store_true",
+                   help="load every model the demo uses, build the retriever, "
+                        "load DistilBERT, probe each demo pair with execution "
+                        "suppressed, print a pass/fail table, and exit")
     p.add_argument("--no-exec", action="store_true")
     p.add_argument("--raw", action="store_true")
+    p.add_argument("--bridge-timeout", type=float, default=None,
+                   help="seconds to wait for the bridge to answer before giving "
+                        "the prompt back (default 60; see the RESULT_TIMEOUT "
+                        "note in this file for how that was chosen)")
+    p.add_argument("--skip-checks", action="store_true",
+                   help="skip the startup precondition banner")
     args = p.parse_args()
 
     # Legend first: llm/prompts.py's build_prompt() reads whatever this sets, so
@@ -1168,11 +1570,32 @@ def main():
         print("[client] NOTE     `handover` is unreachable in canonical mode; "
               "use --vocab backend to demo it")
 
+    execute = not args.no_exec
+
+    if args.bridge_timeout is not None:
+        RESULT_TIMEOUT = args.bridge_timeout
+        print("[client] bridge wait %.0fs (overridden)" % RESULT_TIMEOUT)
+    else:
+        print("[client] bridge wait %.0fs" % RESULT_TIMEOUT)
+
+    if not args.skip_checks:
+        preconditions(name, execute=execute)
+
+    # Pay the rung-4 weight load NOW, quietly, if the classifier is selected.
+    # It is lazy by design, so otherwise it lands on the first command: 4 s of
+    # dead air plus a five-row LOAD REPORT, both on camera, and both charged to
+    # the visible latency of a model whose entire selling point is 18 ms.
+    if client is not RULES:
+        ok, msg = warm_classifier(client)
+        if not ok:
+            print("  [FAIL] classifier weights: %s" % msg)
+
+    if args.preflight:
+        return 0 if preflight(show_raw=args.raw) else 1
+
     if args.selftest:
         selftest(name, show_raw=args.raw)
         return
-
-    execute = not args.no_exec
 
     if args.once:
         run_one(args.once, name, args.strategy, execute=execute,
@@ -1229,6 +1652,12 @@ def main():
                 print("  model -> %s  (%s, %s vocab)"
                       % (model, rung_of(model),
                          "canonical" if uses_canonical(model) else "backend"))
+                # Same reason as startup: never let the 268 MB load happen on
+                # the first command after a switch.
+                if picked is not RULES:
+                    warmed, why = warm_classifier(picked)
+                    if not warmed:
+                        print("  [FAIL] classifier weights: %s" % why)
             else:
                 print("  unknown model. options: %s" % model_names())
             continue
