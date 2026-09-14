@@ -106,8 +106,30 @@ FAIL_UNREACHABLE = "unreachable"     # arm could not servo to the commanded pose
 FAIL_GRASP = "grasp_failed"          # object was never picked up
 FAIL_PLACEMENT = "placement_error"   # carried, but released too far from target
 FAIL_BLOCKED = "blocked"             # collision or obstructed path
-FAIL_TIMEOUT = "timeout"             # hit the step cap still trying
+FAIL_TIMEOUT = "timeout"             # OUR loop hit its step cap, still trying
+FAIL_CONTROL_BUDGET = "control_budget"   # the CONTROLLER's schedule expired first
 FAIL_UNKNOWN = "execution_failed"    # genuine unknown; traceback is logged
+
+# WHY control_budget IS ITS OWN LABEL AND NOT JUST timeout.
+#
+# Both mean "ran out of time", but they point at different things and have
+# different fixes, so collapsing them would send the next person to the wrong
+# place:
+#
+#   timeout         our loop in move_to/_transport hit MOVE_STEP_CAP or
+#                   STEP_LIMIT while the arm was still working. Fix: raise
+#                   the cap, or accept that the motion is genuinely slow.
+#   control_budget  PickPlaceController advanced through its own fixed
+#                   events_dt schedule before the arm arrived. Our cap was
+#                   never reached. Raising it changes nothing, because the
+#                   controller has already moved on to its grasp phase.
+#                   Fix: stop driving a bare move with a pick-and-place
+#                   state machine. See audit/ISAAC_MOVE_TO_LIMITATION.md.
+#
+# This was FAIL_UNREACHABLE until the reach test settled it: `put the rubiks
+# cube in box 3` succeeds at 0.2 cm error to a point 0.7718 m from the base,
+# further than cell_2_0 at 0.7034 m. The arm can reach where max_reach sends
+# it. It is the controller's schedule that runs out, not the workspace.
 
 # An object that ends within this of where it was picked up never moved, which
 # means the gripper closed on nothing. Half a cube; well outside settle jitter.
@@ -634,12 +656,18 @@ class IsaacBackend:
             # move_to already distinguished its own stop conditions; this maps
             # them onto the shared taxonomy without discarding the finer detail,
             # which stays in `stop`.
-            #   stalled    the error stopped improving -> genuinely unreachable
-            #   descended  the controller ran past its descent phase before the
-            #              arm arrived, so it went down somewhere else
-            #   step_cap   still improving when the cap hit -> a timeout
+            #   stalled    the error stopped improving for MOVE_STALL_STEPS ->
+            #              the arm cannot get closer -> genuinely unreachable
+            #   descended  PickPlaceController's fixed events_dt schedule
+            #              advanced to its grasp phase while the arm was STILL
+            #              CONVERGING (stalled never fired). That is the
+            #              controller's budget expiring, not the workspace
+            #              ending -- confirmed by the box_3 reach test, see
+            #              audit/ISAAC_MOVE_TO_LIMITATION.md. Was mislabelled
+            #              FAIL_UNREACHABLE until that test settled it.
+            #   step_cap   our own MOVE_STEP_CAP hit -> a timeout
             out["failure"] = {"stalled": FAIL_UNREACHABLE,
-                              "descended": FAIL_UNREACHABLE,
+                              "descended": FAIL_CONTROL_BUDGET,
                               "step_cap": FAIL_TIMEOUT}.get(reason, FAIL_UNKNOWN)
         if resolved != location:
             out["resolved"] = resolved
