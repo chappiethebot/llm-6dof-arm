@@ -878,6 +878,51 @@ def send(action, timeout=RESULT_TIMEOUT):
                        "and is it watching %s?" % (timeout, INBOX))
 
 
+def send_control(name, timeout=RESULT_TIMEOUT):
+    """Scene control over the bridge. NOT a schema verb and NOT a model action.
+
+    Carries a top-level "control" key instead of "verb". sim/isaac_bridge.py
+    checks for it BEFORE calling backend.dispatch(), so a control message never
+    enters the verb path at all.
+
+    A model cannot reach this. to_backend_action() builds every model-derived
+    message from scratch as {"verb": ...} plus that verb's field-mask keys, and
+    refuses any field outside the mask rather than dropping it -- so no model
+    output can acquire a "control" key on the way out.
+    """
+    return send({"control": name}, timeout=timeout)
+
+
+def do_reset():
+    """Restore the scene to its start state. Returns True on success.
+
+    Objects home, boxes empty, arm home -- one command, one meaning. Every clip
+    starts from an identical state or the recordings are not comparable, and the
+    arm's pose is part of that state.
+    """
+    print("  resetting scene (objects home, boxes empty, arm home)...")
+    t0 = time.perf_counter()
+    try:
+        result = send_control("reset")
+    except TimeoutError as exc:
+        print("  reset TIMED OUT: %s" % exc)
+        return False
+    except Exception as exc:
+        print("  reset failed to send: %s: %s" % (type(exc).__name__, exc))
+        return False
+
+    if not result.get("ok"):
+        print("  reset REFUSED by the bridge: %s" % json.dumps(result))
+        return False
+
+    filled = [b for b, o in (result.get("occupancy") or {}).items() if o]
+    print("  scene reset in %.1fs -- objects: %s | boxes: %s"
+          % (time.perf_counter() - t0,
+             ", ".join(result.get("objects", [])) or "none",
+             ("STILL OCCUPIED " + ", ".join(filled)) if filled else "empty"))
+    return True
+
+
 def run_one(text, model, strategy, asr_s=0.0, execute=True, show_raw=False):
     print("\n> %s" % text)
     # Warm the retriever OUTSIDE the timer. Its first call loads embedding
@@ -1143,7 +1188,8 @@ def main():
                             show_raw=args.raw)
         return
 
-    print("\nCommands: type text, 'v' to speak, 'quit' to exit.")
+    print("\nCommands: type text, 'v' to speak, 'reset' to restore the scene, "
+          "'quit' to exit.")
     print("Switch on the fly: 'model classifier:distilbert' / 'strategy rag'")
     model, strategy = name, args.strategy
     while True:
@@ -1156,6 +1202,12 @@ def main():
             continue
         if text.lower() in ("quit", "exit"):
             break
+        if text.lower() == "reset":
+            # Handled here, before anything reaches the language layer -- the
+            # same place `model` and `strategy` are handled. The word "reset" is
+            # never prompted, never scored and never sent as a verb.
+            do_reset()
+            continue
         if text.lower().startswith("model "):
             cand = text.split(None, 1)[1].strip()
             picked = resolve_model(cand)

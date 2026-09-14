@@ -71,6 +71,23 @@ def _write_result(name, payload):
     os.replace(tmp, final)      # atomic: readers never see a half file
 
 
+def _handle_control(backend, name):
+    """Client-side scene control. Never a schema verb, never in dispatch().
+
+    Prints what it did. A reset that silently failed looks identical to one that
+    worked until a box is still occupied three clips later.
+    """
+    if name == "reset":
+        result = backend.reset_scene()
+        filled = [b for b, o in result.get("occupancy", {}).items() if o]
+        print("[bridge] scene reset -- objects home: %s | boxes: %s"
+              % (", ".join(result.get("objects", [])) or "none",
+                 ("STILL OCCUPIED " + ", ".join(filled)) if filled else "empty"))
+        return result
+    print("[bridge] !! unknown control %r" % (name,))
+    return {"ok": False, "error": "unknown_control", "detail": str(name)}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -110,7 +127,17 @@ def main():
             try:
                 action = _read_action(path)
                 print(f"[bridge] -> {action}")
-                result = backend.dispatch(action)
+                # CONTROL CHANNEL, checked BEFORE dispatch().
+                #
+                # A message carrying "control" never reaches backend.dispatch()
+                # and is not a schema verb. bench/llm_client.py's
+                # to_backend_action() builds model-derived messages from scratch
+                # as {"verb": ...} plus field-mask keys and refuses anything
+                # else, so no model output can arrive here with a control key.
+                if "control" in action:
+                    result = _handle_control(backend, action["control"])
+                else:
+                    result = backend.dispatch(action)
                 print(f"[bridge] <- {result}")
             except KeyError as exc:
                 result = {"ok": False, "error": "unknown_name_or_verb",

@@ -643,6 +643,68 @@ class IsaacBackend:
             return self.reject()
         raise KeyError("unknown verb: %r" % (verb,))
 
+    # -- scene control -----------------------------------------------------
+    #
+    # DELIBERATELY NOT A VERB, AND DELIBERATELY NOT IN dispatch().
+    #
+    # reset_scene() is reachable only from the bridge's `control` channel, which
+    # carries a top-level "control" key instead of "verb". A model cannot emit
+    # one: bench/llm_client.py's to_backend_action() builds the outgoing dict
+    # from scratch as {"verb": ...} plus the verb's field-mask keys, and REFUSES
+    # any field outside that mask rather than dropping it. There is no path by
+    # which model output becomes a control message.
+    #
+    # Adding a "reset" case to dispatch() above would break that, because
+    # dispatch() is what every validated action reaches. Do not.
+
+    def reset_scene(self):
+        """Restore the start state: objects home, boxes empty, arm home.
+
+        Objects are re-derived from OBJECTS + cell_centre(), the SAME source
+        _build_scene() spawns them from -- never a second table of poses.
+
+        Poses are set explicitly rather than trusted to world.reset(). Isaac
+        does track initial state for registered scene objects, but these are
+        rigid bodies that may be mid-fall or mid-bounce when the reset arrives,
+        and an explicit restore costs three calls and removes the question.
+        Velocities are zeroed for the same reason: a cube returned to its cell
+        while still carrying momentum walks straight back off it.
+
+        Boxes need no explicit clearing. _sync_occupancy() DERIVES occupancy
+        from live positions, so moving the objects home empties the boxes by
+        construction -- that is what clears a `box_occupied` refusal.
+        """
+        np = self.np
+
+        self.world.reset()
+
+        # REQUIRED after every world.reset(), not just the one in __init__.
+        # Without it the fingers come back closed and the arm shoves objects
+        # instead of grasping them. See the same call at __init__.
+        self.franka.gripper.set_joint_positions(
+            self.franka.gripper.joint_opened_positions)
+
+        restored = []
+        for name, spec in OBJECTS.items():
+            row, col = spec["cell"]
+            x, y = cell_centre(row, col)
+            home = np.array([x, y, OBJ_SIZE / 2.0 + 0.002])
+            obj = self.world.scene.get_object(name)
+            obj.set_world_pose(position=home,
+                               orientation=np.array([1.0, 0.0, 0.0, 0.0]))
+            # Zero momentum. set_world_pose moves the body; it does not stop it.
+            for setter in ("set_linear_velocity", "set_angular_velocity"):
+                fn = getattr(obj, setter, None)
+                if fn is not None:
+                    fn(np.zeros(3))
+            restored.append(name)
+
+        self._settle(30)
+        self._sync_occupancy()
+
+        return {"ok": True, "control": "reset", "objects": restored,
+                "occupancy": dict(self.occupancy), "steps": 30}
+
     def close(self):
         if _APP is not None:
             _APP.close()
