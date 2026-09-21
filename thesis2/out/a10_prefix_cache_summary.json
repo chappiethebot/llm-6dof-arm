@@ -1,0 +1,65 @@
+{
+  "prefix_tokens": 449,
+  "n_commands": 217,
+  "warmup_excluded": 3,
+  "byte_identical": {
+    "speculative, no prefix cache (A8)": 217,
+    "prefix-cached plain greedy": 217,
+    "PREFIX-CACHED SPECULATIVE (A10)": 217
+  },
+  "all_identity_checks_pass": true,
+  "token_acceptance_rate": 0.8946,
+  "forward_passes": {
+    "plain": 5288,
+    "spec": 746,
+    "prefix_spec": 746
+  },
+  "latency_ms": {
+    "plain greedy": {
+      "p50": 912.21,
+      "p95": 993.5,
+      "p99": 1050.62,
+      "mean": 815.92
+    },
+    "prefix-cached plain greedy": {
+      "p50": 855.47,
+      "p95": 922.01,
+      "p99": 1057.0,
+      "mean": 760.17
+    },
+    "speculative (A8)": {
+      "p50": 113.28,
+      "p95": 429.85,
+      "p99": 832.36,
+      "mean": 189.77
+    },
+    "PREFIX-CACHED SPECULATIVE (A10)": {
+      "p50": 58.28,
+      "p95": 343.98,
+      "p99": 743.39,
+      "mean": 133.45
+    }
+  },
+  "energy": [
+    {
+      "arm": "a10_speculative_A8_no_prefix_cache",
+      "n_commands": 868,
+      "wall_s": 152.4,
+      "mean_power_w": 127.01,
+      "idle_power_w": 12.12,
+      "delta_power_w": 114.89,
+      "joules_per_command": 20.16815,
+      "power_samples": 148
+    },
+    {
+      "arm": "a10_prefix_cached_speculative",
+      "n_commands": 1085,
+      "wall_s": 129.2,
+      "mean_power_w": 91.43,
+      "idle_power_w": 12.12,
+      "delta_power_w": 79.31,
+      "joules_per_command": 9.44657,
+      "power_samples": 126
+    }
+  ]
+}

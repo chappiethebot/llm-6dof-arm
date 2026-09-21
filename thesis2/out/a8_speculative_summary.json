@@ -1,0 +1,69 @@
+{
+  "greedy_confirmed": true,
+  "base": "Qwen/Qwen2.5-3B-Instruct",
+  "adapter": "ft\\runs\\qwen3b_lora\\checkpoint-87",
+  "runtime": "transformers fp16, LoRA merged",
+  "dataset": "held_out_v3",
+  "n_commands": 217,
+  "warmup_excluded": 3,
+  "byte_identical_text": 217,
+  "byte_identical_ids": 217,
+  "draft_tokens_offered": 5258,
+  "draft_tokens_accepted": 4704,
+  "token_acceptance_rate": 0.8946,
+  "full_draft_accepted": 162,
+  "full_draft_rate": 0.7465,
+  "one_forward_pass_commands": 162,
+  "forward_passes_plain": 5288,
+  "forward_passes_speculative": 746,
+  "latency_ms": {
+    "plain greedy (transformers fp16)": {
+      "p50": 882.53,
+      "p95": 985.36,
+      "p99": 1030.94,
+      "mean": 807.61
+    },
+    "speculative (incl. drafter)": {
+      "p50": 113.46,
+      "p95": 379.1,
+      "p99": 782.36,
+      "mean": 187.62
+    },
+    "speculative (GPU only)": {
+      "p50": 91.89,
+      "p95": 355.7,
+      "p99": 764.77,
+      "mean": 166.91
+    },
+    "SALSA (1 forward pass)": {
+      "p50": 89.17,
+      "p95": 96.21,
+      "p99": 98.73,
+      "mean": 91.29
+    }
+  },
+  "agreement_with_v5_ollama_q4": 0.9816,
+  "energy": [
+    {
+      "arm": "a8_plain_greedy_qwen3blora",
+      "n_commands": 217,
+      "wall_s": 168.9,
+      "mean_power_w": 103.03,
+      "idle_power_w": 12.12,
+      "delta_power_w": 90.91,
+      "joules_per_command": 70.77125,
+      "power_samples": 164
+    },
+    {
+      "arm": "a8_speculative_qwen3blora",
+      "n_commands": 868,
+      "wall_s": 141.3,
+      "mean_power_w": 131.33,
+      "idle_power_w": 12.12,
+      "delta_power_w": 119.21,
+      "joules_per_command": 19.40916,
+      "power_samples": 138
+    }
+  ],
+  "accuracy_note": "NOT re-scored: greedy-exact by construction, identical to the plain-greedy arm by the byte-identity check above."
+}

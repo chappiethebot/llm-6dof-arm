@@ -1,0 +1,12 @@
+{
+  "n_test": 2974,
+  "flat_accuracy": 0.886,
+  "factorized_free": 0.8779,
+  "factorized_constrained": 0.885,
+  "illegal_rate_free": 0.0202,
+  "illegal_rows": 60,
+  "illegal_rows_fixed_by_constraint": 21,
+  "delta_constrained_minus_free_pts": 0.71,
+  "retrained": true,
+  "seed": 20260820
+}

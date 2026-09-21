@@ -1,0 +1,5 @@
+Brier_row,ECE_row,arm,dataset,latency_p50_ms,latency_p95_ms,latency_p99_ms,n_commands,resident_mb,row_acc
+0.2368,0.0962,salsa_qwen05b_letters,held_out_v3,20.72,23.52,27.45,108,1042.2,0.5278
+0.2774,0.2315,salsa_qwen05b_digits,held_out_v3,19.33,21.23,22.33,108,1044.3,0.3426
+0.2255,0.2626,salsa_qwen05b_letters,held_out_v4c,18.99,20.96,21.89,108,1044.3,0.213
+0.3096,0.295,salsa_qwen05b_digits,held_out_v4c,19.09,20.25,20.56,108,1044.5,0.3333

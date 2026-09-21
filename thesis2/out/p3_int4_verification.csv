@@ -1,0 +1,8 @@
+head,n,agreements,agreement_pct,mean_abs_logit_delta,max_abs_logit_delta,exactly_zero
+verb,217,212,97.7,0.244703,1.660156,False
+target,217,200,92.17,0.273489,1.022461,False
+loc_type,217,211,97.24,0.227867,0.933594,False
+row,217,186,85.71,0.184947,1.091797,False
+col,217,206,94.93,0.232369,1.061279,False
+container_which,217,162,74.65,0.183444,1.013672,False
+runtime_which,217,181,83.41,0.172734,0.64563,False

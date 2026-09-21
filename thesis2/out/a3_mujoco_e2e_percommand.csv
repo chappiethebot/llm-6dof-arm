@@ -1,0 +1,1302 @@
+arm,command_id,truth_action,pred_action,string_match,exec_ok,outcome,reason,detail
+flat_distilbert,0,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,1,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,2,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,3,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,4,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,5,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,6,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,7,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,8,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,9,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.9 tol_cm=5.0 resolved=grid_C1
+flat_distilbert,10,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.8 tol_cm=5.0 resolved=grid_C1
+flat_distilbert,11,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.9 tol_cm=5.0 resolved=grid_C1
+flat_distilbert,12,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,13,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,14,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,15,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,16,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,17,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.8 on_table=True tries=1
+flat_distilbert,18,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,19,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,20,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,21,move_to,move_to,True,True,SUCCESS,,err_cm=2.0 tol_cm=5.0 resolved=grid_A2
+flat_distilbert,22,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A2
+flat_distilbert,23,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A2
+flat_distilbert,24,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,25,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,26,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,27,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,28,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,29,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,30,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,31,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,32,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,33,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.9 tol_cm=5.0 resolved=grid_C3
+flat_distilbert,34,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.8 tol_cm=5.0 resolved=grid_C3
+flat_distilbert,35,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.8 tol_cm=5.0 resolved=grid_C3
+flat_distilbert,36,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,37,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,38,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,39,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,40,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,41,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,42,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,43,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,44,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,45,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_B1
+flat_distilbert,46,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+flat_distilbert,47,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+flat_distilbert,48,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,49,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,50,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,51,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,52,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,53,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,54,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+flat_distilbert,55,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,56,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,57,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+flat_distilbert,58,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+flat_distilbert,59,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+flat_distilbert,60,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,61,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,62,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,63,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,64,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,65,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,66,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,67,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,68,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,69,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_B3
+flat_distilbert,70,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+flat_distilbert,71,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+flat_distilbert,72,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,73,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,74,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,75,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,76,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,77,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,78,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,79,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,80,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,81,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_C1
+flat_distilbert,82,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+flat_distilbert,83,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+flat_distilbert,84,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+flat_distilbert,85,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,86,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,87,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.9 on_table=True tries=1
+flat_distilbert,88,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,89,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,90,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+flat_distilbert,91,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,92,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+flat_distilbert,93,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.9 tol_cm=5.0 resolved=grid_A2
+flat_distilbert,94,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.7 tol_cm=5.0 resolved=grid_A2
+flat_distilbert,95,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.7 tol_cm=5.0 resolved=grid_A2
+flat_distilbert,96,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,97,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,98,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,99,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,100,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,101,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+flat_distilbert,102,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,103,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,104,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+flat_distilbert,105,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_C3
+flat_distilbert,106,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C3
+flat_distilbert,107,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C3
+flat_distilbert,108,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,109,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,110,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,111,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,112,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,113,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,114,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,115,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,116,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,117,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+flat_distilbert,118,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+flat_distilbert,119,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+flat_distilbert,120,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,121,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,122,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,123,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,124,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,125,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,126,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,127,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,128,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,129,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+flat_distilbert,130,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+flat_distilbert,131,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+flat_distilbert,132,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+flat_distilbert,133,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+flat_distilbert,134,fetch,fetch,True,True,SUCCESS,,tries=1
+flat_distilbert,135,fetch,fetch,True,True,SUCCESS,,tries=1
+flat_distilbert,136,fetch,fetch,True,True,SUCCESS,,tries=1
+flat_distilbert,137,fetch,hold,False,True,WRONG_PREDICTION,,tries=1
+flat_distilbert,138,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+flat_distilbert,139,fetch,fetch,True,True,SUCCESS,,tries=1
+flat_distilbert,140,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+flat_distilbert,141,hold,reject,False,True,WRONG_PREDICTION,no_motion,
+flat_distilbert,142,hold,hold,True,True,SUCCESS,,tries=1
+flat_distilbert,143,hold,hold,True,True,SUCCESS,,tries=1
+flat_distilbert,144,hold,reject,False,True,WRONG_PREDICTION,no_motion,
+flat_distilbert,145,hold,inspect,False,True,WRONG_PREDICTION,,tries=1
+flat_distilbert,146,hold,hold,True,True,SUCCESS,,tries=1
+flat_distilbert,147,hold,hold,True,True,SUCCESS,,tries=1
+flat_distilbert,148,hold,hold,True,True,SUCCESS,,tries=1
+flat_distilbert,149,inspect,inspect,True,True,SUCCESS,,tries=1
+flat_distilbert,150,inspect,inspect,True,True,SUCCESS,,tries=1
+flat_distilbert,151,inspect,inspect,True,True,SUCCESS,,tries=1
+flat_distilbert,152,inspect,inspect,True,True,SUCCESS,,tries=1
+flat_distilbert,153,inspect,inspect,True,True,SUCCESS,,tries=1
+flat_distilbert,154,inspect,inspect,True,True,SUCCESS,,tries=1
+flat_distilbert,155,inspect,inspect,True,True,SUCCESS,,tries=1
+flat_distilbert,156,inspect,inspect,True,True,SUCCESS,,tries=1
+flat_distilbert,157,inspect,inspect,True,True,SUCCESS,,tries=1
+flat_distilbert,158,inspect,inspect,True,True,SUCCESS,,tries=1
+flat_distilbert,159,stop,stop,True,True,SUCCESS,no_motion,
+flat_distilbert,160,stop,stop,True,True,SUCCESS,no_motion,
+flat_distilbert,161,stop,stop,True,True,SUCCESS,no_motion,
+flat_distilbert,162,stop,stop,True,True,SUCCESS,no_motion,
+flat_distilbert,163,stop,stop,True,True,SUCCESS,no_motion,
+flat_distilbert,164,stop,stop,True,True,SUCCESS,no_motion,
+flat_distilbert,165,stop,stop,True,True,SUCCESS,no_motion,
+flat_distilbert,166,reject,reject,True,True,SUCCESS,no_motion,
+flat_distilbert,167,reject,reject,True,True,SUCCESS,no_motion,
+flat_distilbert,168,reject,reject,True,True,SUCCESS,no_motion,
+flat_distilbert,169,reject,reject,True,True,SUCCESS,no_motion,
+flat_distilbert,170,reject,reject,True,True,SUCCESS,no_motion,
+flat_distilbert,171,reject,hold,False,True,WRONG_PREDICTION,,tries=1
+flat_distilbert,172,reject,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+flat_distilbert,173,reject,hold,False,True,WRONG_PREDICTION,,tries=1
+flat_distilbert,174,reject,move_to,False,True,WRONG_PREDICTION,,err_cm=1.5 tol_cm=5.0 resolved=box_1
+flat_distilbert,175,reject,reject,True,True,SUCCESS,no_motion,
+flat_distilbert,176,reject,hold,False,True,WRONG_PREDICTION,,tries=1
+flat_distilbert,177,reject,reject,True,True,SUCCESS,no_motion,
+flat_distilbert,178,stop,stop,True,True,SUCCESS,no_motion,
+flat_distilbert,179,stop,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.1 on_table=True tries=1
+flat_distilbert,180,stop,stop,True,True,SUCCESS,no_motion,
+flat_distilbert,181,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,182,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,183,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,184,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,185,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,186,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,187,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,188,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+flat_distilbert,189,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+flat_distilbert,190,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+flat_distilbert,191,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+flat_distilbert,192,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+flat_distilbert,193,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+flat_distilbert,194,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+flat_distilbert,195,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+flat_distilbert,196,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+flat_distilbert,197,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+flat_distilbert,198,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+flat_distilbert,199,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+flat_distilbert,200,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+flat_distilbert,201,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+flat_distilbert,202,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+flat_distilbert,203,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+flat_distilbert,204,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+flat_distilbert,205,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+flat_distilbert,206,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+flat_distilbert,207,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+flat_distilbert,208,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+flat_distilbert,209,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+flat_distilbert,210,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+flat_distilbert,211,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+flat_distilbert,212,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+flat_distilbert,213,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+flat_distilbert,214,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+flat_distilbert,215,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+flat_distilbert,216,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+factorized,0,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,1,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,2,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,3,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,4,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.3 on_table=True tries=1
+factorized,5,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,6,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,7,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,8,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+factorized,9,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.5 tol_cm=5.0 resolved=grid_B1
+factorized,10,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.8 tol_cm=5.0 resolved=grid_C1
+factorized,11,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.5 tol_cm=5.0 resolved=grid_B1
+factorized,12,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,13,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.1 on_table=True tries=1
+factorized,14,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,15,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,16,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.0 on_table=True tries=1
+factorized,17,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,18,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,19,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+factorized,20,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,21,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=2.0 tol_cm=5.0 resolved=grid_B2
+factorized,22,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.7 tol_cm=5.0 resolved=grid_B2
+factorized,23,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.7 tol_cm=5.0 resolved=grid_B2
+factorized,24,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,25,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,26,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,27,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,28,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,29,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,30,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,31,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,32,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,33,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.9 tol_cm=5.0 resolved=grid_C3
+factorized,34,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.8 tol_cm=5.0 resolved=grid_C3
+factorized,35,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.8 tol_cm=5.0 resolved=grid_C3
+factorized,36,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,37,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,38,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,39,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,40,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,41,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,42,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,43,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,44,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,45,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_B1
+factorized,46,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+factorized,47,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+factorized,48,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,49,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,50,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,51,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,52,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,53,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,54,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+factorized,55,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,56,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,57,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+factorized,58,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+factorized,59,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+factorized,60,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+factorized,61,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,62,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,63,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,64,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,65,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+factorized,66,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,67,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,68,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,69,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_B3
+factorized,70,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+factorized,71,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+factorized,72,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,73,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,74,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,75,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,76,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,77,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,78,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,79,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+factorized,80,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+factorized,81,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.5 tol_cm=5.0 resolved=grid_B1
+factorized,82,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+factorized,83,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+factorized,84,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,85,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.3 on_table=True tries=1
+factorized,86,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.3 on_table=True tries=1
+factorized,87,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,88,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.3 on_table=True tries=1
+factorized,89,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.1 on_table=True tries=1
+factorized,90,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,91,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+factorized,92,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.1 on_table=True tries=1
+factorized,93,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.6 tol_cm=5.0 resolved=grid_B2
+factorized,94,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.7 tol_cm=5.0 resolved=grid_B2
+factorized,95,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.7 tol_cm=5.0 resolved=grid_B2
+factorized,96,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,97,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,98,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,99,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,100,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+factorized,101,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+factorized,102,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,103,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.3 on_table=True tries=1
+factorized,104,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+factorized,105,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.5 tol_cm=5.0 resolved=grid_B3
+factorized,106,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.6 tol_cm=5.0 resolved=grid_B3
+factorized,107,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.6 tol_cm=5.0 resolved=grid_B3
+factorized,108,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,109,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,110,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,111,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,112,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,113,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,114,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,115,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,116,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,117,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+factorized,118,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+factorized,119,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+factorized,120,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,121,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,122,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,123,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,124,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,125,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,126,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,127,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,128,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,129,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+factorized,130,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+factorized,131,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+factorized,132,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+factorized,133,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+factorized,134,fetch,fetch,True,True,SUCCESS,,tries=1
+factorized,135,fetch,fetch,True,True,SUCCESS,,tries=1
+factorized,136,fetch,fetch,True,True,SUCCESS,,tries=1
+factorized,137,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+factorized,138,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+factorized,139,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+factorized,140,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+factorized,141,hold,inspect,False,True,WRONG_PREDICTION,,tries=1
+factorized,142,hold,hold,True,True,SUCCESS,,tries=1
+factorized,143,hold,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.3 on_table=True tries=1
+factorized,144,hold,reject,False,True,WRONG_PREDICTION,no_motion,
+factorized,145,hold,hold,True,True,SUCCESS,,tries=1
+factorized,146,hold,reject,False,True,WRONG_PREDICTION,no_motion,
+factorized,147,hold,hold,True,True,SUCCESS,,tries=1
+factorized,148,hold,hold,True,True,SUCCESS,,tries=1
+factorized,149,inspect,inspect,True,True,SUCCESS,,tries=1
+factorized,150,inspect,inspect,True,True,SUCCESS,,tries=1
+factorized,151,inspect,inspect,True,True,SUCCESS,,tries=1
+factorized,152,inspect,inspect,True,True,SUCCESS,,tries=1
+factorized,153,inspect,inspect,True,True,SUCCESS,,tries=1
+factorized,154,inspect,inspect,True,True,SUCCESS,,tries=1
+factorized,155,inspect,inspect,True,True,SUCCESS,,tries=1
+factorized,156,inspect,inspect,True,True,SUCCESS,,tries=1
+factorized,157,inspect,inspect,True,True,SUCCESS,,tries=1
+factorized,158,inspect,inspect,True,True,SUCCESS,,tries=1
+factorized,159,stop,stop,True,True,SUCCESS,no_motion,
+factorized,160,stop,stop,True,True,SUCCESS,no_motion,
+factorized,161,stop,stop,True,True,SUCCESS,no_motion,
+factorized,162,stop,stop,True,True,SUCCESS,no_motion,
+factorized,163,stop,stop,True,True,SUCCESS,no_motion,
+factorized,164,stop,stop,True,True,SUCCESS,no_motion,
+factorized,165,stop,stop,True,True,SUCCESS,no_motion,
+factorized,166,reject,reject,True,True,SUCCESS,no_motion,
+factorized,167,reject,reject,True,True,SUCCESS,no_motion,
+factorized,168,reject,reject,True,True,SUCCESS,no_motion,
+factorized,169,reject,reject,True,True,SUCCESS,no_motion,
+factorized,170,reject,reject,True,True,SUCCESS,no_motion,
+factorized,171,reject,hold,False,True,WRONG_PREDICTION,,tries=1
+factorized,172,reject,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+factorized,173,reject,reject,True,True,SUCCESS,no_motion,
+factorized,174,reject,move_to,False,True,WRONG_PREDICTION,,err_cm=1.5 tol_cm=5.0 resolved=box_1
+factorized,175,reject,reject,True,True,SUCCESS,no_motion,
+factorized,176,reject,reject,True,True,SUCCESS,no_motion,
+factorized,177,reject,reject,True,True,SUCCESS,no_motion,
+factorized,178,stop,stop,True,True,SUCCESS,no_motion,
+factorized,179,stop,stop,True,True,SUCCESS,no_motion,
+factorized,180,stop,stop,True,True,SUCCESS,no_motion,
+factorized,181,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,182,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,183,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,184,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,185,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,186,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,187,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,188,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+factorized,189,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+factorized,190,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+factorized,191,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+factorized,192,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+factorized,193,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+factorized,194,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+factorized,195,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+factorized,196,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+factorized,197,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+factorized,198,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+factorized,199,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+factorized,200,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+factorized,201,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+factorized,202,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+factorized,203,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+factorized,204,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+factorized,205,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+factorized,206,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+factorized,207,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+factorized,208,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+factorized,209,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+factorized,210,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+factorized,211,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+factorized,212,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+factorized,213,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+factorized,214,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+factorized,215,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+factorized,216,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+cascade_row_qwen3blora,0,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,1,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,2,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,3,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,4,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,5,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,6,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,7,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,8,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,9,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A1
+cascade_row_qwen3blora,10,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A1
+cascade_row_qwen3blora,11,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A1
+cascade_row_qwen3blora,12,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,13,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,14,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,15,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,16,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,17,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,18,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,19,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,20,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,21,move_to,move_to,True,True,SUCCESS,,err_cm=2.0 tol_cm=5.0 resolved=grid_A2
+cascade_row_qwen3blora,22,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A2
+cascade_row_qwen3blora,23,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A2
+cascade_row_qwen3blora,24,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,25,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,26,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,27,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,28,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,29,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,30,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,31,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,32,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,33,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A3
+cascade_row_qwen3blora,34,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A3
+cascade_row_qwen3blora,35,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A3
+cascade_row_qwen3blora,36,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,37,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,38,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,39,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,40,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.7 on_table=True tries=1
+cascade_row_qwen3blora,41,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,42,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,43,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,44,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,45,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.5 tol_cm=5.0 resolved=grid_C1
+cascade_row_qwen3blora,46,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+cascade_row_qwen3blora,47,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+cascade_row_qwen3blora,48,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,49,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,50,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,51,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,52,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,53,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,54,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+cascade_row_qwen3blora,55,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,56,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,57,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+cascade_row_qwen3blora,58,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+cascade_row_qwen3blora,59,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+cascade_row_qwen3blora,60,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.7 on_table=True tries=1
+cascade_row_qwen3blora,61,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,62,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,63,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,64,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,65,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.7 on_table=True tries=1
+cascade_row_qwen3blora,66,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,67,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,68,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,69,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_B3
+cascade_row_qwen3blora,70,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+cascade_row_qwen3blora,71,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+cascade_row_qwen3blora,72,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,73,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+cascade_row_qwen3blora,74,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,75,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+cascade_row_qwen3blora,76,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,77,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+cascade_row_qwen3blora,78,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,79,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+cascade_row_qwen3blora,80,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+cascade_row_qwen3blora,81,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_C1
+cascade_row_qwen3blora,82,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+cascade_row_qwen3blora,83,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+cascade_row_qwen3blora,84,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+cascade_row_qwen3blora,85,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.9 on_table=True tries=1
+cascade_row_qwen3blora,86,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.9 on_table=True tries=1
+cascade_row_qwen3blora,87,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.9 on_table=True tries=1
+cascade_row_qwen3blora,88,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+cascade_row_qwen3blora,89,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,90,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+cascade_row_qwen3blora,91,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,92,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,93,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C2
+cascade_row_qwen3blora,94,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C2
+cascade_row_qwen3blora,95,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C2
+cascade_row_qwen3blora,96,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,97,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,98,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,99,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,100,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+cascade_row_qwen3blora,101,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+cascade_row_qwen3blora,102,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+cascade_row_qwen3blora,103,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,104,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+cascade_row_qwen3blora,105,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_C3
+cascade_row_qwen3blora,106,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C3
+cascade_row_qwen3blora,107,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C3
+cascade_row_qwen3blora,108,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,109,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,110,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,111,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,112,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,113,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,114,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,115,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,116,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,117,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+cascade_row_qwen3blora,118,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+cascade_row_qwen3blora,119,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+cascade_row_qwen3blora,120,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,121,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,122,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,123,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,124,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,125,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,126,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,127,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,128,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,129,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+cascade_row_qwen3blora,130,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+cascade_row_qwen3blora,131,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+cascade_row_qwen3blora,132,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+cascade_row_qwen3blora,133,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+cascade_row_qwen3blora,134,fetch,fetch,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,135,fetch,fetch,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,136,fetch,fetch,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,137,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+cascade_row_qwen3blora,138,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+cascade_row_qwen3blora,139,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+cascade_row_qwen3blora,140,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+cascade_row_qwen3blora,141,hold,inspect,False,True,WRONG_PREDICTION,,tries=1
+cascade_row_qwen3blora,142,hold,hold,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,143,hold,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,144,hold,reject,False,True,WRONG_PREDICTION,no_motion,
+cascade_row_qwen3blora,145,hold,hold,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,146,hold,reject,False,True,WRONG_PREDICTION,no_motion,
+cascade_row_qwen3blora,147,hold,hold,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,148,hold,hold,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,149,inspect,inspect,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,150,inspect,inspect,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,151,inspect,inspect,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,152,inspect,inspect,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,153,inspect,inspect,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,154,inspect,inspect,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,155,inspect,inspect,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,156,inspect,inspect,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,157,inspect,inspect,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,158,inspect,inspect,True,True,SUCCESS,,tries=1
+cascade_row_qwen3blora,159,stop,stop,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,160,stop,stop,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,161,stop,stop,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,162,stop,stop,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,163,stop,stop,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,164,stop,stop,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,165,stop,stop,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,166,reject,reject,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,167,reject,reject,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,168,reject,reject,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,169,reject,reject,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,170,reject,reject,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,171,reject,hold,False,True,WRONG_PREDICTION,,tries=1
+cascade_row_qwen3blora,172,reject,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+cascade_row_qwen3blora,173,reject,reject,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,174,reject,move_to,False,True,WRONG_PREDICTION,,err_cm=1.5 tol_cm=5.0 resolved=box_1
+cascade_row_qwen3blora,175,reject,reject,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,176,reject,reject,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,177,reject,reject,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,178,stop,stop,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,179,stop,stop,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,180,stop,stop,True,True,SUCCESS,no_motion,
+cascade_row_qwen3blora,181,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,182,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,183,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,184,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,185,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,186,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,187,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,188,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+cascade_row_qwen3blora,189,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+cascade_row_qwen3blora,190,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+cascade_row_qwen3blora,191,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+cascade_row_qwen3blora,192,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+cascade_row_qwen3blora,193,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+cascade_row_qwen3blora,194,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+cascade_row_qwen3blora,195,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+cascade_row_qwen3blora,196,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+cascade_row_qwen3blora,197,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+cascade_row_qwen3blora,198,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+cascade_row_qwen3blora,199,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+cascade_row_qwen3blora,200,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+cascade_row_qwen3blora,201,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+cascade_row_qwen3blora,202,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+cascade_row_qwen3blora,203,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+cascade_row_qwen3blora,204,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+cascade_row_qwen3blora,205,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+cascade_row_qwen3blora,206,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+cascade_row_qwen3blora,207,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+cascade_row_qwen3blora,208,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+cascade_row_qwen3blora,209,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+cascade_row_qwen3blora,210,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+cascade_row_qwen3blora,211,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+cascade_row_qwen3blora,212,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+cascade_row_qwen3blora,213,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+cascade_row_qwen3blora,214,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+cascade_row_qwen3blora,215,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+cascade_row_qwen3blora,216,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+bilstm,0,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,1,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,2,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+bilstm,3,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,4,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,5,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+bilstm,6,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,7,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+bilstm,8,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+bilstm,9,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A1
+bilstm,10,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A1
+bilstm,11,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A1
+bilstm,12,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+bilstm,13,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+bilstm,14,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+bilstm,15,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+bilstm,16,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+bilstm,17,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+bilstm,18,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+bilstm,19,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+bilstm,20,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+bilstm,21,move_to,move_to,True,True,SUCCESS,,err_cm=2.0 tol_cm=5.0 resolved=grid_A2
+bilstm,22,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A2
+bilstm,23,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.9 tol_cm=5.0 resolved=grid_B1
+bilstm,24,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,25,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,26,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,27,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,28,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,29,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+bilstm,30,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,31,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,32,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,33,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.9 tol_cm=5.0 resolved=grid_C3
+bilstm,34,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.8 tol_cm=5.0 resolved=grid_C3
+bilstm,35,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.8 tol_cm=5.0 resolved=grid_C3
+bilstm,36,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,37,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,38,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,39,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,40,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,41,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,42,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,43,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,44,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,45,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_B1
+bilstm,46,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+bilstm,47,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+bilstm,48,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,49,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,50,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,51,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,52,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,53,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,54,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+bilstm,55,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,56,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,57,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+bilstm,58,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+bilstm,59,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+bilstm,60,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+bilstm,61,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,62,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,63,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,64,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,65,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+bilstm,66,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,67,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,68,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,69,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_B3
+bilstm,70,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+bilstm,71,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+bilstm,72,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+bilstm,73,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+bilstm,74,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+bilstm,75,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+bilstm,76,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,77,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+bilstm,78,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,79,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+bilstm,80,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+bilstm,81,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_C1
+bilstm,82,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+bilstm,83,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+bilstm,84,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+bilstm,85,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+bilstm,86,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+bilstm,87,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+bilstm,88,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+bilstm,89,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+bilstm,90,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+bilstm,91,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+bilstm,92,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.6 on_table=True tries=1
+bilstm,93,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.9 tol_cm=5.0 resolved=grid_A2
+bilstm,94,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=1.7 tol_cm=5.0 resolved=grid_A2
+bilstm,95,move_to,move_to,False,True,WRONG_PREDICTION,,err_cm=2.0 tol_cm=5.0 resolved=grid_B1
+bilstm,96,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+bilstm,97,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+bilstm,98,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+bilstm,99,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+bilstm,100,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+bilstm,101,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+bilstm,102,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+bilstm,103,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.4 on_table=True tries=1
+bilstm,104,pick_place,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.5 on_table=True tries=1
+bilstm,105,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_C3
+bilstm,106,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C3
+bilstm,107,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C3
+bilstm,108,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,109,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,110,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,111,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,112,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,113,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,114,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,115,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,116,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,117,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+bilstm,118,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+bilstm,119,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+bilstm,120,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,121,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,122,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,123,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,124,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,125,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,126,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,127,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,128,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,129,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+bilstm,130,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+bilstm,131,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+bilstm,132,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,133,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,134,fetch,fetch,True,True,SUCCESS,,tries=1
+bilstm,135,fetch,fetch,False,True,WRONG_PREDICTION,,tries=1
+bilstm,136,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,137,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,138,fetch,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,139,fetch,fetch,True,True,SUCCESS,,tries=1
+bilstm,140,fetch,fetch,True,True,SUCCESS,,tries=1
+bilstm,141,hold,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,142,hold,inspect,False,True,WRONG_PREDICTION,,tries=1
+bilstm,143,hold,hold,True,True,SUCCESS,,tries=1
+bilstm,144,hold,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,145,hold,hold,True,True,SUCCESS,,tries=1
+bilstm,146,hold,hold,True,True,SUCCESS,,tries=1
+bilstm,147,hold,hold,True,True,SUCCESS,,tries=1
+bilstm,148,hold,inspect,False,True,WRONG_PREDICTION,,tries=1
+bilstm,149,inspect,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,150,inspect,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,151,inspect,fetch,False,True,WRONG_PREDICTION,,tries=1
+bilstm,152,inspect,hold,False,True,WRONG_PREDICTION,,tries=1
+bilstm,153,inspect,hold,False,True,WRONG_PREDICTION,,tries=1
+bilstm,154,inspect,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,155,inspect,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,156,inspect,fetch,False,True,WRONG_PREDICTION,,tries=1
+bilstm,157,inspect,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,158,inspect,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,159,stop,move_to,False,True,WRONG_PREDICTION,,err_cm=1.9 tol_cm=5.0 resolved=grid_A1
+bilstm,160,stop,stop,True,True,SUCCESS,no_motion,
+bilstm,161,stop,stop,True,True,SUCCESS,no_motion,
+bilstm,162,stop,stop,True,True,SUCCESS,no_motion,
+bilstm,163,stop,move_to,False,True,WRONG_PREDICTION,,err_cm=1.8 tol_cm=5.0 resolved=box_2
+bilstm,164,stop,stop,True,True,SUCCESS,no_motion,
+bilstm,165,stop,move_to,False,True,WRONG_PREDICTION,,err_cm=1.6 tol_cm=5.0 resolved=grid_A1
+bilstm,166,reject,move_to,False,True,WRONG_PREDICTION,,err_cm=2.0 tol_cm=5.0 resolved=grid_B2
+bilstm,167,reject,reject,True,True,SUCCESS,no_motion,
+bilstm,168,reject,reject,True,True,SUCCESS,no_motion,
+bilstm,169,reject,reject,True,True,SUCCESS,no_motion,
+bilstm,170,reject,fetch,False,True,WRONG_PREDICTION,,tries=1
+bilstm,171,reject,hold,False,True,WRONG_PREDICTION,,tries=1
+bilstm,172,reject,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.1 on_table=True tries=1
+bilstm,173,reject,hold,False,True,WRONG_PREDICTION,,tries=1
+bilstm,174,reject,move_to,False,True,WRONG_PREDICTION,,err_cm=1.5 tol_cm=5.0 resolved=box_1
+bilstm,175,reject,reject,True,True,SUCCESS,no_motion,
+bilstm,176,reject,fetch,False,True,WRONG_PREDICTION,,tries=1
+bilstm,177,reject,reject,True,True,SUCCESS,no_motion,
+bilstm,178,stop,stop,True,True,SUCCESS,no_motion,
+bilstm,179,stop,stop,True,True,SUCCESS,no_motion,
+bilstm,180,stop,reject,False,True,WRONG_PREDICTION,no_motion,
+bilstm,181,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,182,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,183,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,184,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,185,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,186,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,187,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,188,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+bilstm,189,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+bilstm,190,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+bilstm,191,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+bilstm,192,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+bilstm,193,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+bilstm,194,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+bilstm,195,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+bilstm,196,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+bilstm,197,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+bilstm,198,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+bilstm,199,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+bilstm,200,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+bilstm,201,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+bilstm,202,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+bilstm,203,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+bilstm,204,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+bilstm,205,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+bilstm,206,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+bilstm,207,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+bilstm,208,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+bilstm,209,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+bilstm,210,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+bilstm,211,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+bilstm,212,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+bilstm,213,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+bilstm,214,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+bilstm,215,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+bilstm,216,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+ensemble,1,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,2,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+ensemble,3,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,4,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,5,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+ensemble,6,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,7,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+ensemble,8,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+ensemble,9,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A1
+ensemble,10,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A1
+ensemble,11,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A1
+ensemble,12,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,13,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,14,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,15,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,16,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,17,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,18,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,19,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,20,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,21,move_to,move_to,True,True,SUCCESS,,err_cm=2.0 tol_cm=5.0 resolved=grid_A2
+ensemble,22,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A2
+ensemble,23,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A2
+ensemble,24,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,25,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,26,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,27,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,28,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,29,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,30,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,31,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,32,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,33,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A3
+ensemble,34,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A3
+ensemble,35,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A3
+ensemble,36,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,37,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,38,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,39,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,40,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,41,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,42,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,43,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,44,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,45,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_B1
+ensemble,46,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+ensemble,47,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+ensemble,48,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,49,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,50,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,51,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,52,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,53,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,54,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+ensemble,55,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,56,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,57,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+ensemble,58,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+ensemble,59,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+ensemble,60,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+ensemble,61,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,62,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,63,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,64,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,65,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+ensemble,66,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,67,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,68,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,69,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_B3
+ensemble,70,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+ensemble,71,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+ensemble,72,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+ensemble,73,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+ensemble,74,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+ensemble,75,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+ensemble,76,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,77,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+ensemble,78,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,79,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+ensemble,80,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+ensemble,81,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_C1
+ensemble,82,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+ensemble,83,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+ensemble,84,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+ensemble,85,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.9 on_table=True tries=1
+ensemble,86,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.9 on_table=True tries=1
+ensemble,87,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.9 on_table=True tries=1
+ensemble,88,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+ensemble,89,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+ensemble,90,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+ensemble,91,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+ensemble,92,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,93,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C2
+ensemble,94,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C2
+ensemble,95,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C2
+ensemble,96,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,97,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,98,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,99,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,100,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+ensemble,101,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+ensemble,102,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+ensemble,103,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,104,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+ensemble,105,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_C3
+ensemble,106,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C3
+ensemble,107,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C3
+ensemble,108,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,109,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,110,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,111,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,112,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,113,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,114,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,115,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,116,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,117,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+ensemble,118,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+ensemble,119,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+ensemble,120,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,121,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,122,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,123,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,124,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,125,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,126,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,127,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,128,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,129,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+ensemble,130,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+ensemble,131,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+ensemble,132,fetch,move_to,False,True,WRONG_PREDICTION,,err_cm=1.9 tol_cm=5.0 resolved=grid_C2
+ensemble,133,fetch,fetch,True,True,SUCCESS,,tries=1
+ensemble,134,fetch,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.8 on_table=True tries=1
+ensemble,135,fetch,fetch,True,True,SUCCESS,,tries=1
+ensemble,136,fetch,fetch,True,True,SUCCESS,,tries=1
+ensemble,137,fetch,fetch,True,True,SUCCESS,,tries=1
+ensemble,138,fetch,fetch,True,True,SUCCESS,,tries=1
+ensemble,139,fetch,fetch,True,True,SUCCESS,,tries=1
+ensemble,140,fetch,fetch,True,True,SUCCESS,,tries=1
+ensemble,141,hold,hold,True,True,SUCCESS,,tries=1
+ensemble,142,hold,hold,True,True,SUCCESS,,tries=1
+ensemble,143,hold,hold,True,True,SUCCESS,,tries=1
+ensemble,144,hold,reject,False,True,WRONG_PREDICTION,no_motion,
+ensemble,145,hold,hold,True,True,SUCCESS,,tries=1
+ensemble,146,hold,hold,True,True,SUCCESS,,tries=1
+ensemble,147,hold,hold,True,True,SUCCESS,,tries=1
+ensemble,148,hold,hold,True,True,SUCCESS,,tries=1
+ensemble,149,inspect,inspect,True,True,SUCCESS,,tries=1
+ensemble,150,inspect,inspect,True,True,SUCCESS,,tries=1
+ensemble,151,inspect,inspect,True,True,SUCCESS,,tries=1
+ensemble,152,inspect,inspect,True,True,SUCCESS,,tries=1
+ensemble,153,inspect,inspect,True,True,SUCCESS,,tries=1
+ensemble,154,inspect,inspect,True,True,SUCCESS,,tries=1
+ensemble,155,inspect,inspect,True,True,SUCCESS,,tries=1
+ensemble,156,inspect,inspect,True,True,SUCCESS,,tries=1
+ensemble,157,inspect,inspect,True,True,SUCCESS,,tries=1
+ensemble,158,inspect,inspect,True,True,SUCCESS,,tries=1
+ensemble,159,stop,stop,True,True,SUCCESS,no_motion,
+ensemble,160,stop,stop,True,True,SUCCESS,no_motion,
+ensemble,161,stop,stop,True,True,SUCCESS,no_motion,
+ensemble,162,stop,stop,True,True,SUCCESS,no_motion,
+ensemble,163,stop,stop,True,True,SUCCESS,no_motion,
+ensemble,164,stop,stop,True,True,SUCCESS,no_motion,
+ensemble,165,stop,stop,True,True,SUCCESS,no_motion,
+ensemble,166,reject,reject,True,True,SUCCESS,no_motion,
+ensemble,167,reject,reject,True,True,SUCCESS,no_motion,
+ensemble,168,reject,reject,True,True,SUCCESS,no_motion,
+ensemble,169,reject,reject,True,True,SUCCESS,no_motion,
+ensemble,170,reject,reject,True,True,SUCCESS,no_motion,
+ensemble,171,reject,reject,True,True,SUCCESS,no_motion,
+ensemble,172,reject,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.2 on_table=True tries=1
+ensemble,173,reject,hold,False,True,WRONG_PREDICTION,,tries=1
+ensemble,174,reject,move_to,False,True,WRONG_PREDICTION,,err_cm=1.5 tol_cm=5.0 resolved=box_1
+ensemble,175,reject,pick_place,False,True,WRONG_PREDICTION,,gap_cm=0.8 on_table=True tries=1
+ensemble,176,reject,hold,False,True,WRONG_PREDICTION,,tries=1
+ensemble,177,reject,reject,True,True,SUCCESS,no_motion,
+ensemble,178,stop,stop,True,True,SUCCESS,no_motion,
+ensemble,179,stop,stop,True,True,SUCCESS,no_motion,
+ensemble,180,stop,stop,True,True,SUCCESS,no_motion,
+ensemble,181,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,182,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,183,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,184,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,185,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,186,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,187,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,188,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+ensemble,189,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+ensemble,190,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+ensemble,191,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+ensemble,192,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+ensemble,193,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+ensemble,194,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+ensemble,195,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+ensemble,196,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+ensemble,197,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+ensemble,198,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+ensemble,199,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+ensemble,200,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+ensemble,201,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+ensemble,202,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+ensemble,203,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+ensemble,204,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+ensemble,205,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+ensemble,206,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+ensemble,207,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+ensemble,208,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+ensemble,209,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+ensemble,210,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+ensemble,211,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+ensemble,212,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+ensemble,213,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+ensemble,214,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+ensemble,215,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+ensemble,216,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+truth_oracle,0,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,1,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,2,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+truth_oracle,3,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,4,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,5,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+truth_oracle,6,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,7,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+truth_oracle,8,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+truth_oracle,9,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A1
+truth_oracle,10,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A1
+truth_oracle,11,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A1
+truth_oracle,12,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,13,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,14,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,15,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,16,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,17,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,18,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,19,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,20,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,21,move_to,move_to,True,True,SUCCESS,,err_cm=2.0 tol_cm=5.0 resolved=grid_A2
+truth_oracle,22,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A2
+truth_oracle,23,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A2
+truth_oracle,24,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,25,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,26,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,27,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,28,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,29,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,30,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,31,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,32,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,33,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A3
+truth_oracle,34,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A3
+truth_oracle,35,move_to,move_to,True,True,SUCCESS,,err_cm=1.7 tol_cm=5.0 resolved=grid_A3
+truth_oracle,36,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,37,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,38,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,39,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,40,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,41,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,42,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,43,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,44,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,45,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_B1
+truth_oracle,46,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+truth_oracle,47,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_B1
+truth_oracle,48,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,49,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,50,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,51,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,52,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,53,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,54,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+truth_oracle,55,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,56,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,57,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+truth_oracle,58,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+truth_oracle,59,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=grid_B2
+truth_oracle,60,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+truth_oracle,61,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,62,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,63,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,64,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,65,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+truth_oracle,66,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,67,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,68,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,69,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_B3
+truth_oracle,70,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+truth_oracle,71,move_to,move_to,True,True,SUCCESS,,err_cm=1.8 tol_cm=5.0 resolved=grid_B3
+truth_oracle,72,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+truth_oracle,73,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+truth_oracle,74,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+truth_oracle,75,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+truth_oracle,76,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,77,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+truth_oracle,78,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,79,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+truth_oracle,80,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+truth_oracle,81,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_C1
+truth_oracle,82,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+truth_oracle,83,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C1
+truth_oracle,84,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+truth_oracle,85,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.9 on_table=True tries=1
+truth_oracle,86,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.9 on_table=True tries=1
+truth_oracle,87,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.9 on_table=True tries=1
+truth_oracle,88,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+truth_oracle,89,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+truth_oracle,90,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+truth_oracle,91,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+truth_oracle,92,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,93,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C2
+truth_oracle,94,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C2
+truth_oracle,95,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C2
+truth_oracle,96,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,97,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,98,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,99,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,100,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.6 on_table=True tries=1
+truth_oracle,101,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.8 on_table=True tries=1
+truth_oracle,102,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+truth_oracle,103,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,104,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.7 on_table=True tries=1
+truth_oracle,105,move_to,move_to,True,True,SUCCESS,,err_cm=1.9 tol_cm=5.0 resolved=grid_C3
+truth_oracle,106,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C3
+truth_oracle,107,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_C3
+truth_oracle,108,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,109,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,110,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,111,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,112,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,113,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,114,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,115,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,116,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,117,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+truth_oracle,118,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+truth_oracle,119,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+truth_oracle,120,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,121,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,122,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,123,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,124,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,125,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,126,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,127,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,128,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,129,move_to,move_to,True,True,SUCCESS,,err_cm=1.2 tol_cm=5.0 resolved=grid_A3
+truth_oracle,130,move_to,move_to,True,True,SUCCESS,,err_cm=1.5 tol_cm=5.0 resolved=grid_A3
+truth_oracle,131,move_to,move_to,True,True,SUCCESS,,err_cm=1.6 tol_cm=5.0 resolved=grid_A3
+truth_oracle,132,fetch,fetch,True,True,SUCCESS,,tries=1
+truth_oracle,133,fetch,fetch,True,True,SUCCESS,,tries=1
+truth_oracle,134,fetch,fetch,True,True,SUCCESS,,tries=1
+truth_oracle,135,fetch,fetch,True,True,SUCCESS,,tries=1
+truth_oracle,136,fetch,fetch,True,True,SUCCESS,,tries=1
+truth_oracle,137,fetch,fetch,True,True,SUCCESS,,tries=1
+truth_oracle,138,fetch,fetch,True,True,SUCCESS,,tries=1
+truth_oracle,139,fetch,fetch,True,True,SUCCESS,,tries=1
+truth_oracle,140,fetch,fetch,True,True,SUCCESS,,tries=1
+truth_oracle,141,hold,hold,True,True,SUCCESS,,tries=1
+truth_oracle,142,hold,hold,True,True,SUCCESS,,tries=1
+truth_oracle,143,hold,hold,True,True,SUCCESS,,tries=1
+truth_oracle,144,hold,hold,True,True,SUCCESS,,tries=1
+truth_oracle,145,hold,hold,True,True,SUCCESS,,tries=1
+truth_oracle,146,hold,hold,True,True,SUCCESS,,tries=1
+truth_oracle,147,hold,hold,True,True,SUCCESS,,tries=1
+truth_oracle,148,hold,hold,True,True,SUCCESS,,tries=1
+truth_oracle,149,inspect,inspect,True,True,SUCCESS,,tries=1
+truth_oracle,150,inspect,inspect,True,True,SUCCESS,,tries=1
+truth_oracle,151,inspect,inspect,True,True,SUCCESS,,tries=1
+truth_oracle,152,inspect,inspect,True,True,SUCCESS,,tries=1
+truth_oracle,153,inspect,inspect,True,True,SUCCESS,,tries=1
+truth_oracle,154,inspect,inspect,True,True,SUCCESS,,tries=1
+truth_oracle,155,inspect,inspect,True,True,SUCCESS,,tries=1
+truth_oracle,156,inspect,inspect,True,True,SUCCESS,,tries=1
+truth_oracle,157,inspect,inspect,True,True,SUCCESS,,tries=1
+truth_oracle,158,inspect,inspect,True,True,SUCCESS,,tries=1
+truth_oracle,159,stop,stop,True,True,SUCCESS,no_motion,
+truth_oracle,160,stop,stop,True,True,SUCCESS,no_motion,
+truth_oracle,161,stop,stop,True,True,SUCCESS,no_motion,
+truth_oracle,162,stop,stop,True,True,SUCCESS,no_motion,
+truth_oracle,163,stop,stop,True,True,SUCCESS,no_motion,
+truth_oracle,164,stop,stop,True,True,SUCCESS,no_motion,
+truth_oracle,165,stop,stop,True,True,SUCCESS,no_motion,
+truth_oracle,166,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,167,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,168,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,169,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,170,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,171,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,172,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,173,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,174,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,175,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,176,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,177,reject,reject,True,True,SUCCESS,no_motion,
+truth_oracle,178,stop,stop,True,True,SUCCESS,no_motion,
+truth_oracle,179,stop,stop,True,True,SUCCESS,no_motion,
+truth_oracle,180,stop,stop,True,True,SUCCESS,no_motion,
+truth_oracle,181,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,182,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,183,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,184,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,185,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,186,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,187,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,188,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.4 on_table=True tries=1
+truth_oracle,189,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.5 on_table=True tries=1
+truth_oracle,190,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+truth_oracle,191,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+truth_oracle,192,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_1
+truth_oracle,193,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.3 on_table=True tries=1
+truth_oracle,194,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+truth_oracle,195,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+truth_oracle,196,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+truth_oracle,197,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+truth_oracle,198,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+truth_oracle,199,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+truth_oracle,200,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+truth_oracle,201,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+truth_oracle,202,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+truth_oracle,203,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+truth_oracle,204,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_2
+truth_oracle,205,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+truth_oracle,206,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+truth_oracle,207,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+truth_oracle,208,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+truth_oracle,209,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+truth_oracle,210,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+truth_oracle,211,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.1 on_table=True tries=1
+truth_oracle,212,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.0 on_table=True tries=1
+truth_oracle,213,pick_place,pick_place,True,True,SUCCESS,,gap_cm=0.2 on_table=True tries=1
+truth_oracle,214,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+truth_oracle,215,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3
+truth_oracle,216,move_to,move_to,True,True,SUCCESS,,err_cm=0.0 tol_cm=5.0 resolved=box_3

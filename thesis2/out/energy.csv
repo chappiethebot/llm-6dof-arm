@@ -1,0 +1,7 @@
+arm,n_commands,wall_s,mean_power_w,idle_power_w,delta_power_w,joules_per_command,power_samples,note
+factorized_distilbert_gpu,36022,120.3,33.2,12.12,21.08,0.0704,117,GPU power only; excludes CPU/system
+flat_distilbert_gpu,39060,120.3,32.22,12.12,20.1,0.06194,118,GPU power only; excludes CPU/system
+salsa_qwen3b,3360,121.9,122.87,12.12,110.75,4.01885,119,GPU power only; excludes CPU/system
+salsa_qwen3blora,3360,121.3,125.12,12.12,113.0,4.08092,119,GPU power only; excludes CPU/system
+gpt-4o-mini (cloud),,,,,,,,NOT MEASURABLE from this machine
+rules / tfidf / knn (CPU),,,,,,~0,,GPU delta ~0; this does NOT capture their true CPU cost

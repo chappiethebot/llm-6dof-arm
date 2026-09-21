@@ -1,0 +1,27 @@
+metric,n,flat,factorized,delta_pts,note
+action_match,217,0.7465,0.6083,-13.82,strict_match from llm/score.py
+field_verb,217,0.9355,0.9401,0.46,
+field_target,153,0.9608,0.9477,-1.31,
+field_location,168,0.756,0.5714,-18.45,
+joint_all_three,126,0.746,0.5714,-17.46,
+factor_loc_type,168,1.0,1.0,0.0,flat column is its predicted symbol factorized post-hoc
+factor_row,108,0.6204,0.3333,-28.7,flat column is its predicted symbol factorized post-hoc
+factor_col,108,0.9444,1.0,5.56,flat column is its predicted symbol factorized post-hoc
+factor_container_which,36,1.0,1.0,0.0,flat column is its predicted symbol factorized post-hoc
+factor_runtime_which,24,1.0,1.0,0.0,flat column is its predicted symbol factorized post-hoc
+bucket_updown_action_match,72,0.4306,0.0,-43.06,
+bucket_neither_action_match,96,1.0,1.0,0.0,
+bucket_nolocation_action_match,49,0.7143,0.7347,2.04,
+updown_factor_row,72,0.4306,0.0,-43.06,
+updown_factor_col,72,0.9167,1.0,8.33,
+schema_validity,217,1.0,1.0,0.0,both emit from the schema mask by construction
+reject_recall,12,0.5833,0.75,16.67,
+ECE_location_flat_vs_locfactors,168,0.1874,,,flat has ONE location confidence; factorized has five -- see rows below
+ECE_factor_loc_type,168,,0.0388,,Brier 0.0031
+ECE_factor_row,108,,0.4163,,Brier 0.2579
+ECE_factor_col,108,,0.0574,,Brier 0.0091
+ECE_factor_container_which,36,,0.0169,,Brier 0.0004
+ECE_factor_runtime_which,24,,0.0672,,Brier 0.0083
+latency_p50_ms,217,29.1896,28.5905,-59.91,"CPU, warm"
+latency_p95_ms,217,70.6158,66.5883,-402.75,"CPU, warm"
+latency_p99_ms,217,124.9124,137.383,1247.06,"CPU, warm"

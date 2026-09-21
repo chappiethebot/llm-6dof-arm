@@ -1,0 +1,4 @@
+arm,n,action_match,joint,verb,target,location,n_location,reject_recall,schema_validity,lat_p50_us,lat_p95_us,lat_p99_us,note
+rules,217,0.7235,0.8571,0.8341,0.9935,0.8571,168,0.25,1.0,7.7,10.2,21.8,regex/keyword slot grammar
+knn_minilm,217,0.6452,0.627,0.9401,1.0,0.6131,168,0.25,1.0,5637.0,7385.8,8520.6,"all-MiniLM-L6-v2, cosine 1-NN over train_v2"
+tfidf_logreg,217,0.6221,0.6905,0.8571,0.9477,0.6964,168,0.25,1.0,608.3,864.3,922.8,"TF-IDF 1-2gram + logistic regression, 3 heads"

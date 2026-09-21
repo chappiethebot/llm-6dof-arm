@@ -1,0 +1,17 @@
+{
+  "dataset": "massive_en_US",
+  "n_test": 2974,
+  "n_intents": 60,
+  "n_scenarios": 18,
+  "n_actions": 46,
+  "flat_accuracy": 0.888,
+  "factorized_accuracy": 0.8783,
+  "delta_pts": -0.98,
+  "scenario_acc": 0.9169,
+  "action_acc": 0.8981,
+  "illegal_combo_rate": 0.0198,
+  "auroc_per_factor": 0.891,
+  "auroc_flat": 0.8889,
+  "epochs": 4,
+  "seed": 20260820
+}

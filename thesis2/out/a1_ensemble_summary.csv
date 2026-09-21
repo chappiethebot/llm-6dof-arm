@@ -1,0 +1,2 @@
+action_match,agree_accuracy,arm,component_classifier,component_cloud,component_lora,dataset,escalated_accuracy,escalation_rate,n_commands,note
+0.963,0.9815,ensemble_disagreement,0.75,0.9352,0.9583,held_out_v3,0.9074,0.25,216,offline pairing of measured V5 predictions; no new inference

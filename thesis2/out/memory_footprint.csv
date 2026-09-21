@@ -1,0 +1,7 @@
+arm,resident_mb,note
+"per-factor cascade, local only (INT4 weights)",69.2,p3_verify_int4.json whole-model INT4 incl. fp32 scales (one size definition; Part B S-10)
+"per-factor cascade, local only (FP16 weights)",132.76,"p3_verify_int4.json whole-model FP16 (66,381,336 params x 2 B)"
+per-factor cascade + qwen2.5-3b-lora escalation (co-resident),6725.76,DistilBERT FP16 132.76 MB + Qwen3B FP16 peak VRAM measured 6593 MB
+two-model cascade: DistilBERT + Qwen2.5-3B (CascadeCNN-style),6725.76,identical footprint -- the 3B model dominates either way
+per-factor cascade + gpt-4o-mini escalation,132.76,no second model resident; requires network. Cloud energy not measurable from this machine
+flat classifier alone (the V5 rung-4 cell),132.76,no escalation path

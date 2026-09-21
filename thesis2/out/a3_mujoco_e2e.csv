@@ -1,0 +1,7 @@
+arm,n,e2e_success,n_moving,e2e_success_moving,wrong_prediction,execution_failure,invalid_symbol,wrong_prediction_rate,execution_failure_rate
+flat_distilbert,217,0.7465,195,0.7487,55,0,0,0.2535,0.0
+factorized,217,0.6083,195,0.5795,85,0,0,0.3917,0.0
+cascade_row_qwen3blora,217,0.8433,195,0.841,34,0,0,0.1567,0.0
+bilstm,217,0.7005,195,0.7231,65,0,0,0.2995,0.0
+ensemble,216,0.963,194,0.9845,8,0,0,0.037,0.0
+truth_oracle,217,1.0,195,1.0,0,0,0,0.0,0.0

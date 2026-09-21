@@ -1,0 +1,3 @@
+arm,n_commands,wall_s,mean_power_w,idle_power_w,delta_power_w,joules_per_command,power_samples
+a8_plain_greedy_qwen3blora,217,168.9,103.03,12.12,90.91,70.77125,164
+a8_speculative_qwen3blora,868,141.3,131.33,12.12,119.21,19.40916,138

@@ -1,0 +1,5 @@
+arm,dataset,n,action_match,location_acc,n_location,lat_p50_us
+rules_open,held_out_v3,217,0.7235,0.8571,168,7.6
+rules_firewalled,held_out_v3,217,0.447,0.5,168,7.8
+rules_open,held_out_v4c,217,0.7235,0.8571,168,7.9
+rules_firewalled,held_out_v4c,217,0.447,0.5,168,7.6

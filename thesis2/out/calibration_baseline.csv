@@ -1,0 +1,4 @@
+head,n,accuracy,mean_confidence,ECE,Brier
+verb,217,0.9355,0.7747,0.1613,0.079
+target,153,0.9608,0.9457,0.0151,0.0398
+location,168,0.756,0.5685,0.1874,0.1699

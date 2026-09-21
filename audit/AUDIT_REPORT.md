@@ -1,5 +1,10 @@
 # Repository audit, 13 September 2026
 
+**Revision 2 — 17 September 2026.** Findings 24–32 added; verdict, fix list and
+"what I could not verify" updated for the 17 September scope freeze. The
+original 13 September read-only pass at `093c1ee` is unchanged below; new
+material is marked **[R2]**.
+
 Read-only pass at `093c1ee`. Nothing in the repo was modified; no model was
 called; no file under `data/held_out_*` or `bench/results_*` was written.
 Analysis scripts were written to a scratch directory outside the repo.
@@ -26,6 +31,16 @@ one `git clean -xdf` destroys the thesis. Second, two of the five headline
 numbers are computed on a denominator that silently includes a cold-start
 warmup row, `audit/figures_v3.py` computes the same quantity on a different
 denominator, and no committed document states any V5 number at all.
+
+**[R2] A third reason, which the 13 September pass missed entirely.** The audit
+checked *training* leakage exhaustively and found none. It never asked whether
+the held-out set had been *reused*. It has — three times, and the V5 legend was
+authored to fix failures observed on it. See finding 24. That is the single
+most likely line of attack at the viva and no committed document discloses it.
+
+**[R2] A fourth, structural.** The thesis's core contribution is a
+cost/accuracy Pareto plot, and the winning cell has no latency or cost figure in
+any committed document. See finding 25.
 
 ---
 
@@ -56,6 +71,15 @@ denominator, and no committed document states any V5 number at all.
 | 21 | LOW | B Data | 12 V1 `seen.jsonl` commands appear in `held_out_v3`; none is in `train_v2` | computed; all are "middle of the table" phrasings | [Certain] |
 | 22 | LOW | D Version | 22 result CSVs on disk have no manifest; `results_v5_all.csv` / `_slim.csv` are undocumented intermediates | file listing | [Certain] |
 | 23 | LOW | F Docs | `docs/SESSION_2026-09-07.md:152` cites `session_record_v3.md`, which is not in the repo | `find . -iname "*session_record*"` → nothing | [Certain] |
+| **24** | **BLOCKER** | **B Data [R2]** | **`held_out_v3` has been measured three times (V3, V4c, V5) and the V5 legend was authored to fix failures seen on it. Zero training leakage, but the sealed-set guarantee is spent. No committed document discloses this** | `results_heldout_v3_*`, `results_v4c_lora`, all 8 V5 manifests all name `held_out_v3`; V5 legend design rationale in `session_record_v3.md §2.15`; plan v6 don't-do list: "❌ Tune on the held-out set" | [Certain] |
+| **25** | **BLOCKER** | **F Docs [R2]** | **The V5 winning cell `qwen2.5-3b-lora/zero_shot` has no latency or cost figure in any committed document. The Pareto plot's top-right point cannot be placed** | `DEFENCE_NUMBERS.md` rev 1 Pareto table is V3-only; `git grep` finds no V5 latency for any LoRA cell | [Certain] |
+| **26** | **HIGH** | **C Scoring [R2]** | **The V5 headline margin (0.9583 vs 0.9382 = 2.0 points) is below the thesis's own stated ~6-point claimability threshold, and finding 10 means it cannot currently be tested** | `DEFENCE_NUMBERS.md` rev 1 §6 states median CI half-width 5.8 pts; V5 cell values recomputed | [Certain] |
+| **27** | **MEDIUM** | **D Version [R2]** | **V3 row count is stated as 30,352 in `DEFENCE_NUMBERS.md` §2 and 30,380 in this report §1 and §7. 28-row discrepancy, unreconciled** | both documents | [Certain] |
+| **28** | **MEDIUM** | **E Risk [R2]** | **Git history is clean of secrets, but a `.env` containing a live `OPENAI_API_KEY` was placed on the demo USB drive. Git hygiene does not cover physical media** | `docs/DEMO_PORTABLE.md` describes the USB contents; `.gitignore:4, :47`; `git log --all -- .env` empty | [Likely] the copy happened; [Certain] git is clean |
+| **29** | **MEDIUM** | **G Quality [R2]** | **Three open engineering decisions from `SESSION_2026-09-07.md §4` were never carried into this audit: `MOVE_TOL = 0.02` is unreachable (best observed 0.029) so `move_to` reports `ok: false` every time; `nearest_free_cell` occupancy handling may differ between MuJoCo and Isaac; `run_demo.py` and `asr/voice.py` may pass different Whisper models (`small.en` vs `base`)** | `SESSION_2026-09-07.md:180-193`; `sim/workspace.py`; `llm_client.py` vs `asr/voice.py` | [Certain] they are open; [Likely] the Whisper mismatch is live |
+| **30** | **MEDIUM** | **F Docs [R2]** | **Field-level escalation (`session_record_v3.md §2.14`) appears in no not-reportable list in the repo, but rests on an untested assumption (cloud location accuracy unchanged when only the location is asked) and an unverified novelty claim** | `session_record_v3.md §2.14`; `audit/escalation_sim.csv` | [Certain] |
+| **31** | **MEDIUM** | **Scope [R2]** | **Phase 6 (vision) and Phase 2.5 (RL backend) were formally cut in writing by the supervisor on 17 September 2026. Finding "vision zero lines" is now a scope decision, not a gap — but the cover page still promises vision-based manipulation** | supervisor's written instruction, 17 Sep 2026; thesis title | [Certain] the cut; [Likely] the title is unreconciled |
+| **32** | **LOW** | **F Docs [R2]** | **The `_scored` suffix on the four V5 files is a misnomer — they carry `run_cell.py`'s original verdicts unchanged, so `rescore.py` either did not run or changed nothing** | 12,152 rows agree, 0 differ, raw vs scored | [Certain] the equality; [Guessing] which |
 
 ---
 
@@ -127,6 +151,12 @@ two local numbers are not. Note the direction differs by luck: the LoRA warmup
 row happened to be correct (inflating 95.8% → 95.9%), the classifier warmup row
 happened to be wrong (deflating 75.0% → 74.7%).
 
+**[R2] Second-order consequence, not noted on 13 September.** `command_id 0` is
+a *grid* command. Under the warmup-excluded rule the 31 local cells have **131
+grid commands, not 132**, so the LoRA's perfect grid score is 131/131 and the
+classifier's grid denominator is 131. Any table mixing cloud (132) and local
+(131) grid counts in one column is wrong. State the denominator per row.
+
 **Fix:** decide one rule. Either exclude warmups everywhere (then 31 cells are
 honestly n=216 and one command is unmeasured for them), or re-run
 `command_id 0` for the 31 local cells — cheap, local, no cloud spend. Add the
@@ -184,6 +214,13 @@ The 3b-lora line is the dangerous one: **0.654 → 0.959 is a 30-point move**, a
 the V5 number makes a 3B local LoRA the best system in the study, beating
 gpt-4o-mini. That inverts the thesis's headline conclusion. `DEFENCE_NUMBERS.md`
 still states the old ordering as "safe to quote [Certain]".
+
+**[R2] Status: DONE, 17 September 2026.** `audit/DEFENCE_NUMBERS.md` revision 2
+rebuilds the document on the V5 basis, adopts the three-way grid/container/
+no-location split, states the warmup rule explicitly, removes the carried-over
+V3 intervals, and records findings 24–26 as limitations. It does **not** invent
+V5 intervals — §0.2 of that document states plainly that the headline ordering
+is unconfirmed until finding 10 is fixed.
 
 **Fix:** regenerate the whole file from the V5 set. It cannot be patched
 number-by-number, because the *ranking* changed. 4 hours, and it depends on
@@ -256,6 +293,14 @@ result and it will be the first thing an examiner probes. It is not string
 leakage — `train_v2 ∩ held_out_v3` is 0 exact and 0 near. But "perfect" invites
 the question and deserves a paragraph of its own analysis before submission.
 
+**[R2] Resolution, 17 September 2026.** Revision 2 of `DEFENCE_NUMBERS.md`
+retires the `n=181` basis entirely and adopts the three-way split. The 0.970
+figure is recorded as the container accuracy, misfiled. **[R2] The honest
+mechanism behind 131/131 is the V5 legend rewrite, which removed the vocabulary
+mismatch that suppressed this cell in V3 (0.407 → 1.000) — and that legend was
+authored after seeing V3 fail on this same set. Finding 24 is the reason the
+131/131 paragraph has to be written carefully rather than celebrated.**
+
 ### 7. HIGH — the V3 measurement has no manifest
 
 Every V4 and V5 run wrote a `.manifest.json` with argv, dataset, schema version,
@@ -272,6 +317,11 @@ pins the audit-time environment rather than the measurement-time one.
 
 If V3 is retired in favour of V5 this becomes moot. If any V3 number is still
 quoted — and `DEFENCE_NUMBERS.md` quotes many — it is quoted without provenance.
+
+**[R2]** Revision 2 retires V3 as a headline source but still quotes it for the
+CoT cost sentence, the row-vs-column structural result, the 31.4% invalid rate
+and the 5.8-point CI half-width. Each is now labelled *V3* in place. Those four
+remain provenance-free; see finding 27 and fix-list item 16.
 
 ### 8. HIGH — `held_out_v4b.jsonl` is not held out
 
@@ -323,6 +373,10 @@ means the figures were drawn from a *truncated* copy of the data.
 `analyze.py` also carries the docstring label `DATA VERSION: V1/V2 ONLY` at
 lines 17-20 — a label that is now false, since it produced the V5 figures.
 
+**[R2] Do not put these four figures in the thesis.** With the input unknown and
+the source data truncated, a caption cannot honestly state what they show.
+Either regenerate from a committed script with named inputs, or drop them.
+
 **Fix:** record the exact command, or regenerate the figures from a committed
 script with the inputs named in the caption. 2 hours.
 
@@ -347,6 +401,10 @@ half-width is 5.8 points and that "any difference under ~6 points is not
 claimable". Under its own stated rule, *the headline finding of the thesis is
 not claimable* until V5 intervals exist to test it.
 
+**[R2] This is now the highest-priority fix in the report**, ahead of everything
+except committing the data. It is 2 hours of work and it decides whether the
+thesis has a headline finding or an unconfirmed ordering. See finding 26.
+
 **Fix:** point `figures_v3.py` at the V5 files via a parameter. The bootstrap
 code is already correct and needs no change. 2 hours.
 
@@ -365,6 +423,193 @@ also records that the wrong count is baked into the caption of
 `fig5_v3_vs_v4a.png`, and that `fig7_v4c_row_vs_column.png` has a label
 collision where the `36` on the 3b-lora bar is overprinted.
 
+**[R2] Partial resolution, 17 September 2026.** Fixed in
+`audit/DEFENCE_NUMBERS.md` revision 2 §5, which also corrects the secondary
+error: `session_record_v3.md §2.13` says "six real moves", and the correct
+figure is **seven**. **Still outstanding: `audit/V4_RESULTS.md:121`, the
+`fig5_v3_vs_v4a.png` caption, and the `fig7` label collision.** This correction
+has now survived four sessions. Do all four locations in one pass or it will
+survive a fifth.
+
+### 24. [R2] BLOCKER — `held_out_v3` is not a sealed set any more
+
+The 13 September pass verified, exhaustively and correctly, that no held-out
+command influenced training or prompt-selection. That is a *leakage* check. It
+is not the same question as whether the set has been **reused**, and the reuse
+answer is worse.
+
+`held_out_v3` has been measured three times:
+
+| run | conditions | legend |
+|---|---|---|
+| V3 | 28 cells, 30,380 rows | v3 |
+| V4 | `results_v4c_lora` (the LoRA pair) | v4 |
+| V5 | 36 cells, 12,152 rows | **v5** |
+
+The V5 legend was not an arbitrary rewrite. `session_record_v3.md §2.15` records
+that it was designed against a mechanical checklist built from the specific
+failures V3 and V4 exhibited **on this set** — the row/column label collision,
+the contradictory framing, the cell-ID anchoring. All four checks pass for V5
+and none passed for V3.
+
+No file was modified and the prompt is not data, so nothing in the letter of the
+protocol was broken. But the guarantee a held-out set provides expires the first
+time you look at it, and the project's own plan v6 don't-do list reads
+**"❌ Tune on the held-out set"**. The V5 numbers measure performance under a
+legend fitted to this set; they are an optimistic estimate of performance on a
+fresh one, by an amount the study cannot bound.
+
+This was a knowing decision — recorded as "option C: accept the confound and
+declare it." **The declaration has not happened.** It appears in no committed
+document, and `DEFENCE_NUMBERS.md` revision 1 presented the V5 ordering without
+qualification.
+
+**Why this is the top viva risk:** it is discoverable from the tracked manifests
+alone. All eight V5 manifests name `held_out_v3`; so do the V3 result files. An
+examiner comparing them finds the reuse in under a minute, and then asks why it
+is not in the methods chapter.
+
+**Fix:** one paragraph in methods, in these terms, plus one line in
+`DEFENCE_NUMBERS.md` (**done** — revision 2 §6.1). 1 hour, and it converts the
+finding from a flaw into ordinary experimental honesty. The clean experiment —
+a fourth held-out set authored after the legend was frozen — is future work, not
+this thesis.
+
+### 25. [R2] BLOCKER — the winning cell has no cost axis
+
+The thesis's stated core contribution is a measured cost curve across four
+adaptation methods. The V5 winner, `qwen2.5-3b-lora/zero_shot` at 0.9583, has
+**no latency figure and no cost figure in any committed document**. Revision 1's
+Pareto table is V3-only and does not contain the cell at all.
+
+The data exists — `results_v5_lora_scored.csv` carries `latency_s` per row — but
+no document states the p50, and `bench/summary.py`'s token sections
+**silently vanish** when a raw `_scored` file is passed rather than a `_tokens`
+file (finding 15, trap 4). So the number is one command away and nobody has run
+it.
+
+Without it the headline figure of the thesis cannot be drawn.
+
+**Fix:** extract p50 `latency_s` for all LoRA cells; pass the `_tokens` file to
+`summary.py` for the cost columns; add both to `RESULTS_V5.md`. 1 hour.
+
+### 26. [R2] HIGH — the headline margin is inside the noise floor
+
+0.9583 vs 0.9382 is **2.0 points**. The thesis's own stated resolution is ~6
+points. Finding 10 means there is currently no V5 interval to test the gap
+against.
+
+Three outcomes are possible once the intervals exist, and the thesis should be
+written so that all three are survivable:
+
+1. **Intervals separate.** The headline stands: a 3B local LoRA beats a frontier
+   cloud model on this task. Strongest result in the study.
+2. **Intervals overlap.** The headline becomes "a 3B local LoRA *matches*
+   gpt-4o-mini at a fraction of the cost" — which is still a good result, and
+   arguably the more interesting one for an edge-AI thesis.
+3. **The warmup rule flips the rounding** (0.9585 vs 0.9583). Immaterial to the
+   comparison, material to every printed table.
+
+**Do not write the results chapter around outcome 1 before the intervals
+exist.** Write it around outcome 2, which holds either way, and strengthen it if
+the intervals separate.
+
+### 27. [R2] MEDIUM — two V3 row counts
+
+`DEFENCE_NUMBERS.md` revision 1 §2 states the V3 generative pool as **30,352**
+rows (9,530 invalid = 31.4%). This report §1 and §7 state the V3 measurement as
+**30,380** rows. A 28-row gap, unexplained. Likely a warmup or a rung-boundary
+difference; not established. Reconcile before either figure appears in the
+thesis, and state which pool the 31.4% is a fraction of.
+
+### 28. [R2] MEDIUM — git hygiene is not media hygiene
+
+`.env` is gitignored at `.gitignore:4` and `:47` and has never been committed —
+`git log --all -- .env` is empty. The 13 September pass concluded "Secrets:
+clean", and for the repository that is correct.
+
+It is not the whole surface. `docs/DEMO_PORTABLE.md` describes an ~18.6 GB USB
+drive prepared for the supervisor visit, containing the working tree. If `.env`
+was in the tree at copy time, a live `OPENAI_API_KEY` left the machine on
+removable media.
+
+**Fix:** rotate the key at `platform.openai.com` regardless of whether the copy
+happened; delete `.env` from the USB drive; re-create it locally from the new
+key. 10 minutes. There is no scenario where rotating costs more than not
+rotating.
+
+### 29. [R2] MEDIUM — three open decisions never carried into the audit
+
+From `SESSION_2026-09-07.md §4`, none of which appear in the 13 September pass:
+
+- **`MOVE_TOL = 0.02` is unreachable.** Best observed is 0.029, so `move_to`
+  reports `ok: false` on every call. Either raise to 0.05 and document the
+  change, or leave it honest and red — but decide, because a demo that returns
+  failure on every `move_to` invites a question with no good live answer.
+- **`nearest_free_cell` excludes the carried object from the occupancy test.**
+  `sim/workspace.py` delegates this to the caller. Check what
+  `sim/sim_backend.py` passes as `occupied_xy`. If MuJoCo includes the target
+  and Isaac does not, one of the two backends is wrong and the same command
+  means different places in the two demos.
+- **Whisper model mismatch.** `llm_client.py` uses `small.en`; `asr/voice.py`
+  defaults to `base`. If `run_demo.py` passes different models on the two paths,
+  the two demos mishear different words — and voice is part of the demo.
+
+All three are demo-path only; no measured number is affected. All three are
+live at the viva.
+
+### 30. [R2] MEDIUM — field-level escalation is in no not-reportable list
+
+`session_record_v3.md §2.14` reports that escalating **only the location** field
+to gpt-4o-mini when the classifier's location head has a low softmax margin
+dominates `role_based` at t=0.30 and ties the RAG frontier point at t=0.50 for
+half the latency. It is the most interesting system result the project produced.
+
+It is also **a simulation from full-object prompts**, so it assumes cloud
+location accuracy is unchanged when only the location is asked — untested,
+and flagged `[Certain]` as load-bearing in the source record. The novelty claim
+(per-field deferral within one structured output, versus query-level cascades
+like FrugalGPT, RouteLLM, CP-Router, UCCI) rests on two searches and is tagged
+`[Guessing]`.
+
+No committed document lists it as not-reportable, so nothing stops it reaching a
+slide as a measured result.
+
+**Fix:** it is now in `DEFENCE_NUMBERS.md` revision 2 §7. Report it in the
+thesis as a *simulated* extension with the assumption stated, in future work —
+or run the location-only prompt condition and make it real. The latter is new
+measurement work and is out of scope under the 17 September freeze.
+
+### 31. [R2] Scope freeze, 17 September 2026
+
+The supervisor instructed in writing to stop building: **no Phase 6 (vision) and
+nothing beyond it.** Phase 2.5 (RL backend, SAC+HER via SB3) is likewise not
+being built. Remaining work is correction and write-up only.
+
+This changes the character of two entries elsewhere in this report. "Vision or
+real-arm results — zero lines of implementation" was a gap; it is now a recorded
+scope decision with supervisor agreement, which is a far better answer at a
+viva. The fix list below is re-prioritised accordingly: nothing that constitutes
+new capability is scheduled, and the Isaac `reset` verb (finding 18) survives
+only because the demo *is* the viva.
+
+**One thing the written instruction does not cover:** the cover page still
+promises vision-based manipulation. A title that describes work the thesis does
+not contain is a defect independent of whose decision the cut was. Confirm the
+title change with the supervisor, in writing, and reconcile the abstract and
+introduction to match.
+
+### 32. [R2] LOW — the `_scored` suffix asserts something unverified
+
+The four V5 `_scored.csv` files carry verdicts identical to the raw run files on
+all 12,152 rows. That is consistent both with "`rescore.py` ran and changed
+nothing" and with "`rescore.py` never ran". The suffix asserts the first. The
+evidence cannot distinguish, and the command history is gone.
+
+Harmless to the numbers — `llm/score.py` is single-sourced and the verdicts
+agree — but it is an unsupported claim baked into a filename that the thesis
+will cite. Either re-run `rescore.py` and record the invocation, or rename.
+
 ---
 
 ## Reproducibility trace
@@ -381,7 +626,8 @@ num_ctx 4096, 10 cells) → `bench/results_v5_qwen3.csv` (**untracked**) →
 (**untracked**) → `bench/summary.py:161-176`. **Recomputed: 208/217 = 0.9585,
 warmup included.** Excluding the warmup gives 207/216 = 0.9583 → 95.8%.
 **Chain is complete but two links are uncommitted, and the published rounding
-depends on the warmup convention.**
+depends on the warmup convention.** **[R2] No latency or cost figure exists for
+this cell in any document — finding 25.**
 
 **93.8% strict, `gpt-4o-mini`, retrieval**
 Same path via `results_v5_cloud.csv.manifest.json` (repeats 5, 5 cells) →
@@ -442,13 +688,15 @@ re-runnable. The results are not recoverable.
 | `data/train_v2.jsonl` | 230 | LoRA + classifier training; **the only RAG corpus** | `seen_v2` 230, `held_out_v4b` **56** | LoRA 0.5B/3B, DistilBERT |
 | `data/dev_v2.jsonl` | 57 | checkpoint/epoch selection only | `seen_v2` 57, `held_out_v4b` 14 | selection signal only |
 | `data/held_out_v2.jsonl` | 132 | V2 sealed KPI | ⊂ `held_out_v3` (all 132) | never |
-| `data/held_out_v3.jsonl` | **217** | **the V5 measurement set** | `held_out_v2` 132, `seen.jsonl` 12, `v4b`/`v4c` 145 | **never — 0 exact, 0 near vs train/dev/seen_v2** |
+| `data/held_out_v3.jsonl` | **217** | **the V5 measurement set** | `held_out_v2` 132, `seen.jsonl` 12, `v4b`/`v4c` 145 | **never — 0 exact, 0 near vs train/dev/seen_v2. [R2] But measured three times; see finding 24** |
 | `data/held_out_v4b.jsonl` | 217 | vocabulary-aligned probe | **`train_v2` 56, `seen_v2` 72, `dev_v2` 14** | never — and never run |
 | `data/held_out_v4c.jsonl` | 217 | neither-vocabulary probe | `held_out_v3` 145; **0 with train/dev/seen_v2** | never |
 | `data/seen_v2_backup_203.jsonl` | 203 | pre-gate provenance snapshot | `seen_v2` 203 | nothing; read by no code |
 
 Composition of `held_out_v3`: **132 grid-cell, 36 container, 49 no-location.**
-No duplicate command strings in any file.
+No duplicate command strings in any file. **[R2] Under the warmup-excluded rule
+the 31 local cells see 131 grid commands, because `command_id 0` is a grid
+command.**
 
 Three `seen_v2` commands are in neither `train_v2` nor `dev_v2`
 (`"put the bottle in the far left corner of the table"`,
@@ -479,6 +727,13 @@ zero on both measures — but it would *not* protect a `held_out_v4b` run, where
 56 commands match the corpus verbatim (those would be excluded) while their
 near-variants would not.
 
+**[R2] Reuse verdict — separate question, worse answer.** The leakage verdict
+above is about *training*. It says nothing about how many times the set has been
+looked at, and the answer is three, with the V5 prompt fitted to what the
+earlier looks revealed. See finding 24. **Do not cite the leakage verdict as
+though it answers the reuse question; an examiner who knows the difference will
+notice that it does not.**
+
 ---
 
 ## What I could not verify
@@ -491,7 +746,7 @@ near-variants would not.
   files carry verdicts identical to the raw run files on all 12,152 rows, which
   is consistent both with "rescore ran and changed nothing" and with "rescore
   never ran". The `_scored` suffix asserts the first; the evidence cannot
-  distinguish. Needs the command history.
+  distinguish. Needs the command history. **[R2] Recorded as finding 32.**
 - **Whether `bench/analyze.py` actually crashes on the V5 data.** The defect is
   certain from the source (`:22`, `:49`, no `field_size_limit`) and the data
   (286,686-char field vs a 131,072 limit), but I did not execute it — running
@@ -499,7 +754,9 @@ near-variants would not.
 - **Which of the seven V4a cells are the "real" moves.** `v4_cells.csv` marks
   seven; `SESSION_2026-09-07.md:145-151` records that three counting methods
   agree on seven but disagree on *which* seven. Needs a decision, not an
-  analysis.
+  analysis. **[R2] Decision taken: report both disputed cells
+  (`gpt-4o-mini/cot`, `qwen2.5:0.5b/few_shot`) as ambiguous rather than picking
+  the rule that tells the tidier story.**
 - **Whether the Isaac demo can complete a full run without a restart.** Finding
   18 is certain from the source — no reset verb exists — but the practical blast
   radius depends on how many placements a demo makes before the three boxes are
@@ -507,42 +764,65 @@ near-variants would not.
 - **Whether `0.970` in `DEFENCE_NUMBERS.md:25` is the container figure or a
   third computation.** It matches 0.9722 to within rounding, but no script in
   the repo emits 0.970 for that cell. Needs whatever produced the original
-  table.
+  table. **[R2] Resolved by removal: revision 2 retires the basis and the
+  figure. If the provenance is ever recovered, record it; otherwise the number
+  simply does not appear anywhere again.**
 - **`n=539` on slide 17 and the "0.1–0.5 cm placement" claim on slide 22**, both
   flagged in `SESSION_2026-09-07.md:196-199`. The slides are not in the repo.
+  **[R2] Partially resolved: the verified Isaac figure is 0.2–0.4 cm for
+  `pick_place`, so the slide's 0.1–0.5 cm range is wrong at both ends and
+  conflates `pick_place` with `move_to`. Correct the slide. `n=539` is still
+  unexplained and should be removed from the slide unless someone can say what
+  it counts.**
+- **[R2] Whether the thesis title has been changed to match the reduced scope.**
+  Finding 31. Needs the supervisor, not an analysis.
 
 ---
 
 ## Fix list
 
-### Before writing starts — 17 hours
+**[R2] Re-prioritised 17 September 2026 for the scope freeze.** Nothing below
+adds capability. Item ordering is now: protect the data, make the headline
+defensible, then correct the documents.
+
+### Before writing starts — 21 hours
+
+| # | Task | Hours | Status |
+|---|---|---|---|
+| 1 | Commit the V5 result CSVs; add `!bench/results_v5_*.csv` negations to `.gitignore`; push; copy the zip off-machine | 1 | **do first, today** |
+| 28 | **[R2]** Rotate the OpenAI key; delete `.env` from the USB drive | 0.2 | **do first, today** |
+| 5 | **[R2]** Point `clustered_ci` at the V5 files; produce intervals for all 36 cells; check whether 0.9583 vs 0.9382 separates | 2 | decides the headline |
+| 25 | **[R2]** Extract p50 latency and cost for `qwen2.5-3b-lora/zero_shot` and all LoRA cells; the Pareto plot cannot be drawn without it | 1 | |
+| 2 | Decide the warmup rule; add the filter to `summary.py:176`; re-run `command_id 0` for the 31 local cells if you want n=217 honestly | 4 | |
+| 3 | One shared `accuracy(rows)` helper; make `summary.py`, `analyze.py`, `figures_v3.py` import it | 3 | |
+| 4 | Commit `bench/regroup_v5.py`; write `audit/RESULTS_V5.md` giving each number its file, filter and denominator | 3 | |
+| 24 | **[R2]** Write the held-out-reuse paragraph into the methods chapter | 1 | |
+| 6 | Rewrite `DEFENCE_NUMBERS.md` from V5 — the ranking changed, so rewrite rather than patch | 4 | **done 17 Sep (rev 2)** |
+| 7 | **[R2] moved up from "can wait":** fix `21 of 27` in `V4_RESULTS.md:121`, the `fig5` caption and the `fig7` label collision — this correction has survived four sessions | 1 | `DEFENCE_NUMBERS.md` done |
+| 31 | **[R2]** Confirm the title change with the supervisor in writing; reconcile abstract and introduction | 0.5 | |
+
+Item 6 depended on 2, 3 and 5; revision 2 was written anyway, with the
+unresolved dependencies stated in its §0 rather than papered over. Items 5 and 25
+must still land before any figure is drawn.
+
+### Can wait until after — 11 hours
 
 | # | Task | Hours |
 |---|---|---|
-| 1 | Commit the V5 result CSVs; add `!bench/results_v5_*.csv` negations to `.gitignore`; push; copy the zip off-machine | 1 |
-| 2 | Decide the warmup rule; add the filter to `summary.py:176`; re-run `command_id 0` for the 31 local cells if you want n=217 honestly | 4 |
-| 3 | One shared `accuracy(rows)` helper; make `summary.py`, `analyze.py`, `figures_v3.py` import it | 3 |
-| 4 | Commit `bench/regroup_v5.py`; write `audit/RESULTS_V5.md` giving each number its file, filter and denominator | 3 |
-| 5 | Point `clustered_ci` at the V5 files; produce intervals for all 36 cells; check whether 0.9583 vs 0.9382 separates | 2 |
-| 6 | Rewrite `DEFENCE_NUMBERS.md` from V5 — the ranking changed, so rewrite rather than patch | 4 |
-
-Item 6 depends on 2, 3 and 5. Item 1 depends on nothing and should be done
-first, today.
-
-### Can wait until after — 9.5 hours
-
-| # | Task | Hours |
-|---|---|---|
-| 7 | Fix `21 of 27` in `DEFENCE_NUMBERS.md:78` and `V4_RESULTS.md:121`; redraw the `fig5` caption | 1 |
-| 8 | Resolve `0.970`; adopt the three-way grid/container/no-location split as the reported basis | 2 |
+| 8 | Resolve `0.970`; adopt the three-way grid/container/no-location split as the reported basis | 2 (**split adopted 17 Sep**) |
+| 27 | **[R2]** Reconcile 30,352 vs 30,380 for V3 | 0.5 |
 | 9 | Rename `held_out_v4b.jsonl` to `probe_v4b_vocab_aligned.jsonl` | 0.5 |
 | 10 | Add `csv.field_size_limit` to `analyze.py:23`; replace the stale defaults at `:168-169` with required arguments | 0.5 |
 | 11 | Give `backfill_tokens_v5.py` a `--in`/`--out`; fix its docstring, which still says `_v3`; or merge the two files behind one flag | 1.5 |
 | 12 | Align `llm_client.py:220` with what was measured, or change its comment to say the restriction is a demo choice, not a measurement fact | 0.5 |
-| 13 | Add a `reset` verb to `isaac_backend.dispatch` and the bridge protocol | 2 |
+| 29 | **[R2]** Decide `MOVE_TOL`; check `occupied_xy` parity between backends; align the Whisper model on both paths | 2 |
+| 13 | Add a `reset` verb to `isaac_backend.dispatch` and the bridge protocol — kept only because the demo is the viva | 2 |
 | 14 | Make `run_grid.py:166-169` refuse to overwrite an unparseable manifest instead of discarding it | 0.5 |
 | 15 | Make `merge_and_export.py:35` read `LLAMA_CPP` from the environment | 0.5 |
-| 16 | Write V3 manifests retrospectively from `MODEL_PROVENANCE.txt`, marked reconstructed — only if V3 numbers are still quoted | 1 |
+| 16 | Write V3 manifests retrospectively from `MODEL_PROVENANCE.txt`, marked reconstructed — only if V3 numbers are still quoted (they are: CoT cost, row-vs-column, 31.4%, the 5.8-pt CI) | 1 |
+| 30 | **[R2]** Move field-level escalation into future work with its assumption stated | 0.5 |
+| 32 | **[R2]** Re-run `rescore.py` and record the invocation, or rename the `_scored` files | 0.5 |
+| 23 | **[R2]** Either commit `session_record_v3.md` or fix the dangling citation at `SESSION_2026-09-07.md:152` | 0.2 |
 
 ---
 
@@ -585,6 +865,8 @@ defines `has_tokens()`, and `:199` / `:299` gate the token and throughput sectio
 `_tokens` file is. Two runs of the same command on two filenames produce
 different-shaped reports with no error. The V5 `_tokens` files exist, so the
 cost numbers are recoverable — but only if you remember which file to pass.
+**[R2] This is why finding 25 happened: the cost columns for the winning cell
+were never printed because the wrong file was passed, and nothing errored.**
 
 **5. `llm_client.py` allowlist contradicts what was measured** —
 `bench/llm_client.py:220` sets `LORA_STRATEGIES = ("zero_shot",)` and `:249-250`
@@ -597,7 +879,9 @@ prompts". **That is false for V5.** `results_v5_qwen3.csv.manifest.json` and
 `zero_shot` 0.9583. **Radius:** no measured number is wrong. But the demo cannot
 show the second-best LoRA cell, and the comment asserts a fact about the
 measurement that the manifests contradict — exactly the kind of thing an
-examiner finds by reading one file.
+examiner finds by reading one file. **[R2] The measured spread is itself a
+result worth reporting: prompting on top of a fine-tuned adapter costs up to 21
+points.**
 
 **6. Isaac has no reset** — `sim/isaac_backend.py:627-644`, `dispatch()`
 dispatches `move_to`, `pick_place`, `fetch`, `hold`, `inspect`, `stop`,
@@ -658,6 +942,21 @@ the resolution of any claim being made.
   `LLAMA_CPP = Path(r"C:\Users\USER\llama.cpp")`. The rest are in docstrings,
   manifests (where recording the real argv is correct) and `docs/DEMO_PORTABLE.md`
   (a personal runbook).
-- **Secrets: clean.** `.env` exists, is gitignored at `.gitignore:4` and `:47`,
-  and has never been committed (`git log --all -- .env` is empty). No key
-  patterns in any tracked file or anywhere in history.
+- **Secrets: clean in git.** `.env` exists, is gitignored at `.gitignore:4` and
+  `:47`, and has never been committed (`git log --all -- .env` is empty). No key
+  patterns in any tracked file or anywhere in history. **[R2] Git is not the
+  whole surface — see finding 28 for the USB drive.**
+
+---
+
+## [R2] Changelog
+
+**Revision 2 — 17 September 2026.** Added findings 24–32. Promoted finding 10
+(no V5 intervals) and added findings 24 (held-out reuse) and 25 (missing cost
+axis for the winning cell) to BLOCKER. Recorded the 17 September scope freeze
+and its consequences for the fix list and the expected viva questions. Moved the
+`21 of 27` correction from "can wait" to "before writing". Updated the leakage
+verdict to distinguish leakage from reuse. Recorded the resolution of findings 4,
+6 and 11 in `audit/DEFENCE_NUMBERS.md` revision 2, and the two dependencies
+(findings 5 and 25 on the fix list) that revision 2 states openly rather than
+resolves.

@@ -46,3 +46,9 @@ audit/*.log
 out/
 .env
 bridge/
+
+# V5 measurement results - thesis evidence
+!bench/results_v5_*.csv
+# thesis2 checkpoints - too large for GitHub; keep an off-machine copy
+thesis2/models/
+!thesis2/out/

@@ -1,0 +1,82 @@
+{
+  "move_tol_m": 0.05,
+  "backend": "sim/full_grasp_backend.FullGraspBackend",
+  "env": "FetchPickAndPlace-v4",
+  "dataset": "held_out_v3",
+  "distinct_executions": 409,
+  "arms": [
+    {
+      "arm": "flat_distilbert",
+      "n": 217,
+      "e2e_success": 0.7465,
+      "n_moving": 195,
+      "e2e_success_moving": 0.7487,
+      "wrong_prediction": 55,
+      "execution_failure": 0,
+      "invalid_symbol": 0,
+      "wrong_prediction_rate": 0.2535,
+      "execution_failure_rate": 0.0
+    },
+    {
+      "arm": "factorized",
+      "n": 217,
+      "e2e_success": 0.6083,
+      "n_moving": 195,
+      "e2e_success_moving": 0.5795,
+      "wrong_prediction": 85,
+      "execution_failure": 0,
+      "invalid_symbol": 0,
+      "wrong_prediction_rate": 0.3917,
+      "execution_failure_rate": 0.0
+    },
+    {
+      "arm": "cascade_row_qwen3blora",
+      "n": 217,
+      "e2e_success": 0.8433,
+      "n_moving": 195,
+      "e2e_success_moving": 0.841,
+      "wrong_prediction": 34,
+      "execution_failure": 0,
+      "invalid_symbol": 0,
+      "wrong_prediction_rate": 0.1567,
+      "execution_failure_rate": 0.0
+    },
+    {
+      "arm": "bilstm",
+      "n": 217,
+      "e2e_success": 0.7005,
+      "n_moving": 195,
+      "e2e_success_moving": 0.7231,
+      "wrong_prediction": 65,
+      "execution_failure": 0,
+      "invalid_symbol": 0,
+      "wrong_prediction_rate": 0.2995,
+      "execution_failure_rate": 0.0
+    },
+    {
+      "arm": "ensemble",
+      "n": 216,
+      "e2e_success": 0.963,
+      "n_moving": 194,
+      "e2e_success_moving": 0.9845,
+      "wrong_prediction": 8,
+      "execution_failure": 0,
+      "invalid_symbol": 0,
+      "wrong_prediction_rate": 0.037,
+      "execution_failure_rate": 0.0
+    },
+    {
+      "arm": "truth_oracle",
+      "n": 217,
+      "e2e_success": 1.0,
+      "n_moving": 195,
+      "e2e_success_moving": 1.0,
+      "wrong_prediction": 0,
+      "execution_failure": 0,
+      "invalid_symbol": 0,
+      "wrong_prediction_rate": 0.0,
+      "execution_failure_rate": 0.0
+    }
+  ],
+  "note": "MOVE_TOL enforced in thesis2/scripts/a3_mujoco_e2e.py; sim/ unmodified. MuJoCo move_to returns ok=True unconditionally, so this gate is stricter than the backend's own reporting."
+}

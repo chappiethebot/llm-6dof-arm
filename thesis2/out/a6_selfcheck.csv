@@ -1,0 +1,13 @@
+check,claimed,recomputed,n,agrees
+factorized action match,0.6083,0.6082949308755761,217,yes
+factorized row accuracy,0.3333,0.3333333333333333,108,yes
+flat action match (n=217 fresh pass),0.7465,0.7465,217,yes
+flat row accuracy,0.6204,0.6204,108,yes
+"P4.5 cascade -> qwen3blora, always",0.8433,0.8433,217,yes
+P4.5 oracle ceiling,0.9401,0.9401,217,yes
+P4.5 cascade rebuilt from scratch,0.8433,0.8433179723502304,217,yes
+MASSIVE AUROC per-factor,0.891,0.891,2974,yes
+MASSIVE AUROC flat,0.8889,0.8889,2974,yes
+
+leakage_code_references_to_held_out,63
+leakage_train_time_references,0

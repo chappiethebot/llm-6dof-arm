@@ -1,0 +1,2 @@
+command_id,command,location_margin,pred_location,truth_location,pred_json,truth_json
+172,put the keys in box 2,0.9018,box_2,,"{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_2"", ""modifiers"": []}","{""action"": ""reject"", ""modifiers"": []}"

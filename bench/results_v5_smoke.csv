@@ -1,0 +1,86 @@
+ts_iso,model,strategy,dataset,source,command_id,command,run_index,is_warmup,latency_s,stage,ok,strict_match,normalized_match,category,pred_json,truth_json,reasons,raw,thinking,thinking_chars,retrieval_latency_s,retrieved_ids,retrieved_scores,tokens_in,tokens_out,cost_usd,temperature
+2026-09-09T04:53:39,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,0,put the bottle in the upper left corner of the table,0,True,2.1218039999948815,schema_failed,False,False,False,invalid:schema_failed,"{""action"": ""move_to"", ""location"": ""grid_12""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A1"", ""modifiers"": []}",bad_location:'grid_12',"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_12""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:40,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,1,put the car in the upper left corner of the table,0,False,1.5717335999943316,validated,True,False,False,wrong_verb,"{""action"": ""move_to"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A1"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A1""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:42,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,2,put the rubiks cube in the upper left corner of the table,0,False,1.534689399995841,validated,True,False,False,wrong_verb,"{""action"": ""move_to"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A1"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A1""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:43,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,3,can you please keep the bottle in the upper left corner of the table?,0,False,1.507628499995917,validated,True,False,False,wrong_verb,"{""action"": ""move_to"", ""location"": ""grid_A2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A1"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A2""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:45,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,4,can you please keep the car in the upper left corner of the table?,0,False,1.51723420000053,validated,True,False,False,wrong_verb,"{""action"": ""move_to"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A1"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A1""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:46,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,5,can you please keep the rubiks cube in the upper left corner of the table?,0,False,1.5025539999769535,validated,True,False,False,wrong_verb,"{""action"": ""move_to"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A1"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A1""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:48,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,6,pick up the bottle and keep in the upper left corner of the table,0,False,1.565666600014083,validated,True,True,True,correct,"{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A1"", ""modifiers"": []}",,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_A1""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:50,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,7,pick up the car and keep in the upper left corner of the table,0,False,1.5571096999919973,validated,True,True,True,correct,"{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A1"", ""modifiers"": []}",,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_A1""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:51,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,8,pick up the rubiks cube and keep in the upper left corner of the table,0,False,1.6088552000001073,validated,True,True,True,correct,"{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A1"", ""modifiers"": []}",,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_A1""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:53,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,9,move to the upper left corner of the table,0,False,1.5280095000052825,validated,True,True,True,correct,"{""action"": ""move_to"", ""location"": ""grid_A1""}","{""action"": ""move_to"", ""location"": ""grid_A1"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A1""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:54,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,10,go to the upper left corner of the table,0,False,1.5206208000017796,validated,True,True,True,correct,"{""action"": ""move_to"", ""location"": ""grid_A1""}","{""action"": ""move_to"", ""location"": ""grid_A1"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A1""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:56,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,11,navigate to the upper left corner of the table,0,False,1.5592774999968242,validated,True,True,True,correct,"{""action"": ""move_to"", ""location"": ""grid_A1""}","{""action"": ""move_to"", ""location"": ""grid_A1"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A1""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:57,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,12,put the bottle in the upper side middle edge of the table,0,False,1.4720548999903258,validated,True,False,False,wrong_verb,"{""action"": ""move_to"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A2"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B2""
+}",,0,,,,,,,0.0
+2026-09-09T04:53:59,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,13,put the car in the upper side middle edge of the table,0,False,1.485128700005589,validated,True,False,False,wrong_verb,"{""action"": ""move_to"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A2"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B2""
+}",,0,,,,,,,0.0
+2026-09-09T04:54:00,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,14,put the rubiks cube in the upper side middle edge of the table,0,False,1.5761625999875832,validated,True,False,False,wrong_verb,"{""action"": ""move_to"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A2"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B2""
+}",,0,,,,,,,0.0
+2026-09-09T04:54:02,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,15,can you please keep the bottle in the upper side middle edge of the table?,0,False,1.5272368000005372,validated,True,False,False,wrong_verb,"{""action"": ""move_to"", ""location"": ""grid_A2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A2"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A2""
+}",,0,,,,,,,0.0
+2026-09-09T04:54:03,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,16,can you please keep the car in the upper side middle edge of the table?,0,False,1.5173699999868404,validated,True,False,False,wrong_verb,"{""action"": ""move_to"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A2"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B2""
+}",,0,,,,,,,0.0
+2026-09-09T04:54:05,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,17,can you please keep the rubiks cube in the upper side middle edge of the table?,0,False,1.5238302999932785,validated,True,False,False,wrong_verb,"{""action"": ""move_to"", ""location"": ""grid_A2""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A2"", ""modifiers"": []}",,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A2""
+}",,0,,,,,,,0.0
+2026-09-09T04:54:06,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,18,pick up the bottle and keep in the upper side middle edge of the table,0,False,1.543904799997108,validated,True,False,False,wrong_or_missing_location,"{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A2"", ""modifiers"": []}",,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B2""
+}",,0,,,,,,,0.0
+2026-09-09T04:54:08,ollama:qwen2.5:3b,zero_shot,held_out_v3,typed,19,pick up the car and keep in the upper side middle edge of the table,0,False,1.5869491999910679,validated,True,False,False,wrong_or_missing_location,"{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A2"", ""modifiers"": []}",,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B2""
+}",,0,,,,,,,0.0

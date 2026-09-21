@@ -1,0 +1,17 @@
+{
+  "verdict": "VALID -- INT4 executed, differences are real but small",
+  "device": "cuda",
+  "n_commands": 217,
+  "quantized_linears": 43,
+  "layers_with_changed_weights": 43,
+  "max_distinct_values_per_channel_int4": 15,
+  "total_params": 66381336,
+  "quantized_params": 42485760,
+  "embedding_params": 23835648,
+  "whole_model_fp16_mb": 132.76,
+  "whole_model_int4_mb": 69.2,
+  "whole_model_compression": 1.92,
+  "quantized_layers_compression": 3.97,
+  "activations_quantized": false,
+  "int4_kernel_used": false
+}

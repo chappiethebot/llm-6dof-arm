@@ -1,0 +1,13 @@
+dataset,signal,budget,escalated,accuracy
+massive_en,per_factor,0.05,149,0.8921
+massive_en,flat,0.05,149,0.8941
+massive_en,per_factor,0.1,297,0.9032
+massive_en,flat,0.1,297,0.9052
+massive_en,per_factor,0.2,595,0.9126
+massive_en,flat,0.2,595,0.9153
+massive_en,per_factor,0.3,892,0.9196
+massive_en,flat,0.3,892,0.9193
+massive_en,per_factor,0.4,1190,0.9223
+massive_en,flat,0.4,1190,0.922
+massive_en,per_factor,0.5,1487,0.923
+massive_en,flat,0.5,1487,0.923
