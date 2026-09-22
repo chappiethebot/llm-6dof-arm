@@ -1,0 +1,3 @@
+arm,n,action_match,n_row,row_acc,row_hits,pred_not_a_grid_cell,unparseable
+"qwen2.5-3b-lora zero_shot (V5 legend, transformers fp16)",217,0.6221,108,0.3333,36,0,0
+flat DistilBERT classifier (no legend),217,0.7143,108,0.5556,60,0,0

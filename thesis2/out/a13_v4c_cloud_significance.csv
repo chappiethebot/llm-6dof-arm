@@ -1,0 +1,5 @@
+dataset,comparison,arm_a,arm_b,metric,n,acc_a,acc_b,diff_pts,ci_lo_pts,ci_hi_pts,mcnemar_b,mcnemar_c,mcnemar_p,ci_excludes_zero,verdict,p_holm,claimable_corrected
+held_out_v4c,"cascade row->gpt-4o-mini (tau=1.0, always escalate) vs flat classifier",cascade_row_cloud_tau1.0,flat_distilbert,action_match,217,0.7788,0.7143,6.45,0.92,11.98,27,13,0.03848,True,CLAIMABLE,0.45604,NOT CLAIMABLE
+held_out_v4c,"cascade row->gpt-4o-mini (tau=1.0, always escalate) vs flat classifier",cascade_row_cloud_tau1.0,flat_distilbert,row_accuracy,108,0.6759,0.5556,12.04,1.85,22.22,23,10,0.03508,True,CLAIMABLE,0.45604,NOT CLAIMABLE
+held_out_v4c,"cascade row->gpt-4o-mini (tau_A=0.50, pre-registered) vs flat classifier",cascade_row_cloud_tau_A0.50,flat_distilbert,action_match,217,0.7696,0.7143,5.53,0.92,10.14,20,8,0.0357,True,CLAIMABLE,0.45604,NOT CLAIMABLE
+held_out_v4c,"cascade row->gpt-4o-mini (tau_A=0.50, pre-registered) row vs flat row",cascade_row_cloud_tau_A0.50,flat_distilbert,row_accuracy,108,0.6574,0.5556,10.19,2.78,18.52,16,5,0.0266,True,CLAIMABLE,0.3724,NOT CLAIMABLE

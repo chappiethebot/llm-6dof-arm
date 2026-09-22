@@ -1,0 +1,3 @@
+arm,n_commands,wall_s,mean_power_w,idle_power_w,delta_power_w,joules_per_command,power_samples
+a12_prefix_cached_plain_greedy,217,158.5,95.26,12.12,83.14,60.72329,155
+a12_prefix_cached_spec_qwen05b_drafter,217,204.3,60.38,12.12,48.26,45.44221,199

@@ -1,0 +1,3 @@
+dataset,comparison,arm_a,arm_b,metric,n,acc_a,acc_b,diff_pts,ci_lo_pts,ci_hi_pts,mcnemar_b,mcnemar_c,mcnemar_p,ci_excludes_zero,verdict,p_holm,claimable_corrected
+held_out_v4c,flat classifier vs qwen2.5-3b-lora V5 zero-shot,flat_distilbert,qwen3b_lora_v5_prompted,action_match,217,0.7143,0.6221,9.22,4.15,14.75,28,8,1.193e-03,True,CLAIMABLE,0.021474,CLAIMABLE
+held_out_v4c,flat classifier vs qwen2.5-3b-lora V5 zero-shot,flat_distilbert,qwen3b_lora_v5_prompted,row_accuracy,108,0.5556,0.3333,22.22,13.89,30.56,24,0,1.192e-07,True,CLAIMABLE,2.8608e-06,CLAIMABLE

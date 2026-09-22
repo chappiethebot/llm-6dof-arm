@@ -1,24 +1,24 @@
-family,comparison,arm_a,arm_b,metric,n,acc_a,acc_b,diff_pts,ci_lo_pts,ci_hi_pts,mcnemar_b,mcnemar_c,mcnemar_p,ci_excludes_zero,verdict
-held_out_v3,ensemble vs qwen2.5-3b-lora (V5),ensemble,qwen3b_lora_v5,accuracy,216,0.963,0.9583,0.46,-1.39,2.33,3,2,1.0,False,NOT CLAIMABLE
-held_out_v3,ensemble vs gpt-4o-mini/rag (V5),ensemble,gpt4omini_rag_v5,accuracy,216,0.963,0.9398,2.31,0.0,4.63,6,1,0.125,False,NOT CLAIMABLE
-held_out_v3,ensemble vs cascade(row->qwen3b-lora),ensemble,cascade_row_qwen3blora,accuracy,216,0.963,0.8426,12.04,6.94,17.13,30,4,6e-06,True,CLAIMABLE
-held_out_v3,cascade vs flat DistilBERT,cascade_row_qwen3blora,flat_distilbert,accuracy,217,0.8433,0.7465,9.68,2.75,17.05,45,24,0.015432,True,CLAIMABLE
-held_out_v3,factorized vs flat DistilBERT,factorized,flat_distilbert,accuracy,217,0.6083,0.7465,-13.82,-18.89,-8.76,4,34,1e-06,True,CLAIMABLE
-held_out_v3,flat vs BiLSTM,flat_distilbert,bilstm,accuracy,217,0.7465,0.7005,4.61,-1.84,11.06,32,22,0.220328,False,NOT CLAIMABLE
-held_out_v3,BiLSTM vs factorized,bilstm,factorized,accuracy,217,0.7005,0.6083,9.22,2.3,16.14,42,22,0.016858,True,CLAIMABLE
-held_out_v3,frozen probe vs factorized,frozen_probe,factorized,accuracy,217,0.6498,0.6083,4.15,-2.76,11.06,34,25,0.297595,False,NOT CLAIMABLE
-held_out_v3,factorized vs TinyBERT-4,factorized,tinybert,accuracy,217,0.6083,0.576,3.23,-0.92,7.37,14,7,0.189247,False,NOT CLAIMABLE
-held_out_v3,factorized vs Flan-T5-base,factorized,flant5,accuracy,217,0.6083,0.6175,-0.92,-5.99,4.15,13,15,0.850554,False,NOT CLAIMABLE
-held_out_v3,flat vs rules (open/unfair),flat_distilbert,rules_open,accuracy,217,0.7465,0.7235,2.3,-5.53,10.6,43,38,0.656992,False,NOT CLAIMABLE
-held_out_v3,rules open vs rules FIREWALLED,rules_open,rules_firewalled,accuracy,217,0.7235,0.447,27.65,22.12,33.64,60,0,0.0,True,CLAIMABLE
-row_factor,flat row vs factorized row,flat_row,factorized_row,row_accuracy,108,0.6204,0.3333,28.7,20.37,37.96,31,0,0.0,True,CLAIMABLE
-row_factor,cascade row vs flat row,cascade_row,flat_row,row_accuracy,108,0.8056,0.6204,18.52,4.63,32.41,41,21,0.015134,True,CLAIMABLE
-A1.7,"factor vs field level, BOTH gpt-4o-mini",factor_level_row_only,field_level_whole_location,location_accuracy,168,0.8095,0.7143,9.52,-0.6,20.24,48,32,0.092912,False,NOT CLAIMABLE
-quantization,FP16 vs INT4 (factorized head),fp16,int4,accuracy,217,0.6083,0.6083,0.0,-1.84,1.84,2,2,1.0,False,NOT CLAIMABLE
-MASSIVE_phase7,MASSIVE flat vs factorized (free),flat,factorized_free,accuracy,2974,0.888,0.8783,0.98,0.54,1.45,41,12,8.2e-05,True,CLAIMABLE
-MASSIVE_phase7,router AUROC per-factor vs flat (free),per_factor_minconf,flat_conf,AUROC,2974,0.891,0.8889,0.0021,-0.0025,0.0073,,,,False,NOT CLAIMABLE
-MASSIVE_fresh,MASSIVE flat vs factorized (free),flat,factorized_free,accuracy,2974,0.886,0.8779,0.81,0.4,1.18,30,6,7e-05,True,CLAIMABLE
-MASSIVE_fresh,MASSIVE flat vs factorized (CONSTRAINED),flat,factorized_constrained,accuracy,2974,0.886,0.885,0.1,-0.24,0.44,16,13,0.711071,False,NOT CLAIMABLE
-MASSIVE_fresh,MASSIVE constrained vs free,factorized_constrained,factorized_free,accuracy,2974,0.885,0.8779,0.71,0.4,1.04,21,0,1e-06,True,CLAIMABLE
-MASSIVE_fresh,router AUROC per-factor vs flat (free),per_factor_minconf,flat_conf,AUROC,2974,0.8893,0.8886,0.0007,-0.0043,0.0062,,,,False,NOT CLAIMABLE
-MASSIVE_fresh,router AUROC per-factor vs flat (constrained),per_factor_minconf,flat_conf,AUROC,2974,0.8777,0.8778,-0.0001,-0.0056,0.0054,,,,False,NOT CLAIMABLE
+family,comparison,arm_a,arm_b,metric,n,acc_a,acc_b,diff_pts,ci_lo_pts,ci_hi_pts,mcnemar_b,mcnemar_c,mcnemar_p,ci_excludes_zero,verdict,p_holm,claimable_corrected
+held_out_v3,ensemble vs qwen2.5-3b-lora (V5),ensemble,qwen3b_lora_v5,accuracy,216,0.963,0.9583,0.46,-1.39,2.33,3,2,1.0,False,NOT CLAIMABLE,1,NOT CLAIMABLE
+held_out_v3,ensemble vs gpt-4o-mini/rag (V5),ensemble,gpt4omini_rag_v5,accuracy,216,0.963,0.9398,2.31,0.0,4.63,6,1,0.125,False,NOT CLAIMABLE,1,NOT CLAIMABLE
+held_out_v3,ensemble vs cascade(row->qwen3b-lora),ensemble,cascade_row_qwen3blora,accuracy,216,0.963,0.8426,12.04,6.94,17.13,30,4,6e-06,True,CLAIMABLE,0.000126,CLAIMABLE
+held_out_v3,cascade vs flat DistilBERT,cascade_row_qwen3blora,flat_distilbert,accuracy,217,0.8433,0.7465,9.68,2.75,17.05,45,24,0.015432,True,CLAIMABLE,0.257278,NOT CLAIMABLE
+held_out_v3,factorized vs flat DistilBERT,factorized,flat_distilbert,accuracy,217,0.6083,0.7465,-13.82,-18.89,-8.76,4,34,1e-06,True,CLAIMABLE,2.3e-05,CLAIMABLE
+held_out_v3,flat vs BiLSTM,flat_distilbert,bilstm,accuracy,217,0.7465,0.7005,4.61,-1.84,11.06,32,22,0.220328,False,NOT CLAIMABLE,1,NOT CLAIMABLE
+held_out_v3,BiLSTM vs factorized,bilstm,factorized,accuracy,217,0.7005,0.6083,9.22,2.3,16.14,42,22,0.016858,True,CLAIMABLE,0.257278,NOT CLAIMABLE
+held_out_v3,frozen probe vs factorized,frozen_probe,factorized,accuracy,217,0.6498,0.6083,4.15,-2.76,11.06,34,25,0.297595,False,NOT CLAIMABLE,1,NOT CLAIMABLE
+held_out_v3,factorized vs TinyBERT-4,factorized,tinybert,accuracy,217,0.6083,0.576,3.23,-0.92,7.37,14,7,0.189247,False,NOT CLAIMABLE,1,NOT CLAIMABLE
+held_out_v3,factorized vs Flan-T5-base,factorized,flant5,accuracy,217,0.6083,0.6175,-0.92,-5.99,4.15,13,15,0.850554,False,NOT CLAIMABLE,1,NOT CLAIMABLE
+held_out_v3,flat vs rules (open/unfair),flat_distilbert,rules_open,accuracy,217,0.7465,0.7235,2.3,-5.53,10.6,43,38,0.656992,False,NOT CLAIMABLE,1,NOT CLAIMABLE
+held_out_v3,rules open vs rules FIREWALLED,rules_open,rules_firewalled,accuracy,217,0.7235,0.447,27.65,22.12,33.64,60,0,0.0,True,CLAIMABLE,0,CLAIMABLE
+row_factor,flat row vs factorized row,flat_row,factorized_row,row_accuracy,108,0.6204,0.3333,28.7,20.37,37.96,31,0,0.0,True,CLAIMABLE,0,CLAIMABLE
+row_factor,cascade row vs flat row,cascade_row,flat_row,row_accuracy,108,0.8056,0.6204,18.52,4.63,32.41,41,21,0.015134,True,CLAIMABLE,0.257278,NOT CLAIMABLE
+A1.7,"factor vs field level, BOTH gpt-4o-mini",factor_level_row_only,field_level_whole_location,location_accuracy,168,0.8095,0.7143,9.52,-0.6,20.24,48,32,0.092912,False,NOT CLAIMABLE,0.92912,NOT CLAIMABLE
+quantization,FP16 vs INT4 (factorized head),fp16,int4,accuracy,217,0.6083,0.6083,0.0,-1.84,1.84,2,2,1.0,False,NOT CLAIMABLE,1,NOT CLAIMABLE
+MASSIVE_phase7,MASSIVE flat vs factorized (free),flat,factorized_free,accuracy,2974,0.888,0.8783,0.98,0.54,1.45,41,12,8.2e-05,True,CLAIMABLE,0.001558,CLAIMABLE
+MASSIVE_phase7,router AUROC per-factor vs flat (free),per_factor_minconf,flat_conf,AUROC,2974,0.891,0.8889,0.0021,-0.0025,0.0073,,,,False,NOT CLAIMABLE,,NOT CLAIMABLE
+MASSIVE_fresh,MASSIVE flat vs factorized (free),flat,factorized_free,accuracy,2974,0.886,0.8779,0.81,0.4,1.18,30,6,7e-05,True,CLAIMABLE,0.0014,CLAIMABLE
+MASSIVE_fresh,MASSIVE flat vs factorized (CONSTRAINED),flat,factorized_constrained,accuracy,2974,0.886,0.885,0.1,-0.24,0.44,16,13,0.711071,False,NOT CLAIMABLE,1,NOT CLAIMABLE
+MASSIVE_fresh,MASSIVE constrained vs free,factorized_constrained,factorized_free,accuracy,2974,0.885,0.8779,0.71,0.4,1.04,21,0,1e-06,True,CLAIMABLE,2.3e-05,CLAIMABLE
+MASSIVE_fresh,router AUROC per-factor vs flat (free),per_factor_minconf,flat_conf,AUROC,2974,0.8893,0.8886,0.0007,-0.0043,0.0062,,,,False,NOT CLAIMABLE,,NOT CLAIMABLE
+MASSIVE_fresh,router AUROC per-factor vs flat (constrained),per_factor_minconf,flat_conf,AUROC,2974,0.8777,0.8778,-0.0001,-0.0056,0.0054,,,,False,NOT CLAIMABLE,,NOT CLAIMABLE
