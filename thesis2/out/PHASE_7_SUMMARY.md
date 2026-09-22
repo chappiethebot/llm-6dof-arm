@@ -1,3 +1,9 @@
+> **SUPERSEDED IN PART — do not quote from this file without checking `FINAL_REPORT.md` §0.**
+>
+> Specifically:
+> - flat and factorized here are **two heads of one jointly trained encoder**, so this is not a comparison of separately trained models (S-1).
+> - both router AUROCs are scored against **factorized-head correctness** (S-2).
+
 # Phase 7 — generalization beyond the robot arm
 
 Run 2026-09-21 on `thesis2gpu`. Script: `thesis2/scripts/p7_massive.py`.

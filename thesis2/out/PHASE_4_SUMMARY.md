@@ -1,3 +1,11 @@
+> **SUPERSEDED IN PART — do not quote from this file without checking `FINAL_REPORT.md` §0.**
+>
+> Specifically:
+> - **0.8433 is the τ = 1.0 always-escalate pipeline, not a routed cascade.** The pre-registered operating point is τ_A = 0.50, which scores **0.7327** and does **not** beat the flat head (p = 0.77). "The cascade beats the flat head it replaces" below is withdrawn as written (B-2), and the +9.68-point version is **nominal only** — p_holm = 0.257 across the 26-hypothesis family.
+> - **every `digits` mapping number below is withdrawn** — `' 1'` is two Qwen tokens, so the digits logits were read one position early (B-4). The "label-token mapping matters" table measures that bug, not the mapping.
+> - the 66.4 / 130.0 MB sizes are superseded by one definition: **132.76 MB FP16, 69.20 MB INT4**, whole model incl. fp32 scales (S-10).
+> - "the per-factor signal is the better router at every budget" is not supported after correction; on MASSIVE the router gap is a tight null (§8).
+
 # Phase 4.5 — per-factor model escalation (the primary contribution)
 
 Run 2026-09-21 on `thesis2gpu` (CUDA, RTX 4060 Ti). Phases 4.1–4.2 were **not

@@ -1,6 +1,6 @@
 # Factorized per-factor precision cascade — final report (revised after Part B review)
 
-> **Source of record for thesis tables: `thesis2/out/metrics_all_v2.csv` is the only file thesis tables may be built from.** It carries every row of `metrics_all.csv` (left untouched) plus `status` (valid / withdrawn / modelled) and `reason` columns; withdrawn rows have their values blanked. 50 rows: 26 valid, 16 modelled (cascade latency/energy columns are constants; accuracy columns measured), 8 withdrawn (A1.7, all SALSA digits). A8/A10/A11/A12 figures are not in it — take them from `a8_speculative_summary.json`, `a10_prefix_cache_summary.json`, `a11_rejection_positions.csv`, `a12_smalllm_drafter_summary.json` and §§6, 7.1, 7.2 (A8/A10 accuracy 0.9539).
+> **Source of record for thesis tables: `thesis2/out/metrics_all_v2.csv` is the only file thesis tables may be built from.** It carries every row of `metrics_all.csv` (left untouched) plus `status` (valid / withdrawn / modelled) and `reason` columns; withdrawn rows have their values blanked. 50 rows: 26 valid, 16 modelled (cascade latency/energy columns are constants; accuracy columns measured), 8 withdrawn (A1.7, all SALSA digits). It now carries **56 rows**: the original 50 plus the plain-greedy LoRA baseline, A8, A10 and A12 on `held_out_v3`, and the two `held_out_v4c` cells §3 leads with (added by `a15_metrics_v2_append.py`, re-review S-E). Per-command detail still lives in `a8_speculative_summary.json`, `a10_prefix_cache_summary.json`, `a11_rejection_positions.csv`, `a12_smalllm_drafter_summary.json` and `a13_v4c_*`; the phase summaries carry a SUPERSEDED banner and are not table sources.
 
 Sessions 2026-09-21/22; revision 2026-09-22 after the independent Part B review
 (`C:\Users\USER\thesis2_review.md`). **This is a fix pass only: no new arm was
@@ -894,7 +894,9 @@ file indirectly, threshold τ_A is a constant and τ_B is dev-only, and the
 exact-command overlap train_v2 ∩ held_out_v3 and dev_v2 ∩ held_out_v3 is 0.
 
 **Recomputation: 9/9 exact** (0.6083, 0.3333, 0.7465, 0.6204, 0.8433, 0.9401,
-cascade rebuilt 0.8433, MASSIVE AUROC 0.8910 / 0.8889), and Part B reproduced
+always-escalate pipeline rebuilt 0.8433 — labelled "cascade" in A6's own
+output, which is the B-2 mislabelling, not a second result — MASSIVE AUROC
+0.8910 / 0.8889), and Part B reproduced
 the same nine plus the row-factor and INT4 figures with independent code.
 
 Denominators: fresh-pass arms n = 217, no warmup row; the V5 classifier and

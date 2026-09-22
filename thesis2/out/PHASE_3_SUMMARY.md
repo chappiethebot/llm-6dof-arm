@@ -1,3 +1,8 @@
+> **SUPERSEDED IN PART — do not quote from this file without checking `FINAL_REPORT.md` §0.**
+>
+> Specifically:
+> - the INT4 flip count is **8–9 row flips depending on the quantiser's arithmetic** (9 in FP16, 8 in FP32), not 9 (re-review S-9).
+
 # Phase 3 — INT4 quantization gate
 
 Run 2026-09-21 on `thesis2gpu` (torch 2.14.0+cu126, CUDA, RTX 4060 Ti sm_89).

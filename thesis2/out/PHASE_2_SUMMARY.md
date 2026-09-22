@@ -1,3 +1,7 @@
+> **SUPERSEDED IN PART — do not quote from this file without checking `FINAL_REPORT.md` §0.**
+> Nothing in this file is withdrawn, but `FINAL_REPORT.md` is the source of
+> record and `metrics_all_v2.csv` is the only file thesis tables may be built from.
+
 # Phase 2 — Factorized location head
 
 Run 2026-09-21, CPU (`thesis` env, torch 2.12.1+cpu). Neither conda env has a

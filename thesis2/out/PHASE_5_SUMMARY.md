@@ -1,3 +1,8 @@
+> **SUPERSEDED IN PART — do not quote from this file without checking `FINAL_REPORT.md` §0.**
+>
+> Specifically:
+> - the reference to "the per-factor cascade (0.8433)" is the τ = 1.0 always-escalate pipeline, not a routed cascade, and the gap it implies is nominal only (B-2).
+
 # Phase 5 — baselines, the floor
 
 Run 2026-09-21. Scripts: `p5_baselines.py`, `p5_rules_firewalled.py`.

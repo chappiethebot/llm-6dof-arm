@@ -1,0 +1,11 @@
+word,defined_in_v5_prompt,defined_in_salsa_prompt,train_v2_commands,train_v2_occurrences,train_v2_grid_commands,dev_v2_commands,dev_v2_occurrences,dev_v2_grid_commands,held_out_v3_commands,held_out_v3_occurrences,held_out_v3_grid_commands,held_out_v4c_commands,held_out_v4c_occurrences,held_out_v4c_grid_commands
+back,0,0,0,0,0,0,0,0,1,1,0,37,37,36
+front,0,1,0,0,0,0,0,0,0,0,0,36,36,36
+middle,2,2,38,38,38,9,9,9,36,36,36,36,36,36
+center,2,0,11,11,11,1,1,1,24,24,24,24,24,24
+upper,2,2,0,0,0,0,0,0,36,36,36,0,0,0
+bottom,1,1,0,0,0,0,0,0,36,36,36,0,0,0
+top,0,0,1,1,0,0,0,0,0,0,0,0,0,0
+lower,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+far,2,2,27,27,25,9,9,9,0,0,0,0,0,0
+near,2,2,32,32,31,5,5,5,0,0,0,0,0,0

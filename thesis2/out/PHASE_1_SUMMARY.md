@@ -1,3 +1,7 @@
+> **SUPERSEDED IN PART — do not quote from this file without checking `FINAL_REPORT.md` §0.**
+> Nothing in this file is withdrawn, but `FINAL_REPORT.md` is the source of
+> record and `metrics_all_v2.csv` is the only file thesis tables may be built from.
+
 # Phase 1 — Attribution
 
 Run 2026-09-21. Offline; no model called. Read-only over the existing tree.

@@ -1,3 +1,9 @@
+> **SUPERSEDED IN PART — do not quote from this file without checking `FINAL_REPORT.md` §0.**
+>
+> Specifically:
+> - **every `digits` number in this file is withdrawn** — the digits class tokens were read at the wrong position (`' 1'` is two Qwen tokens), so the digits columns, the calibration rows for them and the "label-token mapping matters" claim all measure a tokenisation bug (B-4). The `letters` numbers stand.
+> - AUROC = 1.000 is an upper bound driven by row-vocabulary disjunction, not a general result.
+
 # Phase 6 — single-pass logit classification (SALSA)
 
 Run 2026-09-21 on `thesis2gpu`. Scripts: `salsa_row.py`, `p45_collect.py`,
