@@ -1,0 +1,36 @@
+================================================================================================
+s0_grpo_adapter_probe_load   started 2026-09-24 23:52:35
+  log: thesis2\out\final\logs\s0_grpo_adapter_probe_load_20260924_235235.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  env: peft 0.21.0, transformers 5.17.0, torch 2.14.0+cu126
+  adapter_config: r=16 alpha=32 dropout=0.05 targets=['down_proj', 'gate_proj', 'k_proj', 'o_proj', 'q_proj', 'up_proj', 'v_proj']
+  adapter loaded and merged OK
+     can you grab the toy car for me                -> {
+  "action": "fetch",
+  "target": "toy_car"
+} OK
+     fetch me the bottle                            -> {
+  "action": "fetch",
+  "target": "bottle"
+} OK
+     bring the toy car here                         -> {
+  "action": "move_to",
+  "location": "nearest_free_cell"
+} OK
+     go get the rubiks cube                         -> {
+  "action": "fetch",
+  "target": "rubiks_cube"
+} OK
+     bring the bottle here                          -> {
+  "action": "fetch",
+  "target": "bottle"
+} OK
+
+------------------------------------------------------------------------------------------------
+  adapter written in thesis2rl LOADED in thesis2gpu via peft 0.21.0
+  decoded 5/5 train_v2 commands into schema objects
+  the probe adapter is UNTRAINED, so output equals the base model -- this tests the serialisation path only
+  GO: GRPO may train in thesis2rl and infer in thesis2gpu
+------------------------------------------------------------------------------------------------
+GATE PASS

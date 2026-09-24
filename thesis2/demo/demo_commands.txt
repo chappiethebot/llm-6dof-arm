@@ -1,0 +1,32 @@
+# thesis2/demo/demo_commands.txt -- 10 commands for the Isaac demo.
+#
+# EVERY LINE IS A VERBATIM ROW OF data/seen_v2.jsonl. No held-out command
+# appears here, and none was written by hand: each was looked up in seen_v2 and
+# copied with its expectation. seen_v2 is the demo/exemplar split, not a test
+# split. thesis2/demo/smoke_parsers.py re-checks both properties at startup.
+#
+# Coverage, by construction, in exactly 10 commands:
+#   all 7 verbs       pick_place, move_to, fetch, hold, inspect, stop, reject
+#   grid cells        grid_A1 via pick_place, grid_A2 via move_to
+#   container         box_3
+#   runtime symbols   max_reach AND nearest_free_cell
+#   an impossible one "unscrew the cap off the bottle" -> reject
+#
+# Ten is the minimum that covers all of it: five verbs carry no location
+# (fetch, hold, inspect, stop, reject), so the four location families have to
+# fit in the remaining five commands.
+#
+# Format: command, TAB, the seen_v2 expectation as JSON. The runners read
+# column 1 and use column 2 only to report whether the parser agreed with the
+# dataset row.
+
+put the bottle in the far left corner of the table	{"action": "pick_place", "target": "bottle", "location": "grid_A1", "modifiers": []}
+move to the far side middle edge of the table	{"action": "move_to", "location": "grid_A2", "modifiers": []}
+put the bottle in box 3	{"action": "pick_place", "target": "bottle", "location": "box_3", "modifiers": []}
+put the bottle in the farthest spot you can reach	{"action": "pick_place", "target": "bottle", "location": "max_reach", "modifiers": []}
+put the bottle in anywhere you see free	{"action": "pick_place", "target": "bottle", "location": "nearest_free_cell", "modifiers": []}
+fetch the bottle	{"action": "fetch", "target": "bottle", "modifiers": []}
+hold the bottle	{"action": "hold", "target": "bottle", "modifiers": []}
+inspect the bottle	{"action": "inspect", "target": "bottle", "modifiers": []}
+stop	{"action": "stop", "modifiers": []}
+unscrew the cap off the bottle	{"action": "reject", "modifiers": []}

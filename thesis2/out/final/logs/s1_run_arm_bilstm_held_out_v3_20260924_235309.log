@@ -1,0 +1,11 @@
+================================================================================================
+s1_run_arm_bilstm_held_out_v3   started 2026-09-24 23:53:09
+  log: thesis2\out\final\logs\s1_run_arm_bilstm_held_out_v3_20260924_235309.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  torch 2.14.0+cu126 cuda=True | transformers 5.17.0
+  gpu: NVIDIA GeForce RTX 4060 Ti
+  arm  : bilstm  (local, deterministic)
+  note : BiLSTM from scratch, train_v2 vocabulary; persisted legacy checkpoint
+  split: held_out_v3
+GATE FAIL: arm 'bilstm' is a NEW arm and has no row in thesis2\out\final\frozen_checkpoints.csv. Run s0_freeze.py first; held-out inference is refused until the checkpoint is frozen.

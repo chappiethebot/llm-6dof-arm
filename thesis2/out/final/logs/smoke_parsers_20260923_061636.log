@@ -1,0 +1,20 @@
+================================================================================================
+smoke_parsers   started 2026-09-23 06:16:36
+  log: thesis2\out\final\logs\smoke_parsers_20260923_061636.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  provenance OK: 10 commands, all verbatim seen_v2, none held-out
+  restored baseline_rules_firewall.csv (rewritten by the import; earlier run's file preserved)
+  rules_open                         json 10/10  agrees  9/10  p50     0.01 ms  peak VRAM n/a (CPU/cloud)
+  rules_firewalled                   json 10/10  agrees  9/10  p50     0.01 ms  peak VRAM n/a (CPU/cloud)
+
+------------------------------------------------------------------------------------------------
+  2 parsers attempted; 2 produced valid JSON on all 10 commands
+  invalid JSON from: none
+  ERRORED (gate failure): none
+  skipped (cloud budget / not trained): none
+  cloud calls made: 0 (budget 0)
+  agreement with seen_v2 is DEMO evidence, not a measurement
+  output: thesis2\out\final\demo_smoke_parsers.json
+------------------------------------------------------------------------------------------------
+GATE PASS

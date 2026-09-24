@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "decoded": 5,
+  "total": 5,
+  "adapter_sha256": "4e076c4bdc2a96041e5695b201e6de4f3d56180510cd40da2155f0412ab3a408",
+  "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+  "peft": "0.21.0",
+  "transformers": "5.17.0",
+  "torch": "2.14.0+cu126"
+}

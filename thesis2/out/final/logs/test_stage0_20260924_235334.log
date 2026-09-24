@@ -1,0 +1,17 @@
+================================================================================================
+test_stage0   started 2026-09-24 23:53:34
+  log: thesis2\out\final\logs\test_stage0_20260924_235334.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+[Certain] Six training bodies match the original AST, including seeds and dev selection.
+[Certain] Exact-match reward, earliest plateau and complete 217-command coverage checks pass.
+  frozen-checkpoint gate OK for grpo_base (8b66ccad722e5893, dev 0.5)
+GATE FAIL: C:\Users\USER\llm-6dof-arm\thesis2\out\final\stage0_check_kdcs448n\adapter has sha256 9ec2b037e4274504 but frozen_checkpoints.csv records 8b66ccad722e5893. The checkpoint changed after freezing.
+GATE FAIL: arm 'tinybert' is a NEW arm and has no row in thesis2\out\final\frozen_checkpoints.csv. Run s0_freeze.py first; held-out inference is refused until the checkpoint is frozen.
+[Certain] Untrained BiLSTM save/reload preserves outputs, OOV/truncation and confidence.
+[Certain] Directory tampering is rejected; legacy freeze and exact 10% signal boundary pass.
+
+------------------------------------------------------------------------------------------------
+  [Certain] Stage-0 checks passed; no training, downloads or held-out inference.
+------------------------------------------------------------------------------------------------
+GATE PASS

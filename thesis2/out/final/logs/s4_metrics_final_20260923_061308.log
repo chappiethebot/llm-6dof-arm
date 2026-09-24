@@ -1,0 +1,13 @@
+================================================================================================
+s4_metrics_final   started 2026-09-23 06:13:08
+  log: thesis2\out\final\logs\s4_metrics_final_20260923_061308.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+
+------------------------------------------------------------------------------------------------
+  60 (arm, split) rows; 0 valid, 60 not run
+  no blank cells: every impossible cell carries its reason
+  this file is the ONLY source for the final run's thesis tables
+  output: thesis2\out\final\metrics_final.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

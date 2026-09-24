@@ -1,0 +1,20 @@
+[
+  {
+    "parser": "rules_open",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 9,
+    "n": 10,
+    "latency_p50_ms": 0.01,
+    "peak_vram_mb": "n/a"
+  },
+  {
+    "parser": "rules_firewalled",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 9,
+    "n": 10,
+    "latency_p50_ms": 0.01,
+    "peak_vram_mb": "n/a"
+  }
+]

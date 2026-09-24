@@ -1,0 +1,15 @@
+================================================================================================
+s2_metrics   started 2026-09-23 06:13:02
+  log: thesis2\out\final\logs\s2_metrics_20260923_061302.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  Stage 3 efficiency: unified_efficiency.csv not present -- energy columns will read 'not measured yet'
+
+  arm                                split            action      row row by word group
+
+------------------------------------------------------------------------------------------------
+  60 (arm, split) rows; 0 with predictions, 60 not run
+  every metric present for every arm; impossible cells carry the reason
+  output: thesis2\out\final\metrics_stage2.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

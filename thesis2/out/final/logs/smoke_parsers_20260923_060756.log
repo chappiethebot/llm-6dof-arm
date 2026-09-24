@@ -1,0 +1,23 @@
+================================================================================================
+smoke_parsers   started 2026-09-23 06:07:56
+  log: thesis2\out\final\logs\smoke_parsers_20260923_060756.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  provenance OK: 10 commands, all verbatim seen_v2, none held-out
+  rules_open                         json 10/10  agrees  9/10  p50     0.01 ms  peak VRAM n/a (CPU/cloud)
+  rules_firewalled                   json 10/10  agrees  9/10  p50     0.01 ms  peak VRAM n/a (CPU/cloud)
+  flat_cpu                           ERROR -- AttributeError: 'Tee' object has no attribute 'isatty'
+  flat_gpu                           ERROR -- AttributeError: 'Tee' object has no attribute 'isatty'
+  factorized_fp16                    ERROR -- AttributeError: 'Tee' object has no attribute 'isatty'
+  factorized_int4                    ERROR -- AttributeError: 'Tee' object has no attribute 'isatty'
+  textcnn                            json 10/10  agrees  1/10  p50     0.83 ms  peak VRAM 10 MB
+  mlpbow                             json 10/10  agrees  0/10  p50     0.49 ms  peak VRAM 9 MB
+
+------------------------------------------------------------------------------------------------
+  8 parsers attempted; 4 produced valid JSON on all 10 commands
+  invalid JSON from: none
+  cloud calls made: 0 (budget 0)
+  agreement with seen_v2 is DEMO evidence, not a measurement
+  output: thesis2\out\final\demo_smoke_parsers.json
+------------------------------------------------------------------------------------------------
+GATE PASS

@@ -1,0 +1,11 @@
+================================================================================================
+s1_run_arm_grpo_base_held_out_v3   started 2026-09-24 23:53:53
+  log: thesis2\out\final\logs\s1_run_arm_grpo_base_held_out_v3_20260924_235353.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  torch 2.14.0+cu126 cuda=True | transformers 5.17.0
+  gpu: NVIDIA GeForce RTX 4060 Ti
+  arm  : grpo_base  (local, deterministic)
+  note : NEW: train in thesis2rl; frozen adapter inference in thesis2gpu
+  split: held_out_v3
+GATE FAIL: arm 'grpo_base' is a NEW arm and has no row in thesis2\out\final\frozen_checkpoints.csv. Run s0_freeze.py first; held-out inference is refused until the checkpoint is frozen.

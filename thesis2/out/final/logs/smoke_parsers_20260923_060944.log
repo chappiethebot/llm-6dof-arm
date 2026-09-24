@@ -1,0 +1,19 @@
+================================================================================================
+smoke_parsers   started 2026-09-23 06:09:44
+  log: thesis2\out\final\logs\smoke_parsers_20260923_060944.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  provenance OK: 10 commands, all verbatim seen_v2, none held-out
+  lora_greedy                        json 10/10  agrees 10/10  p50   729.62 ms  peak VRAM 6593 MB
+  salsa_full_qwen2.5-3b-lora         json 10/10  agrees  7/10  p50   172.97 ms  peak VRAM 6593 MB
+
+------------------------------------------------------------------------------------------------
+  2 parsers attempted; 2 produced valid JSON on all 10 commands
+  invalid JSON from: none
+  ERRORED (gate failure): none
+  skipped (cloud budget / not trained): none
+  cloud calls made: 0 (budget 0)
+  agreement with seen_v2 is DEMO evidence, not a measurement
+  output: thesis2\out\final\demo_smoke_parsers.json
+------------------------------------------------------------------------------------------------
+GATE PASS

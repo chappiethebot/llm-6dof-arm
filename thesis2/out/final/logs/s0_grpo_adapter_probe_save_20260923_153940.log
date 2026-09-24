@@ -1,0 +1,18 @@
+================================================================================================
+s0_grpo_adapter_probe_save   started 2026-09-23 15:39:40
+  log: thesis2\out\final\logs\s0_grpo_adapter_probe_save_20260923_153940.log
+  python: D:\condaenvs\thesis2rl\python.exe
+================================================================================================
+  env: peft 0.21.0, transformers 5.17.0, torch 2.14.0+cu126
+  trl 1.13.0 (this env is the TRAINING env)
+  trainable LoRA parameters: 29.93 M
+  LoRA sites: 504
+  lm_head excluded: True
+  wrote thesis2\models\final\grpo_probe_adapter: ['README.md', 'adapter_config.json', 'adapter_model.safetensors']
+
+------------------------------------------------------------------------------------------------
+  UNTRAINED probe adapter written by this env (trl present)
+  files: README.md, adapter_config.json, adapter_model.safetensors
+  next: run --load in thesis2gpu; it must load and decode 5 train_v2 commands
+------------------------------------------------------------------------------------------------
+GATE PASS
