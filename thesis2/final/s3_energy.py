@@ -151,8 +151,8 @@ def ollama_facts(arm_note):
     return v, ls[:400]
 
 
-def mode_arm(name, split):
-    arm = A.get(name)
+def require_idle():
+    """The idle baseline, refused if missing or older than the limit."""
     if not IDLE_FILE.exists():
         C.gate(False, ["no idle baseline. Run --idle first."])
     idle = json.loads(IDLE_FILE.read_text(encoding="utf-8"))
@@ -160,12 +160,18 @@ def mode_arm(name, split):
     if age > IDLE_MAX_AGE_S:
         C.gate(False, ["idle baseline is %.1f h old (limit %.1f h). Re-run --idle."
                        % (age / 3600, IDLE_MAX_AGE_S / 3600)])
-    print("  idle baseline: %.2f W median, %.1f min old" % (idle["idle_median_w"], age / 60))
+    print("  idle baseline: %.2f W median, %.1f min old"
+          % (idle["idle_median_w"], age / 60))
+    return idle
 
+
+def measure_loop(name, split, predict, idle, kind="local", note="", ollama_note=""):
+    """3 warm-up commands (not counted), then loop the split for >= LOAD_MIN_S.
+
+    Used for BOTH a registry arm and a V5 Ollama cell, so the two are measured
+    under identical conditions and their J/command are comparable.
+    """
     rows = C.load_split(split)
-    C.require_frozen(name)
-    predict = arm.build()
-
     print("  warm-up: %d commands, NOT counted in any figure below" % WARMUP)
     for r in rows[:WARMUP]:
         predict(r["command"])
@@ -191,33 +197,33 @@ def mode_arm(name, split):
     cpu1 = proc.cpu_times()
     cpu_ms = ((cpu1.user - cpu0.user) + (cpu1.system - cpu0.system)) * 1000 / max(n, 1)
 
-    live = [s for s in lg.samples if s[0] >= t0]
-    mean_w = statistics.mean([s[1] for s in live]) if live else float("nan")
-    max_t = max([s[4] for s in live]) if live else float("nan")
-    peak_vram = max([s[3] for s in live]) if live else ""
-    cloud = arm.kind == "cloud"
-    if cloud:
-        j, note = C.NOT_MEASURABLE if hasattr(C, "NOT_MEASURABLE") else "not measurable", \
-            "cloud arm: latency only; GPU energy is not the cost of this arm"
-        delta = ""
+    live = [s_ for s_ in lg.samples if s_[0] >= t0]
+    mean_w = statistics.mean([s_[1] for s_ in live]) if live else float("nan")
+    max_t = max([s_[4] for s_ in live]) if live else float("nan")
+    peak_vram = max([s_[3] for s_ in live]) if live else ""
+    if kind == "cloud":
+        j, delta = "not measurable (cloud)", ""
+        note = note or "cloud arm: latency only; GPU energy is not its cost"
     else:
         delta = mean_w - idle["idle_median_w"]
         j = round(delta * wall / n, 5)
-        note = "GPU watts only; CPU watts are NOT measured"
+        note = note or "GPU watts only; CPU watts are NOT measured"
 
-    ver, digest = ollama_facts(arm.note)
-    raw = C.POWER / ("%s_%s_%s.csv" % (name, split, time.strftime("%Y%m%d_%H%M%S")))
+    ver, digest = ollama_facts(ollama_note or name)
+    safe = name.replace("/", "_").replace(":", "-")
+    raw = C.POWER / ("%s_%s_%s.csv" % (safe, split, time.strftime("%Y%m%d_%H%M%S")))
     with raw.open("w", newline="", encoding="utf-8") as fh:
         wr = csv.writer(fh)
         wr.writerow(["timestamp", "power_w", "util_pct", "mem_used_mb", "temp_c"])
         wr.writerows(live)
 
-    q = lambda p: sorted(lat)[min(len(lat) - 1, int(round(p * (len(lat) - 1))))]
-    rec = dict(arm=name, split=split, kind=arm.kind,
+    q = lambda pp: sorted(lat)[min(len(lat) - 1, int(round(pp * (len(lat) - 1))))]
+    rec = dict(arm=name, split=split, kind=kind,
                utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                n_commands=n, wall_s=round(wall, 1), warmup_excluded=WARMUP,
                latency_p50_ms=round(q(.50), 3), latency_p95_ms=round(q(.95), 3),
-               latency_p99_ms=round(q(.99), 3), mean_latency_ms=round(statistics.mean(lat), 3),
+               latency_p99_ms=round(q(.99), 3),
+               mean_latency_ms=round(statistics.mean(lat), 3),
                mean_power_w=round(mean_w, 2), idle_median_w=idle["idle_median_w"],
                delta_power_w=round(delta, 2) if delta != "" else "",
                joules_per_command=j, max_gpu_temp_c=max_t, peak_vram_mb=peak_vram,
@@ -233,15 +239,69 @@ def mode_arm(name, split):
     print("  cool-down %d s ..." % COOLDOWN_S)
     time.sleep(COOLDOWN_S)
     C.gate(True, [
-        "N=%d commands in %.1f s (>= %d s required); %d warm-up commands excluded"
-        % (n, wall, LOAD_MIN_S, WARMUP),
+        "%s on %s: N=%d commands in %.1f s (>= %d s required); %d warm-up excluded"
+        % (name, split, n, wall, LOAD_MIN_S, WARMUP),
         "latency p50/p95/p99 %.2f / %.2f / %.2f ms" % (q(.50), q(.95), q(.99)),
-        ("energy %s J/command (mean %.1f W - idle %.2f W)" % (j, mean_w, idle["idle_median_w"]))
-        if not cloud else "energy: not measurable (cloud arm)",
-        "max GPU temp %.0f C; peak VRAM %s MB; CPU %.2f ms/command (CPU watts not measured)"
-        % (max_t, peak_vram, cpu_ms),
+        ("energy %s J/command (mean %.1f W - idle %.2f W)"
+         % (j, mean_w, idle["idle_median_w"])) if kind != "cloud"
+        else "energy: not measurable (cloud)",
+        "max GPU temp %.0f C; peak VRAM %s MB; CPU %.2f ms/command "
+        "(CPU watts not measured)" % (max_t, peak_vram, cpu_ms),
         "appended to %s; raw samples %s" % (EFF.name, raw.name),
     ])
+
+
+def mode_arm(name, split):
+    arm = A.get(name)
+    idle = require_idle()
+    C.require_frozen(name)
+    predict = arm.build()
+    measure_loop(name, split, predict, idle, kind=arm.kind, ollama_note=arm.note)
+
+
+def v5_cell_predictor(model, strategy):
+    """A V5 cell as a predictor, so an Ollama cell can be energy-measured the
+    same way an arm is. The client is the project's own, unmodified."""
+    from llm.pipeline import run_once
+    from llm.clients import all_clients
+    from bench.run_cell import apply_legend
+    from llm import prompts as P
+    from bench.dataset import load_seen_split, DEFAULT_K
+    apply_legend("v5")
+    schema = P.load_schema(str(C.SCHEMA_FILE))
+    roster = {c.name: c for c in all_clients()}
+    if model not in roster:
+        C.gate(False, ["client %r is not in llm.clients.all_clients() -- is Ollama "
+                       "running with OLLAMA_MODELS=D:\\LLM?" % model])
+    client = roster[model]
+    try:
+        examples = load_seen_split(DEFAULT_K)
+    except Exception:
+        examples = None
+
+    def predict(cmd):
+        res = run_once(cmd, client, strategy, schema,
+                       examples=examples if strategy in ("few_shot", "rag") else None)
+        return (getattr(res, "obj", None) or {}), dict(
+            latency_ms=(getattr(res, "latency_s", 0.0) or 0.0) * 1000)
+    return predict
+
+
+def mode_v5_cell(cell, split):
+    """Energy + latency for one V5 cell. Cloud cells are refused: their work is
+    off this machine, so they get latency only, from Stage 1."""
+    if "/" not in cell:
+        C.gate(False, ["--v5-cell takes model/strategy, e.g. "
+                       "ollama:qwen2.5-3b-lora/zero_shot"])
+    model, strategy = cell.rsplit("/", 1)
+    if model.startswith("openai:"):
+        C.gate(False, ["%s is a CLOUD cell: energy is not measurable from this "
+                       "machine. Its latency comes from Stage 1." % cell])
+    idle = require_idle()
+    predict = v5_cell_predictor(model, strategy)
+    measure_loop("v5:%s" % cell, split, predict, idle, kind="local",
+                 note="V5 Ollama cell measured through llm/pipeline.py run_once; "
+                      "GPU watts only, CPU watts NOT measured")
 
 
 def main():
@@ -249,15 +309,24 @@ def main():
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--idle", action="store_true")
     g.add_argument("--arm")
+    g.add_argument("--v5-cell", dest="v5_cell",
+                   help="model/strategy, e.g. ollama:qwen2.5-3b-lora/zero_shot")
     ap.add_argument("--split", choices=list(C.SPLITS))
     a = ap.parse_args()
-    C.start_log("s3_energy_%s" % ("idle" if a.idle else "%s_%s" % (a.arm, a.split)))
+    tag = ("idle" if a.idle else
+           ("%s_%s" % (a.arm, a.split) if a.arm
+            else "v5_%s_%s" % (a.v5_cell.replace("/", "_").replace(":", "-"), a.split)))
+    C.start_log("s3_energy_%s" % tag)
     if a.idle:
         mode_idle()
-    else:
+    elif a.arm:
         if not a.split:
             C.gate(False, ["--split is required with --arm"])
         mode_arm(a.arm, a.split)
+    else:
+        if not a.split:
+            C.gate(False, ["--split is required with --v5-cell"])
+        mode_v5_cell(a.v5_cell, a.split)
 
 
 if __name__ == "__main__":

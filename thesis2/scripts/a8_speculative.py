@@ -54,12 +54,10 @@ REPO = Path(__file__).resolve().parents[2]
 os.chdir(REPO)
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "thesis2" / "scripts"))
-OUT = REPO / "thesis2" / "out"
 csv.field_size_limit(2 ** 31 - 1)
 
 BASE = "Qwen/Qwen2.5-3B-Instruct"
 ADAPTER = REPO / "ft" / "runs" / "qwen3b_lora" / "checkpoint-87"
-DATA = REPO / "data" / "held_out_v3.jsonl"
 SYSTEM = "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."
 MAX_NEW = 64
 IDLE_W = 12.12          # from thesis2/out/power_idle.csv, same baseline as energy.csv
@@ -69,7 +67,23 @@ N_WARMUP = 3            # PRE-RUN to warm the GPU; all 217 commands are then mea
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--energy", action="store_true")
+# --- added 2026-09-25 -------------------------------------------------------
+# --split lets this arm run on either held-out family (and on train_v2 for a
+# smoke test). --limit truncates the command list for a smoke run. --outdir
+# defaults to thesis2/out/final/ so a re-run NEVER overwrites the committed
+# files in thesis2/out/ from the earlier run.
+ap.add_argument("--split", default="held_out_v3",
+                choices=["held_out_v3", "held_out_v4c", "train_v2"])
+ap.add_argument("--limit", type=int, default=0,
+                help="use only the first N commands (smoke test)")
+ap.add_argument("--outdir", default=str(REPO / "thesis2" / "out" / "final"))
 args = ap.parse_args()
+OUT = Path(args.outdir)
+OUT.mkdir(parents=True, exist_ok=True)
+DATA = REPO / "data" / ("%s.jsonl" % args.split)
+SPLIT = args.split
+TAG = "" if SPLIT == "held_out_v3" else ("_" + SPLIT)
+print("  split=%s  data=%s  outdir=%s" % (SPLIT, DATA.name, OUT))
 
 
 def pct(xs, q):
@@ -117,6 +131,9 @@ def chat_wrap(user):
 
 
 rows = [json.loads(l) for l in DATA.read_text(encoding="utf-8").splitlines() if l.strip()]
+if args.limit:
+    rows = rows[:args.limit]
+    print("  SMOKE: first %d commands of %s" % (len(rows), SPLIT))
 print("  held_out_v3: %d commands" % len(rows))
 
 # ---------------------------------------------------------------- model
@@ -465,7 +482,7 @@ else:
     print("  energy NOT measured this run (pass --energy)")
 
 # ---------------------------------------------------------------- write
-p = OUT / "a8_speculative_percommand.csv"
+p = OUT / ("a8_speculative_percommand%s.csv" % TAG)
 with open(p, "w", newline="", encoding="utf-8") as fh:
     w = csv.DictWriter(fh, fieldnames=list(recs[0].keys()))
     w.writeheader(); w.writerows(recs)
@@ -488,15 +505,54 @@ summary = dict(
     energy=energy_rows,
     accuracy_note="NOT re-scored: greedy-exact by construction, identical to the "
                   "plain-greedy arm by the byte-identity check above.")
-(OUT / "a8_speculative_summary.json").write_text(json.dumps(summary, indent=2),
+(OUT / ("a8_speculative_summary%s.json" % TAG)).write_text(json.dumps(summary, indent=2),
                                                  encoding="utf-8")
 if energy_rows:
-    pe = OUT / "a8_energy.csv"
+    pe = OUT / ("a8_energy%s.csv" % TAG)
     with open(pe, "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(energy_rows[0].keys()))
         w.writeheader(); w.writerows(energy_rows)
     print("wrote %s" % pe.relative_to(REPO))
 print()
 print("wrote %s" % p.relative_to(REPO))
-print("wrote thesis2/out/a8_speculative_summary.json")
+print("wrote %s" % (OUT / ("a8_speculative_summary%s.json" % TAG)))
 print("=" * 88)
+
+# ---------------------------------------------------------------- byte-identity
+# GATE: on any split, this arm must reproduce lora_greedy's saved output exactly.
+# Speculative decoding is output-exact by construction, so a mismatch means the
+# implementation is wrong and no speed number may be quoted.
+_lg = OUT / ("pred_lora_greedy_%s.csv" % SPLIT)
+if _lg.exists():
+    _base = {}
+    for _r in csv.DictReader(open(_lg, encoding="utf-8", newline="")):
+        if str(_r.get("repeat", "0")) == "0":
+            try:
+                _base[_r["command_id"]] = json.dumps(json.loads(_r["pred_json"]), sort_keys=True)
+            except Exception:
+                _base[_r["command_id"]] = ""
+    _diff = []
+    for _r in recs:
+        _cid = str(_r["command_id"])
+        if _cid not in _base:
+            continue
+        try:
+            _mine = json.dumps(json.loads(_r["spec_text"]), sort_keys=True)
+        except Exception:
+            _mine = ""
+        if _mine != _base[_cid]:
+            _diff.append(_cid)
+    print()
+    print("=" * 88)
+    print("BYTE-IDENTITY vs lora_greedy on %s" % SPLIT)
+    print("=" * 88)
+    if _diff:
+        print("    *** GATE FAIL: differs on %d command(s): %s ***"
+              % (len(_diff), _diff[:20]))
+        sys.exit(1)
+    print("    %d / %d identical -- PASS" % (len(_base), len(_base)))
+else:
+    print()
+    print("  byte-identity vs lora_greedy NOT CHECKED: %s absent. Run "
+          "s1_run_arm.py --arm lora_greedy --split %s first; on held_out_v4c this "
+          "check is a required gate." % (_lg.name, SPLIT))

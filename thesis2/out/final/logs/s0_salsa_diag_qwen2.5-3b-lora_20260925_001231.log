@@ -1,0 +1,58 @@
+================================================================================================
+s0_salsa_diag_qwen2.5-3b-lora   started 2026-09-25 00:12:31
+  log: thesis2\out\final\logs\s0_salsa_diag_qwen2.5-3b-lora_20260925_001231.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  model: qwen2.5-3b-lora
+  THE PROMPT IS NOT MODIFIED: this replays the arm's own three asks.
+
+====================================================================================================
+DISAGREEMENTS on the 10 seen demo commands (data/seen_v2.jsonl)
+====================================================================================================
+  3 of 10 commands disagree with the dataset row
+
+--- 1. move to the far side middle edge of the table
+    true JSON  : {"action": "move_to", "location": "grid_A2", "modifiers": []}
+    SALSA JSON : {"action": "move_to", "location": "grid_A1", "modifiers": []}
+    field(s) differing: location
+    verb      chose 'D' = move_to            p=0.9978
+              exact option list in this field's prompt (7 options):
+              A=pick_place  B=fetch  C=hold  D=move_to  E=inspect  F=stop  G=reject
+    target    NOT ASKED -- the predicted verb 'move_to' requires no target
+    location  chose 'A' = grid_A1            p=0.7467  <-- DIFFERS
+              exact option list in this field's prompt (11 options):
+              A=grid_A1  B=grid_A2  C=grid_A3  D=grid_B1  E=grid_B2  F=grid_B3  G=grid_C1  H=grid_C2  I=grid_C3  J=max_reach  K=nearest_free_cell
+              the TRUE symbol 'grid_A2' was option 'B'
+
+--- 2. put the bottle in anywhere you see free
+    true JSON  : {"action": "pick_place", "target": "bottle", "location": "nearest_free_cell", "modifiers": []}
+    SALSA JSON : {"action": "inspect", "target": "bottle", "modifiers": []}
+    field(s) differing: action, location
+    verb      chose 'E' = inspect            p=0.4982  <-- DIFFERS
+              exact option list in this field's prompt (7 options):
+              A=pick_place  B=fetch  C=hold  D=move_to  E=inspect  F=stop  G=reject
+              the TRUE symbol 'pick_place' was option 'A'
+    target    chose 'B' = bottle             p=0.9987
+              exact option list in this field's prompt (3 options):
+              A=rubiks_cube  B=bottle  C=toy_car
+    location  NOT ASKED -- the predicted verb 'inspect' requires no location
+
+--- 3. unscrew the cap off the bottle
+    true JSON  : {"action": "reject", "modifiers": []}
+    SALSA JSON : {"action": "fetch", "target": "bottle", "modifiers": []}
+    field(s) differing: action, target
+    verb      chose 'B' = fetch              p=0.7877  <-- DIFFERS
+              exact option list in this field's prompt (7 options):
+              A=pick_place  B=fetch  C=hold  D=move_to  E=inspect  F=stop  G=reject
+              the TRUE symbol 'reject' was option 'G'
+    target    chose 'B' = bottle             p=0.9934  <-- DIFFERS
+              exact option list in this field's prompt (3 options):
+              A=rubiks_cube  B=bottle  C=toy_car
+              the TRUE symbol None was NOT in the option list
+    location  NOT ASKED -- the predicted verb 'fetch' requires no location
+
+------------------------------------------------------------------------------------------------
+  REPORT ONLY: no prompt change, no training, no selection, no held-out file
+  train_v2 is training data and is explicitly permitted for this diagnostic
+------------------------------------------------------------------------------------------------
+GATE PASS

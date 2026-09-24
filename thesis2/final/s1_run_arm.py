@@ -57,12 +57,88 @@ SAVED_V3 = {
 }
 SAVED_V4C = {
     "lora_greedy": ("a13_v4c_lora_percommand.csv", "pred_json"),
+    "flat_gpu": ("p45_predictions_held_out_v4c.csv", "flat"),
+    "flat_cpu": ("p45_predictions_held_out_v4c.csv", "flat"),
+    "factorized_fp16": ("p45_predictions_held_out_v4c.csv", "factorized"),
+    "bilstm": ("a1_bilstm_held_out_v4c.csv", "pred_json"),
+    "tinybert": ("a1_tinybert_held_out_v4c.csv", "pred_json"),
+    "minilm_probe": ("a1_frozen_probe_held_out_v4c.csv", "pred_json"),
+    "flant5": ("a1_flant5_held_out_v4c.csv", "pred_json"),
 }
 OLD = C.REPO / "thesis2" / "out"
+
+# Arms whose earlier-run predictions were never persisted per command. They are
+# named here with the reason, so "no saved predictions" is always a statement
+# about the earlier run and never a silent skip.
+NO_SAVED = {
+    "factorized_int4": "Phase 3 and A9 computed INT4 per-command outcomes but "
+                       "persisted only the aggregate (quantization_gate.csv)",
+    "rules_firewalled": "p5_rules_firewalled.py persists only the summary row; "
+                        "A9 recomputed its per-command outcomes in memory",
+    "textcnn": "NEW arm -- first measurement",
+    "mlpbow": "NEW arm -- first measurement",
+    "grpo_base": "NEW arm -- first measurement",
+    "grpo_sft": "NEW arm -- first measurement",
+    "knn_minilm": "baseline_knn_minilm.csv exists for v3 only",
+    "tfidf_logreg": "baseline_tfidf_logreg.csv exists for v3 only",
+    "rules_open": "baseline_rules.csv exists for v3 only",
+    "ensemble": "a1_ensemble_held_out_v3.csv exists for v3 only; the three V5 "
+                "cells it pairs do not exist on v4c until s1_run_v5_cells.py runs",
+}
+for _k in ("qwen2.5-3b-lora", "Qwen2.5-3B-Instruct",
+           "qwen2.5-0.5b-lora", "Qwen2.5-0.5B-Instruct"):
+    NO_SAVED["salsa_full_%s" % _k] = "NEW arm -- first measurement"
+
+# The composite arms were never saved as prediction files, but they are a
+# DETERMINISTIC function of columns that were saved, so the earlier run's
+# outcome can be rebuilt exactly and compared. tau is the arm's own threshold.
+CASCADE_REBUILD = {
+    "cascade_local_tauA": ("salsa_qwen3blora_letters_row", 0.50),
+    "pipeline_always_local": ("salsa_qwen3blora_letters_row", 1.01),
+    "cascade_cloud_tauA": ("cloud_row", 0.50),
+    "cascade_cloud_always": ("cloud_row", 1.01),
+    "cascade_oracle": ("truth_row", 1.01),
+}
+
+
+def rebuild_cascade(arm, split):
+    """Rebuild a composite arm's earlier-run outcome from the saved p45 columns.
+
+    Deterministic: the local factorized factors, the escalation target's answer
+    and the arm's own tau are all columns of p45_predictions_<split>.csv, so this
+    reproduces what the earlier run computed without re-running any model.
+    """
+    col, tau = CASCADE_REBUILD[arm]
+    p = OLD / ("p45_predictions_%s.csv" % split)
+    if not p.exists():
+        return None
+    ROWS, COLS = ["A", "B", "C"], ["1", "2", "3"]
+    CONT = [l for l in C.LOCATIONS if l.startswith("box_")]
+    RT = [l for l in C.LOCATIONS if not l.startswith(("box_", "grid_"))]
+    out = {}
+    for r in csv.DictReader(p.open(encoding="utf-8", newline="")):
+        lt = int(r["fact_loc_type_idx"])
+        row_i = int(r["fact_row_idx"])
+        if lt == 0 and float(r["fact_row_conf"]) < tau:
+            e = r.get(col, "")
+            if e in ROWS:
+                row_i = ROWS.index(e)
+        if lt == 0:
+            sym = "grid_%s%s" % (ROWS[row_i], COLS[int(r["fact_col_idx"])])
+        elif lt == 1:
+            sym = CONT[int(r["fact_container_which_idx"])]
+        else:
+            sym = RT[int(r["fact_runtime_which_idx"])]
+        obj = C.emit(int(r["fact_verb_idx"]), int(r["fact_target_idx"]),
+                     C.LOCATIONS.index(sym), C.SPACE)
+        out[r["command_id"]] = json.dumps(obj, sort_keys=True)
+    return out
 
 
 def saved_predictions(arm, split):
     """{command_id: canonical json string} from the earlier run, or None."""
+    if arm in CASCADE_REBUILD:
+        return rebuild_cascade(arm, split)
     src = (SAVED_V3 if split == "held_out_v3" else SAVED_V4C).get(arm)
     if not src:
         return None
@@ -80,6 +156,21 @@ def saved_predictions(arm, split):
             obj = C.emit(C.VERBS.index(C.VERBS[int(r["flat_verb_idx"])]),
                          int(r["flat_target_idx"]),
                          C.LOCATIONS.index(r["flat_location"]), C.SPACE)
+        elif col == "factorized":
+            # the factorized head's own saved factors, reconstructed to a symbol
+            ROWS, COLS = ["A", "B", "C"], ["1", "2", "3"]
+            CONT = [l for l in C.LOCATIONS if l.startswith("box_")]
+            RT = [l for l in C.LOCATIONS if not l.startswith(("box_", "grid_"))]
+            lt = int(r["fact_loc_type_idx"])
+            if lt == 0:
+                sym = "grid_%s%s" % (ROWS[int(r["fact_row_idx"])],
+                                     COLS[int(r["fact_col_idx"])])
+            elif lt == 1:
+                sym = CONT[int(r["fact_container_which_idx"])]
+            else:
+                sym = RT[int(r["fact_runtime_which_idx"])]
+            obj = C.emit(int(r["fact_verb_idx"]), int(r["fact_target_idx"]),
+                         C.LOCATIONS.index(sym), C.SPACE)
         elif col in ("greedy_text", "spec_text", "prefix_spec_text"):
             try:
                 obj = json.loads(r[col])
@@ -243,8 +334,8 @@ def main():
             line += "  (reported only: Ollama/cloud arm)"
         notes.append(line)
     else:
-        notes.append("reproducibility: no saved predictions for this arm x split -- "
-                     "first measurement, nothing to compare")
+        why = NO_SAVED.get(arm.name, "no saved per-command file for this arm x split")
+        notes.append("reproducibility: NOT COMPARABLE on %s -- %s" % (a.split, why))
 
     # ---- gate 6: speculative arms are byte-identical to lora_greedy
     if arm.speculative:

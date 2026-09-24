@@ -1,0 +1,43 @@
+================================================================================================
+s0_salsa_diag_qwen2.5-3b-lora   started 2026-09-25 00:12:51
+  log: thesis2\out\final\logs\s0_salsa_diag_qwen2.5-3b-lora_20260925_001251.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  model: qwen2.5-3b-lora
+  THE PROMPT IS NOT MODIFIED: this replays the arm's own three asks.
+
+====================================================================================================
+PER-FIELD ACCURACY on all train_v2 commands (n=230)
+====================================================================================================
+      50/230
+     100/230
+     150/230
+     200/230
+
+  action match (full object, llm/score.py strict) : 143/230 = 0.6217
+
+  field      UNCONDITIONAL (truth needs it)     CONDITIONAL (field was asked)     
+  verb       205/230 = 0.8913                   same as unconditional (always asked)
+  target     152/158 = 0.9620                   152/162 = 0.9383                  
+  location   60/132 = 0.4545                    60/138 = 0.4348                   
+
+  location sub-factors on grid truths: row 30/85 = 0.3529   column 44/85 = 0.5176
+
+  field-mask cascade: 0 command(s) where truth needs a target but none was asked; 0 where truth needs a location but none was asked
+  (a field never asked counts as WRONG in the unconditional column)
+
+  verb confusion (truth -> predicted), 25 errors:
+     pick_place   -> move_to      x6
+     reject       -> pick_place   x5
+     reject       -> move_to      x5
+     pick_place   -> inspect      x4
+     reject       -> fetch        x4
+     reject       -> hold         x1
+
+  per-command detail: thesis2\out\final\salsa_diag_train_v2_qwen2.5-3b-lora.csv
+
+------------------------------------------------------------------------------------------------
+  REPORT ONLY: no prompt change, no training, no selection, no held-out file
+  train_v2 is training data and is explicitly permitted for this diagnostic
+------------------------------------------------------------------------------------------------
+GATE PASS

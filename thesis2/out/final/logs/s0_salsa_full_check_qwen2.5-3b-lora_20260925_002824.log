@@ -1,0 +1,47 @@
+================================================================================================
+s0_salsa_full_check_qwen2.5-3b-lora   started 2026-09-25 00:28:24
+  log: thesis2\out\final\logs\s0_salsa_full_check_qwen2.5-3b-lora_20260925_002824.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  torch 2.14.0+cu126 cuda=True | transformers 5.17.0
+  gpu: NVIDIA GeForce RTX 4060 Ti
+  model: qwen2.5-3b-lora
+  vocab guard OK: none of ['back', 'front', 'upper', 'bottom', 'top', 'lower'] in the SALSA-full question text
+
+1. LETTER TOKENS ' A' .. ' Q' for Qwen/Qwen2.5-3B-Instruct   (verb/target labels A..G; LOCATION labels D..Q, collision-free)
+     ' A' -> [362]      verb,target            OK
+     ' B' -> [425]      verb,target            OK
+     ' C' -> [356]      verb,target            OK
+     ' D' -> [422]      verb,location          OK
+     ' E' -> [468]      verb,location          OK
+     ' F' -> [434]      verb,location          OK
+     ' G' -> [479]      verb,location          OK
+     ' H' -> [472]      location               OK
+     ' I' -> [358]      location               OK
+     ' J' -> [619]      location               OK
+     ' K' -> [730]      location               OK
+     ' L' -> [444]      location               OK
+     ' M' -> [386]      location               OK
+     ' N' -> [451]      location               OK
+     ' O' -> [506]      location               OK
+     ' P' -> [393]      location               OK
+     ' Q' -> [1207]     location               OK
+   all one token: True ; ids unique: True
+   uppercase letters inside location symbols: ['A', 'B', 'C']
+   location labels clashing with them: none
+   location label map (schema order): D=box_1  E=box_2  F=box_3  G=grid_A1  H=grid_A2  I=grid_A3  J=grid_B1  K=grid_B2  L=grid_B3  M=grid_C1  N=grid_C2  O=grid_C3  P=max_reach  Q=nearest_free_cell
+
+2. GREEDY NEXT TOKEN AFTER 'Answer:' on 5 train_v2 commands
+     can you grab the toy car for me                      next=425    ' B'     LETTER
+     fetch me the bottle                                  next=425    ' B'     LETTER
+     bring the toy car here                               next=425    ' B'     LETTER
+     go get the rubiks cube                               next=425    ' B'     LETTER
+     bring the bottle here                                next=425    ' B'     LETTER
+
+------------------------------------------------------------------------------------------------
+  letter tokens one-per-option and unique: True
+  greedy next token after 'Answer:' is a letter on 5/5 train_v2 commands: True
+  model: Qwen/Qwen2.5-3B-Instruct + ft/runs/qwen3b_lora/checkpoint-87
+  this gate uses train_v2 only; no held-out file was opened
+------------------------------------------------------------------------------------------------
+GATE PASS

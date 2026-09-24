@@ -50,7 +50,20 @@ import common as C                                                      # noqa: 
 
 import torch                                                            # noqa: E402
 
-LETTERS = [chr(65 + i) for i in range(14)]          # A .. N
+LETTERS = [chr(65 + i) for i in range(17)]          # A .. Q
+
+# LETTER COLLISION FIX, adopted 2026-09-25 as a design fix regardless of result.
+# The location SYMBOLS contain the uppercase row letters A, B and C (grid_A1,
+# grid_B2, ...). Labelling location options A, B, C ... therefore puts the same
+# characters in two roles inside one prompt: `A = grid_A1` asks the model to emit
+# `A` for a symbol whose own name contains `A`, and `B`/`C` are likewise both
+# labels and row names. The letters occurring in NO location symbol start at D,
+# and D..Q is exactly 14 letters for the schema's 14 locations, so every location
+# gets ONE fixed label in schema order and no label collides with a row letter.
+# Verb labels (A..G) and target labels (A..C) are UNCHANGED: no verb or target
+# symbol contains an uppercase letter.
+LOC_LETTERS = [chr(68 + i) for i in range(len(C.LOCATIONS))]   # D .. Q
+LOC_LETTER_OF = dict(zip(C.LOCATIONS, LOC_LETTERS))
 SYSTEM = "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."
 
 # The four models named in the brief. Keys are the --model values.
@@ -76,8 +89,33 @@ Q_LOCATION = ("Which named place does the command refer to?\n"
               "Answer with one letter only.\n%s\nAnswer:")
 
 
-def options_block(symbols):
-    return "\n".join("%s = %s" % (LETTERS[i], s) for i, s in enumerate(symbols))
+def options_block(symbols, letters=None):
+    """One `LETTER = symbol` line per option.
+
+    `letters` defaults to A.. for verbs and targets; the location question passes
+    each symbol's FIXED label from LOC_LETTER_OF, so a masked subset keeps the
+    same label it carries in the full list.
+    """
+    letters = letters or LETTERS
+    return "\n".join("%s = %s" % (letters[i], s) for i, s in enumerate(symbols))
+
+
+def letters_for(symbols, field):
+    """The option letters for one field's offered symbols."""
+    if field == "location":
+        return [LOC_LETTER_OF[s] for s in symbols]
+    return LETTERS[:len(symbols)]
+
+
+def field_options(verb=None):
+    """(symbols, letters) per field -- the one source the arm and the diagnostic
+    both read, so a report can never disagree with the prompt."""
+    out = {"verb": (list(C.VERBS), letters_for(C.VERBS, "verb")),
+           "target": (list(C.TARGETS), letters_for(C.TARGETS, "target"))}
+    if verb is not None:
+        legal = legal_locations(verb)
+        out["location"] = (legal, letters_for(legal, "location"))
+    return out
 
 
 def legal_locations(verb):
@@ -110,13 +148,14 @@ class SalsaFull:
                 raise SystemExit("GATE FAIL: adapter %s not found for model %r" % (p, key))
             self.model = PeftModel.from_pretrained(self.model, str(p)).merge_and_unload()
         self.model.eval()
-        self.letter_ids = []
+        self.letter_id = {}
         for L in LETTERS:
             ids = self.tok.encode(" " + L, add_special_tokens=False)
             if len(ids) != 1:
                 raise SystemExit("GATE FAIL: ' %s' is %d tokens for %s; the letter "
                                  "mapping requires one token per option." % (L, len(ids), key))
-            self.letter_ids.append(ids[0])
+            self.letter_id[L] = ids[0]
+        self.letter_ids = [self.letter_id[L] for L in LETTERS]
         if len(set(self.letter_ids)) != len(self.letter_ids):
             raise SystemExit("GATE FAIL: letter token ids collide for %s" % key)
         from bench.run_cell import apply_legend
@@ -135,8 +174,14 @@ class SalsaFull:
         return self.chat(self.P.build_prompt(command, "zero_shot", self.schema))
 
     @torch.no_grad()
-    def _ask(self, cache, prefix_len, question, symbols):
-        """Append one question to a crop of the prefix cache and read letters."""
+    def _ask(self, cache, prefix_len, question, symbols, letters=None):
+        """Append one question to a crop of the prefix cache and read letters.
+
+        `letters` must be the SAME labels the question printed, or the logits are
+        read at the wrong tokens; it is passed explicitly for that reason.
+        """
+        letters = letters or LETTERS[:len(symbols)]
+        assert len(letters) == len(symbols), "option letters and symbols disagree"
         n = cache.get_seq_length() - prefix_len
         if n > 0:
             cache.crop(prefix_len)
@@ -144,7 +189,7 @@ class SalsaFull:
         out = self.model(input_ids=torch.tensor([qids], device="cuda"),
                          past_key_values=cache, use_cache=True)
         logits = out.logits[0, -1]
-        ids = [self.letter_ids[i] for i in range(len(symbols))]
+        ids = [self.letter_id[L] for L in letters]
         sel = logits[ids].float()
         probs = torch.softmax(sel, dim=-1)
         k = int(probs.argmax())
@@ -173,8 +218,10 @@ class SalsaFull:
         l_idx, p_loc, probs_loc = 0, "", []
         legal = legal_locations(verb)
         if legal:
+            loc_letters = letters_for(legal, "location")
             loc, p_loc, probs_loc, _ = self._ask(
-                cache, plen, Q_LOCATION % options_block(legal), legal)
+                cache, plen, Q_LOCATION % options_block(legal, loc_letters),
+                legal, loc_letters)
             l_idx = C.LOCATIONS.index(loc)
 
         obj = C.emit(C.VERBS.index(verb), t_idx, l_idx, C.SPACE)
@@ -191,7 +238,10 @@ def mode_check(key):
     """Tokenizer + 5 train_v2 commands. This is the only mode the author runs."""
     from transformers import AutoTokenizer
     print()
-    print("1. LETTER TOKENS ' A' .. ' N' for %s" % MODELS[key]["base"])
+    print("1. LETTER TOKENS ' %s' .. ' %s' for %s   (verb/target labels A..G; "
+          "LOCATION labels %s..%s, collision-free)"
+          % (LETTERS[0], LETTERS[-1], MODELS[key]["base"],
+             LOC_LETTERS[0], LOC_LETTERS[-1]))
     tok = AutoTokenizer.from_pretrained(MODELS[key]["base"])
     ok_tok = True
     ids = []
@@ -199,11 +249,27 @@ def mode_check(key):
         e = tok.encode(" " + L, add_special_tokens=False)
         ids.append(e)
         flag = "OK" if len(e) == 1 else "*** %d TOKENS ***" % len(e)
-        print("     %-4r -> %-10s %s" % (" " + L, e, flag))
+        role = []
+        if L in LETTERS[:len(C.VERBS)]:
+            role.append("verb")
+        if L in LETTERS[:len(C.TARGETS)]:
+            role.append("target")
+        if L in LOC_LETTERS:
+            role.append("location")
+        print("     %-4r -> %-10s %-22s %s" % (" " + L, e, ",".join(role) or "unused", flag))
         ok_tok &= (len(e) == 1)
     flat = [e[0] for e in ids if len(e) == 1]
     ok_tok &= (len(set(flat)) == len(flat))
     print("   all one token: %s ; ids unique: %s" % (ok_tok, len(set(flat)) == len(flat)))
+    # the collision check itself: no location LABEL may be a character that
+    # appears in any location SYMBOL
+    sym_chars = {ch for s in C.LOCATIONS for ch in s if ch.isupper()}
+    clash = sorted(set(LOC_LETTERS) & sym_chars)
+    print("   uppercase letters inside location symbols: %s" % sorted(sym_chars))
+    print("   location labels clashing with them: %s" % (clash or "none"))
+    ok_tok &= not clash
+    print("   location label map (schema order): %s"
+          % "  ".join("%s=%s" % (LOC_LETTER_OF[s], s) for s in C.LOCATIONS))
 
     print()
     print("2. GREEDY NEXT TOKEN AFTER 'Answer:' on 5 %s commands" % C.TRAIN)
