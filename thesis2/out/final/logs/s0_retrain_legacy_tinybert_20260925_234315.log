@@ -1,0 +1,15 @@
+================================================================================================
+s0_retrain_legacy_tinybert   started 2026-09-25 23:43:15
+  log: thesis2\out\final\logs\s0_retrain_legacy_tinybert_20260925_234315.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  vocab guard OK: 142 tokens in the train_v2 vocabulary the legacy recipes build from, all from train_v2; held-out row words present only because train_v2 contains them: ['top']
+  TinyBERT parameters: 14.36 M
+  dev plateau 54/57, plateau-earliest epoch 21; LOADED argmax epoch 21
+
+------------------------------------------------------------------------------------------------
+  [Certain] tinybert: 217/217 identical; reproduced
+  [Certain] Differing command_ids: []
+  [Certain] No held_out_v4c data was read.
+------------------------------------------------------------------------------------------------
+GATE PASS

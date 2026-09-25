@@ -1,0 +1,15 @@
+arm,kind,path,sha256,selected_epoch,dev_action_match,frozen_utc
+bilstm,"retrained legacy, reproduced 217/217",C:\Users\USER\llm-6dof-arm\thesis2\models\final\legacy_bilstm,79217a8587d6767cdd23e85d7b2371658b7c34b8fd68f78830fa70de5ab3b3c4,6,0.9473684210526315,2026-09-25T21:44:28Z
+flant5,"retrained legacy, reproduced 217/217",C:\Users\USER\llm-6dof-arm\thesis2\models\final\legacy_flant5,3de022196f12a9b512c6f9e37263833a664fac6d82dd8941f5fe416c273e698c,5,0.9298245614035088,2026-09-25T21:49:13Z
+grpo_base,trained checkpoint,C:\Users\USER\llm-6dof-arm\thesis2\models\final\grpo_base,86acbd3da67a78ac15a69e7051fd10e28d0efc2859201b1e46a9e5b02fe88819,1,0.8421052631578947,2026-09-25T21:56:15Z
+grpo_sft,trained checkpoint,C:\Users\USER\llm-6dof-arm\thesis2\models\final\grpo_sft,d3bda156209dea17cc0fc1de51742fd8382252a03b4cfcb8d6ab2db2dd499aa7,1,0.9824561403508771,2026-09-25T21:56:15Z
+knn_minilm,"retrained legacy, reproduced 217/217",C:\Users\USER\llm-6dof-arm\thesis2\models\final\legacy_knn_minilm,017186d7c139353e2bc474f2d8b416de9197e9df1e400ee0f16f79438714afd0,n/a: no epochs,0.43859649122807015,2026-09-25T21:44:12Z
+minilm_probe,"retrained legacy, reproduced 217/217",C:\Users\USER\llm-6dof-arm\thesis2\models\final\legacy_minilm_probe,a3739413cf5f1a2b7c6a668485494dc0297d0b8e1a8028ec0cbff7e447158cfa,100,0.6842105263157895,2026-09-25T21:44:01Z
+mlpbow,trained checkpoint,C:\Users\USER\llm-6dof-arm\thesis2\models\final\mlpbow.pt,1b81a2cacfac1e62dfb0becce7ec372869ee0d6966029e8348115a32a47060b5,25,0.9298,2026-09-25T21:56:15Z
+salsa_full_Qwen2.5-0.5B-Instruct,logit-classifier over frozen weights,Qwen/Qwen2.5-0.5B-Instruct,n/a: base weights only,n/a: no training,0.1228,2026-09-25T21:56:16Z
+salsa_full_Qwen2.5-3B-Instruct,logit-classifier over frozen weights,Qwen/Qwen2.5-3B-Instruct,n/a: base weights only,n/a: no training,0.4211,2026-09-25T21:56:15Z
+salsa_full_qwen2.5-0.5b-lora,logit-classifier over frozen weights,C:\Users\USER\llm-6dof-arm\ft\runs\qwen0.5b_lora\checkpoint-87,f05df4d52542dd3289b314831e86d46000459665c7d0de6d2bfac36a8c9b2d24,n/a: no training,0.0526,2026-09-25T21:56:16Z
+salsa_full_qwen2.5-3b-lora,logit-classifier over frozen weights,C:\Users\USER\llm-6dof-arm\ft\runs\qwen3b_lora\checkpoint-87,5b409e547527340b1bae5de046667ee5beb8b80cac11983f04193a4b299c37e3,n/a: no training,0.5614,2026-09-25T21:56:15Z
+textcnn,trained checkpoint,C:\Users\USER\llm-6dof-arm\thesis2\models\final\textcnn.pt,2bb7ffa5af495a0578a9b1c4f9691238be5bf40bdf11e74b9c330518513fabe3,18,0.9474,2026-09-25T21:56:15Z
+tfidf_logreg,"retrained legacy, reproduced 217/217",C:\Users\USER\llm-6dof-arm\thesis2\models\final\legacy_tfidf_logreg,22d06f3472d63ce3694f387fa90a70e59a6fe0080b9261a6e3a99a1d17feebc8,n/a: no epochs,0.8245614035087719,2026-09-25T21:44:18Z
+tinybert,"retrained legacy, reproduced 217/217",C:\Users\USER\llm-6dof-arm\thesis2\models\final\legacy_tinybert,b8e9a679966326f5c2dd0ac42b4fe5be92df09189268eac6e57f00e2a5a9e46f,21,0.9473684210526315,2026-09-25T21:43:31Z

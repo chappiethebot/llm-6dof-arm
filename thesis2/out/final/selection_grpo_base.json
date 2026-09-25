@@ -1,0 +1,106 @@
+{
+  "arm": "grpo_base",
+  "selected_epoch": 1,
+  "dev_hits": 48,
+  "dev_action_match": 0.8421052631578947,
+  "dev_total": 57,
+  "rule": "earliest epoch within one dev hit of best",
+  "seed": 20260827,
+  "checkpoint": "thesis2\\models\\final\\grpo_base",
+  "smoke": false,
+  "history": [
+    {
+      "dev_hits": 48,
+      "dev_total": 57,
+      "dev_action_match": 0.8421052631578947,
+      "adapter_sha256": "6ab273792f00a81ab93acb44259627a2b1f0373166e87fd37460d4a9f678fca5",
+      "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+      "epoch": 1,
+      "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\grpo_base_epochs\\epoch_01"
+    },
+    {
+      "dev_hits": 48,
+      "dev_total": 57,
+      "dev_action_match": 0.8421052631578947,
+      "adapter_sha256": "814e6b569fad7a6906c63402d999e08711463858b7eb67c7c6a16b4dfc01d8d3",
+      "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+      "epoch": 2,
+      "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\grpo_base_epochs\\epoch_02"
+    },
+    {
+      "dev_hits": 48,
+      "dev_total": 57,
+      "dev_action_match": 0.8421052631578947,
+      "adapter_sha256": "14b2316a1038704ef57798d985abd8f1748fb553a0183711d53363474565217f",
+      "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+      "epoch": 3,
+      "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\grpo_base_epochs\\epoch_03"
+    },
+    {
+      "dev_hits": 48,
+      "dev_total": 57,
+      "dev_action_match": 0.8421052631578947,
+      "adapter_sha256": "e14169e11de680d64056a6a41642999dc05ec345830373581249caffe26ef0fc",
+      "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+      "epoch": 4,
+      "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\grpo_base_epochs\\epoch_04"
+    },
+    {
+      "dev_hits": 47,
+      "dev_total": 57,
+      "dev_action_match": 0.8245614035087719,
+      "adapter_sha256": "3b3e3da11935890a2b2c246dad96fb68bcb22d88ee1dfccb62b804bc1898e447",
+      "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+      "epoch": 5,
+      "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\grpo_base_epochs\\epoch_05"
+    },
+    {
+      "dev_hits": 48,
+      "dev_total": 57,
+      "dev_action_match": 0.8421052631578947,
+      "adapter_sha256": "ed44e75e5de7a57ac969c108e628e5afc85499ed2f80ad4dc9f09b4310881f43",
+      "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+      "epoch": 6,
+      "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\grpo_base_epochs\\epoch_06"
+    },
+    {
+      "dev_hits": 48,
+      "dev_total": 57,
+      "dev_action_match": 0.8421052631578947,
+      "adapter_sha256": "dae35bcfd9de13be53144d3aa329f06aaf2b6aecb94c41ebe1d7752c1ded296e",
+      "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+      "epoch": 7,
+      "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\grpo_base_epochs\\epoch_07"
+    },
+    {
+      "dev_hits": 48,
+      "dev_total": 57,
+      "dev_action_match": 0.8421052631578947,
+      "adapter_sha256": "f109e88ec81e28c4fd52c4f81cdbf17886b82fab752bfe6f9512ae86523385da",
+      "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+      "epoch": 8,
+      "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\grpo_base_epochs\\epoch_08"
+    },
+    {
+      "dev_hits": 48,
+      "dev_total": 57,
+      "dev_action_match": 0.8421052631578947,
+      "adapter_sha256": "5730e1b7a118f8f33dd05ea64e50cbd8135f56d22fb24138802f7b706f2da5b5",
+      "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+      "epoch": 9,
+      "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\grpo_base_epochs\\epoch_09"
+    },
+    {
+      "dev_hits": 48,
+      "dev_total": 57,
+      "dev_action_match": 0.8421052631578947,
+      "adapter_sha256": "ebe6451453fbdf347e9d7258178702ce7056f53c1dac2d86841dd10008dbf6fd",
+      "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+      "epoch": 10,
+      "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\grpo_base_epochs\\epoch_10"
+    }
+  ],
+  "training_python": "D:\\condaenvs\\thesis2rl\\python.exe",
+  "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe",
+  "peak_vram_mb": 7413.070336
+}

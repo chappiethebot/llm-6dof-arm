@@ -1,0 +1,6 @@
+================================================================================================
+s0_train_grpo_base   started 2026-09-25 01:22:16
+  log: thesis2\out\final\logs\s0_train_grpo_base_20260925_012216.log
+  python: D:\condaenvs\thesis2rl\python.exe
+================================================================================================
+  vocab guard OK: none of ['back', 'front', 'upper', 'bottom', 'top', 'lower'] in the GRPO training prompt wrapper

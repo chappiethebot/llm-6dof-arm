@@ -1,0 +1,16 @@
+================================================================================================
+s0_retrain_legacy_bilstm   started 2026-09-25 23:44:22
+  log: thesis2\out\final\logs\s0_retrain_legacy_bilstm_20260925_234422.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  vocab guard OK: 142 tokens in the train_v2 vocabulary the legacy recipes build from, all from train_v2; held-out row words present only because train_v2 contains them: ['top']
+  vocabulary built from train_v2 only: 144 types
+  BiLSTM parameters: 0.52 M
+  dev plateau 54/57, plateau-earliest epoch 6; LOADED argmax epoch 6
+
+------------------------------------------------------------------------------------------------
+  [Certain] bilstm: 217/217 identical; reproduced
+  [Certain] Differing command_ids: []
+  [Certain] No held_out_v4c data was read.
+------------------------------------------------------------------------------------------------
+GATE PASS

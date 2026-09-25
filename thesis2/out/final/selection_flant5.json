@@ -1,0 +1,63 @@
+{
+  "arm": "flant5",
+  "selected_epoch": 5,
+  "seed": 20260820,
+  "history": [
+    [
+      1,
+      25
+    ],
+    [
+      2,
+      41
+    ],
+    [
+      3,
+      45
+    ],
+    [
+      4,
+      48
+    ],
+    [
+      5,
+      53
+    ],
+    [
+      6,
+      53
+    ],
+    [
+      7,
+      53
+    ],
+    [
+      8,
+      53
+    ],
+    [
+      9,
+      53
+    ],
+    [
+      10,
+      53
+    ],
+    [
+      11,
+      53
+    ],
+    [
+      12,
+      53
+    ]
+  ],
+  "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\legacy_flant5",
+  "smoke": false,
+  "rule": "original argmax dev selection",
+  "checkpoint_sha256": "3de022196f12a9b512c6f9e37263833a664fac6d82dd8941f5fe416c273e698c",
+  "status": "reproduced",
+  "dev_action_match": 0.9298245614035088,
+  "identical": 217,
+  "differing_command_ids": []
+}

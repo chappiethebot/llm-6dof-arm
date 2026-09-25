@@ -1,0 +1,18 @@
+================================================================================================
+s0_salsa_full_dev_Qwen2.5-0.5B-Instruct   started 2026-09-25 00:47:56
+  log: thesis2\out\final\logs\s0_salsa_full_dev_Qwen2.5-0.5B-Instruct_20260925_004756.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  torch 2.14.0+cu126 cuda=True | transformers 5.17.0
+  gpu: NVIDIA GeForce RTX 4060 Ti
+  model: Qwen2.5-0.5B-Instruct
+  vocab guard OK: none of ['back', 'front', 'upper', 'bottom', 'top', 'lower'] in the SALSA-full question text
+      20/57  (2s)
+      40/57  (4s)
+
+------------------------------------------------------------------------------------------------
+  dev_v2 action match for salsa_full_Qwen2.5-0.5B-Instruct: 7/57 = 0.1228
+  selection record: thesis2\out\final\selection_salsa_full_Qwen2.5-0.5B-Instruct.json
+  no held-out file was opened
+------------------------------------------------------------------------------------------------
+GATE PASS

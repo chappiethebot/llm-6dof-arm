@@ -1,0 +1,7 @@
+{
+  "dev_hits": 48,
+  "dev_total": 57,
+  "dev_action_match": 0.8421052631578947,
+  "adapter_sha256": "e14169e11de680d64056a6a41642999dc05ec345830373581249caffe26ef0fc",
+  "inference_python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+}

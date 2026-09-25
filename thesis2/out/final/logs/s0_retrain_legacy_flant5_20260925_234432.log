@@ -1,0 +1,27 @@
+================================================================================================
+s0_retrain_legacy_flant5   started 2026-09-25 23:44:32
+  log: thesis2\out\final\logs\s0_retrain_legacy_flant5_20260925_234432.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  vocab guard OK: 142 tokens in the train_v2 vocabulary the legacy recipes build from, all from train_v2; held-out row words present only because train_v2 contains them: ['top']
+  flan-t5-base parameters: 247.58 M
+    epoch  1 dev 25/57
+    epoch  2 dev 41/57
+    epoch  3 dev 45/57
+    epoch  4 dev 48/57
+    epoch  5 dev 53/57
+    epoch  6 dev 53/57
+    epoch  7 dev 53/57
+    epoch  8 dev 53/57
+    epoch  9 dev 53/57
+    epoch 10 dev 53/57
+    epoch 11 dev 53/57
+    epoch 12 dev 53/57
+  dev plateau 53/57, plateau-earliest epoch 5; LOADED argmax epoch 5
+
+------------------------------------------------------------------------------------------------
+  [Certain] flant5: 217/217 identical; reproduced
+  [Certain] Differing command_ids: []
+  [Certain] No held_out_v4c data was read.
+------------------------------------------------------------------------------------------------
+GATE PASS

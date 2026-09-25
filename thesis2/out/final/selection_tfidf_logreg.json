@@ -1,0 +1,14 @@
+{
+  "arm": "tfidf_logreg",
+  "selected_epoch": "n/a: no epochs",
+  "seed": "original recipe: no seed",
+  "history": [],
+  "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\legacy_tfidf_logreg",
+  "smoke": false,
+  "rule": "fixed original recipe",
+  "checkpoint_sha256": "22d06f3472d63ce3694f387fa90a70e59a6fe0080b9261a6e3a99a1d17feebc8",
+  "status": "reproduced",
+  "dev_action_match": 0.8245614035087719,
+  "identical": 217,
+  "differing_command_ids": []
+}

@@ -1,0 +1,468 @@
+{
+  "arm": "salsa_full_qwen2.5-0.5b-lora",
+  "model": {
+    "base": "Qwen/Qwen2.5-0.5B-Instruct",
+    "adapter": "ft/runs/qwen0.5b_lora/checkpoint-87"
+  },
+  "dev_action_match": 0.0526,
+  "dev_hits": 3,
+  "dev_total": 57,
+  "per_command": [
+    {
+      "command_id": 0,
+      "command": "bring the rubiks cube here",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"fetch\", \"target\": \"rubiks_cube\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 234.85
+    },
+    {
+      "command_id": 1,
+      "command": "bring me the rubiks cube",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"fetch\", \"target\": \"rubiks_cube\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 89.81
+    },
+    {
+      "command_id": 2,
+      "command": "retrieve the bottle",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "correct": true,
+      "latency_ms": 64.48
+    },
+    {
+      "command_id": 3,
+      "command": "retrieve the toy car",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"fetch\", \"target\": \"toy_car\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 65.79
+    },
+    {
+      "command_id": 4,
+      "command": "bring me the bottle",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "correct": true,
+      "latency_ms": 66.21
+    },
+    {
+      "command_id": 5,
+      "command": "grab the toy car",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_A1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"hold\", \"target\": \"toy_car\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 64.02
+    },
+    {
+      "command_id": 6,
+      "command": "hold the rubiks cube",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"hold\", \"target\": \"rubiks_cube\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 65.09
+    },
+    {
+      "command_id": 7,
+      "command": "hold onto the bottle",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"hold\", \"target\": \"bottle\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 66.61
+    },
+    {
+      "command_id": 8,
+      "command": "hold onto the rubiks cube",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"hold\", \"target\": \"rubiks_cube\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 68.01
+    },
+    {
+      "command_id": 9,
+      "command": "hold onto the toy car",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"hold\", \"target\": \"toy_car\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 68.27
+    },
+    {
+      "command_id": 10,
+      "command": "scan the toy car",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"inspect\", \"target\": \"toy_car\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 92.03
+    },
+    {
+      "command_id": 11,
+      "command": "analyze the toy car",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"inspect\", \"target\": \"toy_car\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 69.37
+    },
+    {
+      "command_id": 12,
+      "command": "inspect the toy car",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_C1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"inspect\", \"target\": \"toy_car\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 69.62
+    },
+    {
+      "command_id": 13,
+      "command": "evaluate the toy car",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"inspect\", \"target\": \"toy_car\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 66.3
+    },
+    {
+      "command_id": 14,
+      "command": "check out the toy car",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_A1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"inspect\", \"target\": \"toy_car\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 63.09
+    },
+    {
+      "command_id": 15,
+      "command": "move to the left side middle edge of the table",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"move_to\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 66.34
+    },
+    {
+      "command_id": 16,
+      "command": "navigate to the right side middle edge of the table",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"move_to\", \"location\": \"grid_B3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 71.19
+    },
+    {
+      "command_id": 17,
+      "command": "navigate to the far right side corner of the table",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"move_to\", \"location\": \"grid_A3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 73.46
+    },
+    {
+      "command_id": 18,
+      "command": "navigate to box 3",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"move_to\", \"location\": \"box_3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 88.1
+    },
+    {
+      "command_id": 19,
+      "command": "navigate to the near right side corner of the table",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"move_to\", \"location\": \"grid_C3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 64.75
+    },
+    {
+      "command_id": 20,
+      "command": "go to box 3",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"move_to\", \"location\": \"box_3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 87.11
+    },
+    {
+      "command_id": 21,
+      "command": "go to the far left corner of the table",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"move_to\", \"location\": \"grid_A1\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 95.59
+    },
+    {
+      "command_id": 22,
+      "command": "navigate to anywhere you see free",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"move_to\", \"location\": \"nearest_free_cell\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 72.95
+    },
+    {
+      "command_id": 23,
+      "command": "put the car in the right side middle edge of the table",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"toy_car\", \"location\": \"grid_B3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 70.38
+    },
+    {
+      "command_id": 24,
+      "command": "put the bottle in the left side middle edge of the table",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 83.9
+    },
+    {
+      "command_id": 25,
+      "command": "can you please keep the car in the right side middle edge of the table?",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"toy_car\", \"location\": \"grid_B3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 105.62
+    },
+    {
+      "command_id": 26,
+      "command": "pick up the rubiks cube and keep in the far side middle edge of the table",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"rubiks_cube\", \"location\": \"grid_A2\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 95.5
+    },
+    {
+      "command_id": 27,
+      "command": "put the rubiks cube in the right side middle edge of the table",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"rubiks_cube\", \"location\": \"grid_B3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 70.78
+    },
+    {
+      "command_id": 28,
+      "command": "pick up the car and keep in the far side middle edge of the table",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"toy_car\", \"location\": \"grid_A2\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 95.84
+    },
+    {
+      "command_id": 29,
+      "command": "pick up the car and keep in the near side middle edge of the table",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"toy_car\", \"location\": \"grid_C2\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 75.74
+    },
+    {
+      "command_id": 30,
+      "command": "can you please keep the car in the near left side corner of the table?",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"toy_car\", \"location\": \"grid_C1\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 74.64
+    },
+    {
+      "command_id": 31,
+      "command": "pick up the rubiks cube and keep in box 3",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"rubiks_cube\", \"location\": \"box_3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 98.56
+    },
+    {
+      "command_id": 32,
+      "command": "put the bottle in the far right side corner of the table",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_A3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 99.33
+    },
+    {
+      "command_id": 33,
+      "command": "can you please keep the rubiks cube in box 1?",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"rubiks_cube\", \"location\": \"box_1\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 106.6
+    },
+    {
+      "command_id": 34,
+      "command": "can you please keep the bottle in the near right side corner of the table?",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_C3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 76.67
+    },
+    {
+      "command_id": 35,
+      "command": "put the bottle in the center of the table",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B2\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 66.33
+    },
+    {
+      "command_id": 36,
+      "command": "pick up the car and keep in the near right side corner of the table",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"toy_car\", \"location\": \"grid_C3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 68.88
+    },
+    {
+      "command_id": 37,
+      "command": "can you please keep the rubiks cube in anywhere you see free?",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"rubiks_cube\", \"location\": \"nearest_free_cell\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 66.89
+    },
+    {
+      "command_id": 38,
+      "command": "pick up the rubiks cube and keep in the farthest spot you can reach",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"rubiks_cube\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"rubiks_cube\", \"location\": \"max_reach\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 102.76
+    },
+    {
+      "command_id": 39,
+      "command": "pick up the rubiks cube and keep in anywhere you see free",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"rubiks_cube\", \"location\": \"nearest_free_cell\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 78.73
+    },
+    {
+      "command_id": 40,
+      "command": "can you please keep the rubiks cube in the far right side corner of the table?",
+      "pred": "{\"action\": \"stop\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"rubiks_cube\", \"location\": \"grid_A3\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 52.13
+    },
+    {
+      "command_id": 41,
+      "command": "pick up the rubiks cube and keep in box 1",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"rubiks_cube\", \"location\": \"box_1\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 109.64
+    },
+    {
+      "command_id": 42,
+      "command": "pick up the bottle and keep in the far left corner of the table",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_A1\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 107.86
+    },
+    {
+      "command_id": 43,
+      "command": "put the car in box 1",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"toy_car\", \"location\": \"box_1\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 98.31
+    },
+    {
+      "command_id": 44,
+      "command": "can you please keep the bottle in anywhere you see free?",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"nearest_free_cell\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 73.41
+    },
+    {
+      "command_id": 45,
+      "command": "can you please keep the car in the far left corner of the table?",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"toy_car\", \"location\": \"grid_A1\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 88.25
+    },
+    {
+      "command_id": 46,
+      "command": "put the car in the far left corner of the table",
+      "pred": "{\"action\": \"pick_place\", \"target\": \"bottle\", \"location\": \"grid_B1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"toy_car\", \"location\": \"grid_A1\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 84.32
+    },
+    {
+      "command_id": 47,
+      "command": "pick up the car and keep in anywhere you see free",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"pick_place\", \"target\": \"toy_car\", \"location\": \"nearest_free_cell\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 64.11
+    },
+    {
+      "command_id": 48,
+      "command": "hand me the blue marker",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"reject\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 64.01
+    },
+    {
+      "command_id": 49,
+      "command": "inspect the toy car with your camera deactivated",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_C1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"reject\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 64.01
+    },
+    {
+      "command_id": 50,
+      "command": "open the box and take out the toy car",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"reject\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 63.45
+    },
+    {
+      "command_id": 51,
+      "command": "inspect the screwdriver",
+      "pred": "{\"action\": \"move_to\", \"location\": \"grid_C1\", \"modifiers\": []}",
+      "truth": "{\"action\": \"reject\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 65.89
+    },
+    {
+      "command_id": 52,
+      "command": "cancel that",
+      "pred": "{\"action\": \"reject\", \"modifiers\": []}",
+      "truth": "{\"action\": \"stop\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 43.92
+    },
+    {
+      "command_id": 53,
+      "command": "stand down",
+      "pred": "{\"action\": \"stop\", \"modifiers\": []}",
+      "truth": "{\"action\": \"stop\", \"modifiers\": []}",
+      "correct": true,
+      "latency_ms": 42.53
+    },
+    {
+      "command_id": 54,
+      "command": "hold it right there",
+      "pred": "{\"action\": \"fetch\", \"target\": \"bottle\", \"modifiers\": []}",
+      "truth": "{\"action\": \"stop\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 70.87
+    },
+    {
+      "command_id": 55,
+      "command": "stop what you are doing",
+      "pred": "{\"action\": \"reject\", \"modifiers\": []}",
+      "truth": "{\"action\": \"stop\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 48.96
+    },
+    {
+      "command_id": 56,
+      "command": "terminate action",
+      "pred": "{\"action\": \"reject\", \"modifiers\": []}",
+      "truth": "{\"action\": \"stop\", \"modifiers\": []}",
+      "correct": false,
+      "latency_ms": 48.35
+    }
+  ]
+}

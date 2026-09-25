@@ -1,0 +1,14 @@
+{
+  "arm": "knn_minilm",
+  "selected_epoch": "n/a: no epochs",
+  "seed": "original recipe: no seed",
+  "history": [],
+  "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\legacy_knn_minilm",
+  "smoke": false,
+  "rule": "fixed original recipe",
+  "checkpoint_sha256": "017186d7c139353e2bc474f2d8b416de9197e9df1e400ee0f16f79438714afd0",
+  "status": "reproduced",
+  "dev_action_match": 0.43859649122807015,
+  "identical": 217,
+  "differing_command_ids": []
+}

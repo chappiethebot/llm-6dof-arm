@@ -1,0 +1,29 @@
+================================================================================================
+s0_freeze   started 2026-09-25 23:56:15
+  log: thesis2\out\final\logs\s0_freeze_20260925_235615.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+
+  arm                                selected     dev action match   sha256[:16]
+  bilstm                             6            0.9473684210526315 79217a8587d6767c
+  flant5                             5            0.9298245614035088 3de022196f12a9b5
+  grpo_base                          1            0.8421052631578947 86acbd3da67a78ac
+  grpo_sft                           1            0.9824561403508771 d3bda156209dea17
+  knn_minilm                         n/a: no epochs 0.43859649122807015 017186d7c139353e
+  minilm_probe                       100          0.6842105263157895 a3739413cf5f1a2b
+  mlpbow                             25           0.9298             1b81a2cacfac1e62
+  salsa_full_Qwen2.5-0.5B-Instruct   n/a: no training 0.1228             n/a: base weight
+  salsa_full_Qwen2.5-3B-Instruct     n/a: no training 0.4211             n/a: base weight
+  salsa_full_qwen2.5-0.5b-lora       n/a: no training 0.0526             f05df4d52542dd32
+  salsa_full_qwen2.5-3b-lora         n/a: no training 0.5614             5b409e547527340b
+  textcnn                            18           0.9474             2bb7ffa5af495a05
+  tfidf_logreg                       n/a: no epochs 0.8245614035087719 22d06f3472d63ce3
+  tinybert                           21           0.9473684210526315 b8e9a679966326f5
+
+------------------------------------------------------------------------------------------------
+  14 arm(s) frozen in thesis2\out\final\frozen_checkpoints.csv
+  new arms still BLOCKED from held-out inference: none
+  pre-existing arms are exempt by name (common.PREEXISTING_ARMS)
+  next: Stage 1, s1_run_arm.py --split held_out_v3
+------------------------------------------------------------------------------------------------
+GATE PASS

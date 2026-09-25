@@ -1,0 +1,95 @@
+{
+  "arm": "minilm_probe",
+  "selected_epoch": 100,
+  "seed": 20260820,
+  "history": [
+    [
+      10,
+      8
+    ],
+    [
+      20,
+      12
+    ],
+    [
+      30,
+      24
+    ],
+    [
+      40,
+      30
+    ],
+    [
+      50,
+      33
+    ],
+    [
+      60,
+      35
+    ],
+    [
+      70,
+      36
+    ],
+    [
+      80,
+      38
+    ],
+    [
+      90,
+      38
+    ],
+    [
+      100,
+      39
+    ],
+    [
+      110,
+      39
+    ],
+    [
+      120,
+      39
+    ],
+    [
+      130,
+      39
+    ],
+    [
+      140,
+      39
+    ],
+    [
+      150,
+      39
+    ],
+    [
+      160,
+      39
+    ],
+    [
+      170,
+      39
+    ],
+    [
+      180,
+      39
+    ],
+    [
+      190,
+      39
+    ],
+    [
+      200,
+      39
+    ]
+  ],
+  "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\legacy_minilm_probe",
+  "smoke": false,
+  "rule": "original argmax dev selection",
+  "checkpoint_sha256": "a3739413cf5f1a2b7c6a668485494dc0297d0b8e1a8028ec0cbff7e447158cfa",
+  "status": "reproduced",
+  "dev_action_match": 0.6842105263157895,
+  "identical": 217,
+  "differing_command_ids": []
+}

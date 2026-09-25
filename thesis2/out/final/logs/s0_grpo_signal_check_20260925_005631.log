@@ -1,0 +1,35 @@
+================================================================================================
+s0_grpo_signal_check   started 2026-09-25 00:56:31
+  log: thesis2\out\final\logs\s0_grpo_signal_check_20260925_005631.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  vocab guard OK: none of ['back', 'front', 'upper', 'bottom', 'top', 'lower'] in the GRPO chat wrapper and system line
+[Certain] Signal check 10/230 prompts
+[Certain] Signal check 20/230 prompts
+[Certain] Signal check 30/230 prompts
+[Certain] Signal check 40/230 prompts
+[Certain] Signal check 50/230 prompts
+[Certain] Signal check 60/230 prompts
+[Certain] Signal check 70/230 prompts
+[Certain] Signal check 80/230 prompts
+[Certain] Signal check 90/230 prompts
+[Certain] Signal check 100/230 prompts
+[Certain] Signal check 110/230 prompts
+[Certain] Signal check 120/230 prompts
+[Certain] Signal check 130/230 prompts
+[Certain] Signal check 140/230 prompts
+[Certain] Signal check 150/230 prompts
+[Certain] Signal check 160/230 prompts
+[Certain] Signal check 170/230 prompts
+[Certain] Signal check 180/230 prompts
+[Certain] Signal check 190/230 prompts
+[Certain] Signal check 200/230 prompts
+[Certain] Signal check 210/230 prompts
+[Certain] Signal check 220/230 prompts
+[Certain] Signal check 230/230 prompts
+
+------------------------------------------------------------------------------------------------
+  [Certain] Mixed rewards: 30/230 = 0.1304
+  [Certain] GRPO-on-SFT eligible
+------------------------------------------------------------------------------------------------
+GATE PASS

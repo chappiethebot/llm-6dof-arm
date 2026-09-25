@@ -1,0 +1,135 @@
+{
+  "arm": "tinybert",
+  "selected_epoch": 21,
+  "seed": 20260820,
+  "history": [
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      4,
+      9
+    ],
+    [
+      5,
+      21
+    ],
+    [
+      6,
+      31
+    ],
+    [
+      7,
+      33
+    ],
+    [
+      8,
+      41
+    ],
+    [
+      9,
+      39
+    ],
+    [
+      10,
+      45
+    ],
+    [
+      11,
+      47
+    ],
+    [
+      12,
+      47
+    ],
+    [
+      13,
+      49
+    ],
+    [
+      14,
+      51
+    ],
+    [
+      15,
+      50
+    ],
+    [
+      16,
+      51
+    ],
+    [
+      17,
+      51
+    ],
+    [
+      18,
+      50
+    ],
+    [
+      19,
+      51
+    ],
+    [
+      20,
+      51
+    ],
+    [
+      21,
+      54
+    ],
+    [
+      22,
+      54
+    ],
+    [
+      23,
+      52
+    ],
+    [
+      24,
+      54
+    ],
+    [
+      25,
+      54
+    ],
+    [
+      26,
+      54
+    ],
+    [
+      27,
+      54
+    ],
+    [
+      28,
+      54
+    ],
+    [
+      29,
+      54
+    ],
+    [
+      30,
+      54
+    ]
+  ],
+  "checkpoint": "C:\\Users\\USER\\llm-6dof-arm\\thesis2\\models\\final\\legacy_tinybert",
+  "smoke": false,
+  "rule": "original argmax dev selection",
+  "checkpoint_sha256": "b8e9a679966326f5c2dd0ac42b4fe5be92df09189268eac6e57f00e2a5a9e46f",
+  "status": "reproduced",
+  "dev_action_match": 0.9473684210526315,
+  "identical": 217,
+  "differing_command_ids": []
+}
