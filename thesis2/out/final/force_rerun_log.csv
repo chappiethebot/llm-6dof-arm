@@ -1,0 +1,13 @@
+utc,arm,split,rows_discarded
+2026-09-26T10:37:57Z,v5cell:ollama:deepseek-r1:7b/few_shot,held_out_v3,217
+2026-09-26T10:37:57Z,v5cell:ollama:deepseek-r1:7b/rag,held_out_v3,217
+2026-09-26T10:37:57Z,v5cell:ollama:llama3.2:3b/few_shot,held_out_v3,217
+2026-09-26T10:37:57Z,v5cell:ollama:llama3.2:3b/rag,held_out_v3,217
+2026-09-26T10:37:57Z,v5cell:ollama:qwen2.5-0.5b-lora/few_shot,held_out_v3,217
+2026-09-26T10:37:57Z,v5cell:ollama:qwen2.5-0.5b-lora/rag,held_out_v3,217
+2026-09-26T10:37:57Z,v5cell:ollama:qwen2.5-3b-lora/few_shot,held_out_v3,217
+2026-09-26T10:37:57Z,v5cell:ollama:qwen2.5-3b-lora/rag,held_out_v3,217
+2026-09-26T10:37:57Z,v5cell:ollama:qwen2.5:0.5b/few_shot,held_out_v3,217
+2026-09-26T10:37:57Z,v5cell:ollama:qwen2.5:0.5b/rag,held_out_v3,217
+2026-09-26T10:37:57Z,v5cell:ollama:qwen2.5:3b/few_shot,held_out_v3,217
+2026-09-26T10:37:58Z,v5cell:ollama:qwen2.5:3b/rag,held_out_v3,217

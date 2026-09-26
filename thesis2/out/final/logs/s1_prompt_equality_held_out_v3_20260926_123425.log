@@ -1,0 +1,36 @@
+================================================================================================
+s1_prompt_equality_held_out_v3   started 2026-09-26 12:34:25
+  log: thesis2\out\final\logs\s1_prompt_equality_held_out_v3_20260926_123425.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  split held_out_v3, first 5 commands, NO model calls (stub client)
+     [0] put the bottle in the upper left corner of the table
+     [1] put the car in the upper left corner of the table
+     [2] put the rubiks cube in the upper left corner of the table
+     [3] can you please keep the bottle in the upper left corner of the table?
+     [4] can you please keep the car in the upper left corner of the table?
+
+  ---- few_shot
+     [0] identical  (2160 bytes)
+     [1] identical  (2157 bytes)
+     [2] identical  (2165 bytes)
+     [3] identical  (2177 bytes)
+     [4] identical  (2174 bytes)
+     few_shot: 5/5 byte-identical
+
+  ---- rag
+     [0] identical  (2174 bytes)
+     [1] identical  (2164 bytes)
+     [2] identical  (2201 bytes)
+     [3] identical  (2234 bytes)
+     [4] identical  (2232 bytes)
+     rag: 5/5 byte-identical
+
+
+------------------------------------------------------------------------------------------------
+  NO MODEL CALLS: the client is a stub that records the prompt
+  no prediction file and no file under thesis2/out/ was written
+  few_shot  5/5 prompts byte-identical
+  rag       5/5 prompts byte-identical
+------------------------------------------------------------------------------------------------
+GATE PASS

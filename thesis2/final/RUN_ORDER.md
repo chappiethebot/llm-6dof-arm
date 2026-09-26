@@ -253,6 +253,28 @@ Each script ends with a **byte-identity gate against `lora_greedy` on the same
 split**: it loads `pred_lora_greedy_<split>.csv` and exits non-zero on any
 mismatch. Run `lora_greedy` (S1-2) before these. ~35 min [Guessing].
 
+Each script also writes the **standard `pred_<arm>_<split>.csv`** —
+`pred_a8_speculative_`, `pred_a10_speculative_`, `pred_a12_smalllm_` — in the
+same format as every other arm, through the one shared emitter
+`common.preds_from_percommand`. It carries the arm's own verified output
+(`spec_text` / `prefix_spec_text`) and its own per-command latency
+(`spec_ms` / `prefix_spec_ms`) in `latency_ms`. Before 2026-09-26 the scripts
+wrote only `*_percommand.csv`, so `s1_repro_check.py` and Stage 2 showed all
+three arms as NOT RUN YET.
+
+The held_out_v3 files were generated from the per-command CSVs that already
+exist, **with no re-run** (`--emit-preds-only` loads no model):
+
+```powershell
+conda activate D:\condaenvs\thesis2gpu ; python thesis2\scripts\a8_speculative.py --split held_out_v3 --emit-preds-only ; python thesis2\scripts\a10_prefix_cache.py --split held_out_v3 --emit-preds-only ; python thesis2\scripts\a12_smalllm_drafter.py --split held_out_v3 --emit-preds-only
+```
+
+→ 217 rows each, GATE PASS; `s1_repro_check.py` then reads all three as
+COMPLETE and **217/217 identical** to the earlier run's per-command files
+(a genuine cross-run comparison: the two files differ and 0/217 latencies match).
+[Certain — run]. On held_out_v4c no conversion step is needed: a normal run
+writes both files.
+
 ### S1-4 held_out_v3 — the V5 cell grid
 
 Plan first, no model calls:
@@ -274,7 +296,7 @@ check: `python -c "import csv;print(sum(1 for _ in csv.DictReader(open('thesis2/
 FAILs on any `prompt_error` row in any cell, on any cell with more empty-raw
 rows than V5 had for the same cell, and on held_out_v3 on any cell whose raw
 agreement with V5 is below **210/216**. To audit an existing file on its own:
-`conda activate D:\condaenvs	hesis2gpu ; python thesis2inal\s1_check_v5cells.py --split held_out_v3`
+`conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\s1_check_v5cells.py --split held_out_v3`
 
 #### S1-4b Re-run the 12 void cells (few_shot and rag)
 
@@ -289,14 +311,14 @@ per-command `rag` retrieval are V5's own. The 19 healthy cells were unaffected
 and reproduce V5 at **216/216** raw agreement.
 
 Prove the prompts first — no model calls, ~2 min:
-`conda activate D:\condaenvs	hesis2gpu ; python thesis2inal\s1_prompt_equality.py --split held_out_v3 --n 5`
+`conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\s1_prompt_equality.py --split held_out_v3 --n 5`
 → **few_shot 5/5 and rag 5/5 byte-identical** to `bench/run_cell.py`'s own
 builder. [Certain — run, GATE PASS]
 
 Then re-run only those 12 cells, env `thesis`, ~1 h [Guessing]:
 
 ```powershell
-conda activate thesis ; $env:OLLAMA_MODELS="D:\LLM" ; python thesis2inal\s1_run_v5_cells.py --split held_out_v3 --replace-cells --cells "ollama:qwen2.5-3b-lora:few_shot,ollama:qwen2.5-3b-lora:rag,ollama:qwen2.5:3b:few_shot,ollama:qwen2.5:3b:rag,ollama:qwen2.5-0.5b-lora:few_shot,ollama:qwen2.5-0.5b-lora:rag,ollama:qwen2.5:0.5b:few_shot,ollama:qwen2.5:0.5b:rag,ollama:llama3.2:3b:few_shot,ollama:llama3.2:3b:rag,ollama:deepseek-r1:7b:few_shot,ollama:deepseek-r1:7b:rag"
+conda activate thesis ; $env:OLLAMA_MODELS="D:\LLM" ; python thesis2\final\s1_run_v5_cells.py --split held_out_v3 --replace-cells --cells "ollama:qwen2.5-3b-lora:few_shot,ollama:qwen2.5-3b-lora:rag,ollama:qwen2.5:3b:few_shot,ollama:qwen2.5:3b:rag,ollama:qwen2.5-0.5b-lora:few_shot,ollama:qwen2.5-0.5b-lora:rag,ollama:qwen2.5:0.5b:few_shot,ollama:qwen2.5:0.5b:rag,ollama:llama3.2:3b:few_shot,ollama:llama3.2:3b:rag,ollama:deepseek-r1:7b:few_shot,ollama:deepseek-r1:7b:rag"
 ```
 
 `--replace-cells` deletes only those 12 cells' rows, logs every use to
@@ -306,7 +328,7 @@ cell still runs exactly once and a complete file is never replaced. The run ends
 with the audit, which must report `prompt_error cells: 0` and every cell at or
 above 210/216.
 
-check: `Select-String thesis2\outinal\logs\s1_run_v5_cells_held_out_v3_*.log -Pattern "GATE|prompt_error cells|raw-agreement"` → **GATE PASS**, `prompt_error cells: 0`.
+check: `Select-String thesis2\out\final\logs\s1_run_v5_cells_held_out_v3_*.log -Pattern "GATE|prompt_error cells|raw-agreement"` → **GATE PASS**, `prompt_error cells: 0`.
 
 ### S1-5 held_out_v3 — cloud cascades and the ensemble
 
@@ -360,7 +382,7 @@ ids. Ollama and cloud arms report agreement only.
 
 Run this after S1-2/S1-3 and again after S1-5. No model runs, ~10 s:
 
-`conda activate D:\condaenvs	hesis2gpu ; python thesis2inal\s1_repro_check.py --split held_out_v3`
+`conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\s1_repro_check.py --split held_out_v3`
 
 It is the gate, not the in-runner line, because the in-runner check was broken:
 it printed **`0/0 identical` and PASSED** for flat_gpu, flat_cpu,
@@ -379,8 +401,9 @@ For `factorized_int4` and `rules_firewalled`, where the earlier run saved only
 totals, it compares the totals to four decimals: **0.6083** and **0.4470**.
 
 Verified 2026-09-26 on the files already written [Certain — run, GATE PASS]:
-all **14** arms with per-command saved predictions reproduce at **217/217
-identical**, and both totals-only arms match exactly. The predictions were
+all **17** arms with per-command saved predictions reproduce at **217/217
+identical** (14 on the first check, plus A8/A10/A12 once their standard files
+were emitted), and both totals-only arms match exactly. The predictions were
 right all along; only the check was broken.
 
 #### Completeness is parsed CSV rows, never a line count

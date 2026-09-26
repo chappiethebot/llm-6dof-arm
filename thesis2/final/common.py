@@ -475,6 +475,49 @@ def write_preds(arm, split, rows):
     return p
 
 
+def preds_from_percommand(arm, split, recs, text_col, ms_col, note="", outdir=None):
+    """Write pred_<arm>_<split>.csv from an A8/A10/A12 per-command record list.
+
+    Added 2026-09-26. a8_speculative.py, a10_prefix_cache.py and
+    a12_smalllm_drafter.py wrote only their own `*_percommand.csv`, so
+    s1_repro_check.py and Stage 2 -- which read pred_<arm>_<split>.csv -- showed
+    all three arms as NOT RUN YET even though the measurements existed. They now
+    emit the standard file as well, from the same records, so there is one format
+    for every arm and no second scoring path.
+
+    `recs` may be the in-memory record list or an iterable of CSV rows: the two
+    have the same keys. `text_col` is the arm's own output text (the VERIFIED
+    output, not the greedy baseline) and `ms_col` its per-command latency, so the
+    latency in the standard file is this arm's, measured on this run.
+    """
+    rows_in = load_split(split)
+    cmds = [r["command"] for r in rows_in]
+    truths = [truth_of(r) for r in rows_in]
+    out = []
+    for r in recs:
+        cid = int(r["command_id"])
+        raw_text = r.get(text_col) or ""
+        try:
+            obj = json.loads(raw_text)
+        except Exception:
+            obj = {}
+        if not isinstance(obj, dict):
+            obj = {}
+        try:
+            ms = float(r.get(ms_col) or 0.0)
+        except (TypeError, ValueError):
+            ms = 0.0
+        out.append(score_row(arm, split, cid, 0, r.get("command") or cmds[cid],
+                             raw_text, obj, truths[cid], ms, note=note))
+    out.sort(key=lambda x: int(x["command_id"]))
+    p = (Path(outdir) if outdir else OUT) / ("pred_%s_%s.csv" % (arm, split))
+    with p.open("w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=PRED_COLS, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(out)
+    return p, len(out)
+
+
 def read_preds(arm, split):
     p = pred_path(arm, split)
     if not p.exists():

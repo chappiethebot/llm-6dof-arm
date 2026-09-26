@@ -68,6 +68,14 @@ ap.add_argument("--split", default="held_out_v3",
 ap.add_argument("--limit", type=int, default=0,
                 help="use only the first N commands (smoke test)")
 ap.add_argument("--outdir", default=str(REPO / "thesis2" / "out" / "final"))
+# --- added 2026-09-26 -------------------------------------------------------
+# --emit-preds-only converts this arm's EXISTING per-command CSV into the
+# standard pred_<arm>_<split>.csv and exits. No model is loaded, nothing is
+# re-run: it is how the held_out_v3 file is produced from the measurement
+# that already exists.
+ap.add_argument("--emit-preds-only", dest="emit_preds_only", action="store_true",
+                help="write pred_<arm>_<split>.csv from the existing "
+                     "per-command CSV and exit; no model is loaded")
 args = ap.parse_args()
 OUT = Path(args.outdir)
 OUT.mkdir(parents=True, exist_ok=True)
@@ -75,6 +83,30 @@ DATA = REPO / "data" / ("%s.jsonl" % args.split)
 SPLIT = args.split
 TAG = "" if SPLIT == "held_out_v3" else ("_" + SPLIT)
 print("  split=%s  data=%s  outdir=%s" % (SPLIT, DATA.name, OUT))
+
+# --- added 2026-09-26: the standard pred_<arm>_<split>.csv -------------------
+# s1_repro_check.py and Stage 2 read pred_<arm>_<split>.csv. This script used to
+# write only its own per-command CSV, so the arm showed as NOT RUN YET. It now
+# writes both, through the ONE emitter every arm shares (common.py), with this
+# arm's own verified output and its own per-command latency.
+sys.path.insert(0, str(REPO / "thesis2" / "final"))
+import common as C                                                # noqa: E402
+PRED_ARM, PRED_TEXT, PRED_MS = "a10_speculative", "prefix_spec_text", "prefix_spec_ms"
+PERCOMMAND = OUT / ("a10_prefix_cache_percommand%s.csv" % TAG)
+if args.emit_preds_only:
+    if not PERCOMMAND.exists():
+        C.gate(False, ["%s does not exist -- nothing to convert; run this script "
+                       "without --emit-preds-only first" % PERCOMMAND])
+    _recs = list(csv.DictReader(open(PERCOMMAND, encoding="utf-8", newline="")))
+    _p, _n = C.preds_from_percommand(PRED_ARM, SPLIT, _recs, PRED_TEXT, PRED_MS,
+                                     note="from %s; no re-run" % PERCOMMAND.name,
+                                     outdir=OUT)
+    _n_cmd = len(C.load_split(SPLIT))
+    C.gate(_n == len(_recs) == (args.limit or _n_cmd), [
+        "--emit-preds-only: NO model loaded, nothing re-run",
+        "read %s (%d rows)" % (PERCOMMAND.name, len(_recs)),
+        "wrote %s (%d rows; text=%s, latency_ms=%s)" % (_p.name, _n, PRED_TEXT, PRED_MS),
+    ])
 
 
 def pct(xs, q):
@@ -471,6 +503,10 @@ p = OUT / ("a10_prefix_cache_percommand%s.csv" % TAG)
 with open(p, "w", newline="", encoding="utf-8") as fh:
     w = csv.DictWriter(fh, fieldnames=list(recs[0].keys()))
     w.writeheader(); w.writerows(recs)
+_pp, _pn = C.preds_from_percommand(PRED_ARM, SPLIT, recs, PRED_TEXT, PRED_MS,
+                                   outdir=OUT)
+print("wrote %s (%d rows, standard pred format, latency from %s)"
+      % (_pp, _pn, PRED_MS))
 (OUT / ("a10_prefix_cache_summary%s.json" % TAG)).write_text(json.dumps(dict(
     prefix_tokens=k, n_commands=len(m), warmup_prerun_not_excluded=N_WARMUP,
     byte_identical={lbl: sum(r[key] for r in m) for lbl, key in checks},
