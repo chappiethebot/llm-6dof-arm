@@ -81,6 +81,70 @@ def truth_of(row):
     return t
 
 
+# ------------------------------------------------- V5 exemplars and retrieval
+#
+# ONE definition of what a V5 cell feeds run_once as `examples`, used by
+# s1_run_v5_cells.py, s3_energy.py and s1_prompt_equality.py. It exists because
+# three separate call sites got it wrong in the same three ways (2026-09-26):
+#
+#   1. `load_seen_split(DEFAULT_K)` returns a TUPLE (exemplars, test_rows);
+#   2. its default seen_path is data/seen.jsonl -- the V1 file. V5 draws
+#      exemplars from V5's own DATASETS[split]["exemplars_from"];
+#   3. rag does not use the fixed pool at all: V5 retrieves PER COMMAND with
+#      llm.retrieve.Retriever (bench/run_cell.py:279-283).
+#
+# Nothing here restates a path or a k. Both come from bench/run_cell.py, so if
+# V5's table changes these follow it.
+
+_RETRIEVER = None
+
+
+def v5_retriever(quiet=True):
+    """The rag Retriever, built ONCE and reused across cells.
+
+    bench/run_cell.py: "Build it ONCE and reuse it across cells -- constructing
+    it per cell puts a 2-3 second model load and a corpus encode into every cell
+    for no reason."
+    """
+    global _RETRIEVER
+    if _RETRIEVER is None:
+        from llm.retrieve import Retriever        # lazy: pulls torch
+        _RETRIEVER = Retriever(quiet=quiet)
+    return _RETRIEVER
+
+
+def v5_pool(split, strategy, quiet=True):
+    """-> (rows, fewshot_examples, retriever) for one cell, V5's way.
+
+    `rows` comes from bench/run_cell._load_rows so the command list and the
+    exemplar path are V5's, not ours. `fewshot_examples` is the fixed pool and
+    is None for every strategy except few_shot, matching run_cell.py:244.
+    """
+    from bench.run_cell import _load_rows
+    from bench.dataset import DEFAULT_K
+    rows, exemplars = _load_rows(split, DEFAULT_K)
+    if strategy == "few_shot" and not exemplars:
+        # run_cell raises ValueError here; we fail the gate with the same meaning.
+        gate(False, ["few_shot requires seen exemplars and none were loaded for "
+                     "split %r (bench/run_cell.py raises ValueError here)" % split])
+    fewshot = exemplars if strategy == "few_shot" else None
+    retriever = v5_retriever(quiet=quiet) if strategy == "rag" else None
+    return rows, fewshot, retriever
+
+
+def v5_examples_for(command, strategy, fewshot, retriever):
+    """-> (examples, ret_latency_s, ret_ids_json, ret_scores_json) for ONE command.
+
+    Byte-for-byte the choice bench/run_cell.py:279-283 makes.
+    """
+    if strategy != "rag":
+        return fewshot, "", "", ""
+    from bench.dataset import DEFAULT_K
+    res = retriever.retrieve(command, k=DEFAULT_K, exclude_exact=True)
+    return (res.examples, res.latency_s, json.dumps(res.ids),
+            json.dumps([round(x, 4) for x in res.scores]))
+
+
 # ------------------------------------------------- rule 3: vocabulary guard
 HELD_OUT_ROW_WORDS = ("back", "front", "upper", "bottom", "top", "lower")
 
@@ -341,12 +405,49 @@ def pred_path(arm, split):
     return OUT / ("pred_%s_%s.csv" % (arm, split))
 
 
+def pred_rows_of(path):
+    """Parsed CSV rows of a prediction file. Never a line count.
+
+    Fixed 2026-09-26. The previous version of pred_is_complete counted PHYSICAL
+    LINES (`sum(1 for _ in open(...)) - 1`). A raw model output containing a
+    newline -- which every GRPO and every Ollama arm produces -- therefore
+    inflated the count: pred_grpo_base_held_out_v3.csv reported 986/217 rows and
+    was declared COMPLETE, when csv.DictReader gives exactly 217 rows. A line
+    count is never a row count for a file with quoted newlines in it.
+    """
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+def pred_census(arm, split, expected_rows, n_commands=None):
+    """-> (complete, n_rows, n_unique_cids, reason).
+
+    COMPLETE means EXACTLY expected_rows parsed CSV rows AND exactly
+    n_commands distinct command_ids. Anything else is not complete and the
+    reason says which of the two failed, so "complete" is never a line count
+    and never an inequality.
+    """
+    if n_commands is None:
+        n_commands = len(load_split(split))      # the split itself, not a literal
+    rows = pred_rows_of(pred_path(arm, split))
+    n = len(rows)
+    cids = {str(r.get("command_id", "")) for r in rows}
+    u = len(cids)
+    if not n:
+        return False, 0, 0, "file absent or empty"
+    if n != expected_rows:
+        return False, n, u, ("%d parsed rows, expected exactly %d" % (n, expected_rows))
+    if u != n_commands:
+        return False, n, u, ("%d distinct command_ids, expected exactly %d"
+                             % (u, n_commands))
+    return True, n, u, "exactly %d rows over %d command_ids" % (n, u)
+
+
 def pred_is_complete(arm, split, expected_rows):
-    p = pred_path(arm, split)
-    if not p.exists():
-        return False, 0
-    n = sum(1 for _ in p.open(encoding="utf-8", newline="")) - 1
-    return n >= expected_rows, max(n, 0)
+    complete, n, _u, _why = pred_census(arm, split, expected_rows)
+    return complete, n
 
 
 def score_row(arm, split, cid, rep, command, raw, obj, truth, latency_ms, note=""):

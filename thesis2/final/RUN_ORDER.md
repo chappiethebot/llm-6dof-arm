@@ -269,6 +269,45 @@ Cloud cells (5), env `thesis2gpu`:
 
 check: `python -c "import csv;print(sum(1 for _ in csv.DictReader(open('thesis2/out/final/results_v5cells_held_out_v3.csv',encoding='utf-8'))))"` → **12152**.
 
+`s1_check_v5cells.py` runs **automatically at the end of every**
+`s1_run_v5_cells.py` run and its exit code fails the runner's own gate. It GATE
+FAILs on any `prompt_error` row in any cell, on any cell with more empty-raw
+rows than V5 had for the same cell, and on held_out_v3 on any cell whose raw
+agreement with V5 is below **210/216**. To audit an existing file on its own:
+`conda activate D:\condaenvs	hesis2gpu ; python thesis2inal\s1_check_v5cells.py --split held_out_v3`
+
+#### S1-4b Re-run the 12 void cells (few_shot and rag)
+
+The first held_out_v3 local pass voided **12 of the 31 local cells** — the
+`few_shot` and `rag` cell of all six models — with 217/217 `prompt_error`
+rows and **no model call**. `s1_run_v5_cells.py` passed
+`load_seen_split(DEFAULT_K)` as `examples`, which returns a **tuple**, defaults
+to the **V1** seen file, and is not what `rag` uses at all. Fixed 2026-09-26:
+exemplars and retrieval now come from `bench/run_cell.py` itself through
+`common.v5_pool` / `common.v5_examples_for`, so the path, `k` and the
+per-command `rag` retrieval are V5's own. The 19 healthy cells were unaffected
+and reproduce V5 at **216/216** raw agreement.
+
+Prove the prompts first — no model calls, ~2 min:
+`conda activate D:\condaenvs	hesis2gpu ; python thesis2inal\s1_prompt_equality.py --split held_out_v3 --n 5`
+→ **few_shot 5/5 and rag 5/5 byte-identical** to `bench/run_cell.py`'s own
+builder. [Certain — run, GATE PASS]
+
+Then re-run only those 12 cells, env `thesis`, ~1 h [Guessing]:
+
+```powershell
+conda activate thesis ; $env:OLLAMA_MODELS="D:\LLM" ; python thesis2inal\s1_run_v5_cells.py --split held_out_v3 --replace-cells --cells "ollama:qwen2.5-3b-lora:few_shot,ollama:qwen2.5-3b-lora:rag,ollama:qwen2.5:3b:few_shot,ollama:qwen2.5:3b:rag,ollama:qwen2.5-0.5b-lora:few_shot,ollama:qwen2.5-0.5b-lora:rag,ollama:qwen2.5:0.5b:few_shot,ollama:qwen2.5:0.5b:rag,ollama:llama3.2:3b:few_shot,ollama:llama3.2:3b:rag,ollama:deepseek-r1:7b:few_shot,ollama:deepseek-r1:7b:rag"
+```
+
+`--replace-cells` deletes only those 12 cells' rows, logs every use to
+`thesis2/out/final/force_rerun_log.csv`, and **requires `--cells`**. It is
+**held_out_v3 only**: the v4c no-overwrite rule is unchanged, so on v4c each
+cell still runs exactly once and a complete file is never replaced. The run ends
+with the audit, which must report `prompt_error cells: 0` and every cell at or
+above 210/216.
+
+check: `Select-String thesis2\outinal\logs\s1_run_v5_cells_held_out_v3_*.log -Pattern "GATE|prompt_error cells|raw-agreement"` → **GATE PASS**, `prompt_error cells: 0`.
+
 ### S1-5 held_out_v3 — cloud cascades and the ensemble
 
 ```powershell
@@ -316,6 +355,49 @@ The check runs for **every** arm that has saved predictions — 20 of 30 on v3 a
 
 A deterministic local arm below 217/217 is a GATE FAIL that prints the differing
 ids. Ollama and cloud arms report agreement only.
+
+#### S1-5b The v3 reproducibility gate — `s1_repro_check.py`
+
+Run this after S1-2/S1-3 and again after S1-5. No model runs, ~10 s:
+
+`conda activate D:\condaenvs	hesis2gpu ; python thesis2inal\s1_repro_check.py --split held_out_v3`
+
+It is the gate, not the in-runner line, because the in-runner check was broken:
+it printed **`0/0 identical` and PASSED** for flat_gpu, flat_cpu,
+factorized_fp16, lora_greedy, rules_open, cascade_local_tauA,
+pipeline_always_local and cascade_oracle. The cause was the **join key**, not
+the data — `common.score_row` sets `command_id=cid`, an `int` from
+`enumerate()`, while `saved_predictions()` reads `str` keys from
+`csv.DictReader`, so `set(saved) & set(first)` was empty and `same ==
+len(shared)` was `0 == 0`. Both sides now key on `str(command_id)`, and
+**comparing zero commands is a GATE FAIL**, as is comparing fewer commands than
+the split has.
+
+The script prints one line per arm — `compared/217`, identical, differing
+command_ids — and first audits **every** `pred_*` file for completeness.
+For `factorized_int4` and `rules_firewalled`, where the earlier run saved only
+totals, it compares the totals to four decimals: **0.6083** and **0.4470**.
+
+Verified 2026-09-26 on the files already written [Certain — run, GATE PASS]:
+all **14** arms with per-command saved predictions reproduce at **217/217
+identical**, and both totals-only arms match exactly. The predictions were
+right all along; only the check was broken.
+
+#### Completeness is parsed CSV rows, never a line count
+
+`s1_run_arm.py` reported `pred_grpo_base_held_out_v3.csv already has 986/217
+rows -- COMPLETE`. `csv.DictReader` gives exactly 217 rows over 217 unique
+command_ids: `common.pred_is_complete` counted **physical lines**
+(`sum(1 for _ in open(...)) - 1`) and GRPO raw outputs contain newlines. This
+was not cosmetic — with 220 physical data lines for 217 rows, a **crashed
+grpo_base run would have been declared COMPLETE after only 46 of 217
+commands**, and gate 3 would have refused to resume it.
+
+`common.pred_census` now requires **exactly** `n × R` parsed CSV rows over
+**exactly** `n` distinct `command_ids`; anything else is GATE FAIL with the
+reason printed. Audited across all 24 existing v3 files: **0 fail**, and
+`pred_grpo_base_held_out_v3.csv` is the one file whose line count (986)
+differs from its row count (217). [Certain — run]
 
 ### S1-6 held_out_v4c — every arm, named explicitly
 

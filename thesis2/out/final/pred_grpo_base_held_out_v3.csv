@@ -1,0 +1,987 @@
+arm,split,command_id,repeat,command,raw,pred_json,truth_json,correct,verb_correct,target_correct,location_correct,row_correct,col_correct,latency_ms,note
+grpo_base,held_out_v3,0,0,put the bottle in the upper left corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_A1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,True,True,True,True,1309.966,{}
+grpo_base,held_out_v3,1,0,put the car in the upper left corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_A1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,True,True,True,True,886.798,{}
+grpo_base,held_out_v3,2,0,put the rubiks cube in the upper left corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_A1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,True,True,True,True,914.081,{}
+grpo_base,held_out_v3,3,0,can you please keep the bottle in the upper left corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_A1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,True,True,True,True,882.474,{}
+grpo_base,held_out_v3,4,0,can you please keep the car in the upper left corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_A1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,True,True,True,True,881.97,{}
+grpo_base,held_out_v3,5,0,can you please keep the rubiks cube in the upper left corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_A1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,True,True,True,True,913.339,{}
+grpo_base,held_out_v3,6,0,pick up the bottle and keep in the upper left corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_A1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,True,True,True,True,883.18,{}
+grpo_base,held_out_v3,7,0,pick up the car and keep in the upper left corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_A1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,True,True,True,True,902.061,{}
+grpo_base,held_out_v3,8,0,pick up the rubiks cube and keep in the upper left corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_A1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,True,True,True,True,912.778,{}
+grpo_base,held_out_v3,9,0,move to the upper left corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A1""
+}","{""action"": ""move_to"", ""location"": ""grid_A1""}","{""action"": ""move_to"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,,True,True,True,650.716,{}
+grpo_base,held_out_v3,10,0,go to the upper left corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A1""
+}","{""action"": ""move_to"", ""location"": ""grid_A1""}","{""action"": ""move_to"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,,True,True,True,647.243,{}
+grpo_base,held_out_v3,11,0,navigate to the upper left corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_A1""
+}","{""action"": ""move_to"", ""location"": ""grid_A1""}","{""action"": ""move_to"", ""location"": ""grid_A1"", ""modifiers"": []}",True,True,,True,True,True,650.001,{}
+grpo_base,held_out_v3,12,0,put the bottle in the upper side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,True,False,False,False,883.672,{}
+grpo_base,held_out_v3,13,0,put the car in the upper side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,True,False,False,False,886.457,{}
+grpo_base,held_out_v3,14,0,put the rubiks cube in the upper side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,True,False,False,False,913.628,{}
+grpo_base,held_out_v3,15,0,can you please keep the bottle in the upper side middle edge of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,True,False,False,False,886.526,{}
+grpo_base,held_out_v3,16,0,can you please keep the car in the upper side middle edge of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,True,False,False,False,885.87,{}
+grpo_base,held_out_v3,17,0,can you please keep the rubiks cube in the upper side middle edge of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,True,False,False,False,915.114,{}
+grpo_base,held_out_v3,18,0,pick up the bottle and keep in the upper side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,True,False,False,True,883.425,{}
+grpo_base,held_out_v3,19,0,pick up the car and keep in the upper side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,True,False,False,True,883.727,{}
+grpo_base,held_out_v3,20,0,pick up the rubiks cube and keep in the upper side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,True,False,False,True,913.268,{}
+grpo_base,held_out_v3,21,0,move to the upper side middle edge of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B1""
+}","{""action"": ""move_to"", ""location"": ""grid_B1""}","{""action"": ""move_to"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,,False,False,False,647.902,{}
+grpo_base,held_out_v3,22,0,go to the upper side middle edge of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B1""
+}","{""action"": ""move_to"", ""location"": ""grid_B1""}","{""action"": ""move_to"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,,False,False,False,646.579,{}
+grpo_base,held_out_v3,23,0,navigate to the upper side middle edge of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B1""
+}","{""action"": ""move_to"", ""location"": ""grid_B1""}","{""action"": ""move_to"", ""location"": ""grid_A2"", ""modifiers"": []}",False,True,,False,False,False,648.319,{}
+grpo_base,held_out_v3,24,0,put the bottle in the upper right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,True,False,False,True,884.435,{}
+grpo_base,held_out_v3,25,0,put the car in the upper right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,True,False,False,True,888.987,{}
+grpo_base,held_out_v3,26,0,put the rubiks cube in the upper right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,True,False,False,True,912.848,{}
+grpo_base,held_out_v3,27,0,can you please keep the bottle in the upper right side corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,True,False,False,True,883.061,{}
+grpo_base,held_out_v3,28,0,can you please keep the car in the upper right side corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,True,False,False,True,883.122,{}
+grpo_base,held_out_v3,29,0,can you please keep the rubiks cube in the upper right side corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,True,False,False,True,913.021,{}
+grpo_base,held_out_v3,30,0,pick up the bottle and keep in the upper right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,True,False,False,True,883.417,{}
+grpo_base,held_out_v3,31,0,pick up the car and keep in the upper right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,True,False,False,True,883.093,{}
+grpo_base,held_out_v3,32,0,pick up the rubiks cube and keep in the upper right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,True,False,False,True,912.588,{}
+grpo_base,held_out_v3,33,0,move to the upper right side corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C3""
+}","{""action"": ""move_to"", ""location"": ""grid_C3""}","{""action"": ""move_to"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,,False,False,True,648.785,{}
+grpo_base,held_out_v3,34,0,go to the upper right side corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C3""
+}","{""action"": ""move_to"", ""location"": ""grid_C3""}","{""action"": ""move_to"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,,False,False,True,648.895,{}
+grpo_base,held_out_v3,35,0,navigate to the upper right side corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C3""
+}","{""action"": ""move_to"", ""location"": ""grid_C3""}","{""action"": ""move_to"", ""location"": ""grid_A3"", ""modifiers"": []}",False,True,,False,False,True,650.047,{}
+grpo_base,held_out_v3,36,0,put the bottle in the left side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,True,True,True,True,885.987,{}
+grpo_base,held_out_v3,37,0,put the car in the left side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,True,True,True,True,884.728,{}
+grpo_base,held_out_v3,38,0,put the rubiks cube in the left side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,True,True,True,True,913.121,{}
+grpo_base,held_out_v3,39,0,can you please keep the bottle in the left side edge from the table center?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,True,True,True,True,881.7,{}
+grpo_base,held_out_v3,40,0,can you please keep the car in the left side edge from the table center?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,True,True,True,True,882.085,{}
+grpo_base,held_out_v3,41,0,can you please keep the rubiks cube in the left side edge from the table center?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,True,True,True,True,913.802,{}
+grpo_base,held_out_v3,42,0,pick up the bottle and keep in the left side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,True,True,True,True,882.889,{}
+grpo_base,held_out_v3,43,0,pick up the car and keep in the left side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,True,True,True,True,885.177,{}
+grpo_base,held_out_v3,44,0,pick up the rubiks cube and keep in the left side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,True,True,True,True,912.816,{}
+grpo_base,held_out_v3,45,0,move to the left side edge from the table center,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B1""
+}","{""action"": ""move_to"", ""location"": ""grid_B1""}","{""action"": ""move_to"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,,True,True,True,648.097,{}
+grpo_base,held_out_v3,46,0,go to the left side edge from the table center,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B1""
+}","{""action"": ""move_to"", ""location"": ""grid_B1""}","{""action"": ""move_to"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,,True,True,True,646.062,{}
+grpo_base,held_out_v3,47,0,navigate to the left side edge from the table center,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B1""
+}","{""action"": ""move_to"", ""location"": ""grid_B1""}","{""action"": ""move_to"", ""location"": ""grid_B1"", ""modifiers"": []}",True,True,,True,True,True,648.153,{}
+grpo_base,held_out_v3,48,0,put the bottle in the middle of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,True,True,True,True,882.705,{}
+grpo_base,held_out_v3,49,0,put the car in the middle of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,True,True,True,True,884.402,{}
+grpo_base,held_out_v3,50,0,put the rubiks cube in the middle of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,True,True,True,True,913.721,{}
+grpo_base,held_out_v3,51,0,can you please keep the bottle in the middle of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,True,True,True,True,884.194,{}
+grpo_base,held_out_v3,52,0,can you please keep the car in the middle of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,True,True,True,True,884.451,{}
+grpo_base,held_out_v3,53,0,can you please keep the rubiks cube in the middle of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,True,True,True,True,914.07,{}
+grpo_base,held_out_v3,54,0,pick up the bottle and keep in the middle of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,True,True,True,True,886.116,{}
+grpo_base,held_out_v3,55,0,pick up the car and keep in the middle of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,True,True,True,True,882.304,{}
+grpo_base,held_out_v3,56,0,pick up the rubiks cube and keep in the middle of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B2""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B2""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,True,True,True,True,912.265,{}
+grpo_base,held_out_v3,57,0,move to the middle of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B2""
+}","{""action"": ""move_to"", ""location"": ""grid_B2""}","{""action"": ""move_to"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,,True,True,True,647.016,{}
+grpo_base,held_out_v3,58,0,go to the middle of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B2""
+}","{""action"": ""move_to"", ""location"": ""grid_B2""}","{""action"": ""move_to"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,,True,True,True,646.3,{}
+grpo_base,held_out_v3,59,0,navigate to the middle of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B2""
+}","{""action"": ""move_to"", ""location"": ""grid_B2""}","{""action"": ""move_to"", ""location"": ""grid_B2"", ""modifiers"": []}",True,True,,True,True,True,647.323,{}
+grpo_base,held_out_v3,60,0,put the bottle in the right side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B3"", ""modifiers"": []}",True,True,True,True,True,True,883.913,{}
+grpo_base,held_out_v3,61,0,put the car in the right side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B3"", ""modifiers"": []}",True,True,True,True,True,True,883.893,{}
+grpo_base,held_out_v3,62,0,put the rubiks cube in the right side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B3"", ""modifiers"": []}",True,True,True,True,True,True,913.836,{}
+grpo_base,held_out_v3,63,0,can you please keep the bottle in the right side edge from the table center?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B3"", ""modifiers"": []}",True,True,True,True,True,True,894.099,{}
+grpo_base,held_out_v3,64,0,can you please keep the car in the right side edge from the table center?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B3"", ""modifiers"": []}",True,True,True,True,True,True,883.688,{}
+grpo_base,held_out_v3,65,0,can you please keep the rubiks cube in the right side edge from the table center?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B3"", ""modifiers"": []}",True,True,True,True,True,True,912.371,{}
+grpo_base,held_out_v3,66,0,pick up the bottle and keep in the right side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B3"", ""modifiers"": []}",True,True,True,True,True,True,881.855,{}
+grpo_base,held_out_v3,67,0,pick up the car and keep in the right side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B3"", ""modifiers"": []}",True,True,True,True,True,True,881.365,{}
+grpo_base,held_out_v3,68,0,pick up the rubiks cube and keep in the right side edge from the table center,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B3"", ""modifiers"": []}",True,True,True,True,True,True,913.373,{}
+grpo_base,held_out_v3,69,0,move to the right side edge from the table center,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B1""
+}","{""action"": ""move_to"", ""location"": ""grid_B1""}","{""action"": ""move_to"", ""location"": ""grid_B3"", ""modifiers"": []}",False,True,,False,True,False,645.708,{}
+grpo_base,held_out_v3,70,0,go to the right side edge from the table center,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B3""
+}","{""action"": ""move_to"", ""location"": ""grid_B3""}","{""action"": ""move_to"", ""location"": ""grid_B3"", ""modifiers"": []}",True,True,,True,True,True,645.95,{}
+grpo_base,held_out_v3,71,0,navigate to the right side edge from the table center,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_B3""
+}","{""action"": ""move_to"", ""location"": ""grid_B3""}","{""action"": ""move_to"", ""location"": ""grid_B3"", ""modifiers"": []}",True,True,,True,True,True,646.604,{}
+grpo_base,held_out_v3,72,0,put the bottle in the bottom left side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_A1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_A1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C1"", ""modifiers"": []}",False,True,True,False,False,True,882.485,{}
+grpo_base,held_out_v3,73,0,put the car in the bottom left side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_C1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C1"", ""modifiers"": []}",True,True,True,True,True,True,882.102,{}
+grpo_base,held_out_v3,74,0,put the rubiks cube in the bottom left side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_C1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C1"", ""modifiers"": []}",True,True,True,True,True,True,911.618,{}
+grpo_base,held_out_v3,75,0,can you please keep the bottle in the bottom left side corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_C1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C1"", ""modifiers"": []}",True,True,True,True,True,True,881.403,{}
+grpo_base,held_out_v3,76,0,can you please keep the car in the bottom left side corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_C1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C1"", ""modifiers"": []}",True,True,True,True,True,True,882.351,{}
+grpo_base,held_out_v3,77,0,can you please keep the rubiks cube in the bottom left side corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_C1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C1"", ""modifiers"": []}",True,True,True,True,True,True,912.374,{}
+grpo_base,held_out_v3,78,0,pick up the bottle and keep in the bottom left side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_C1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C1"", ""modifiers"": []}",True,True,True,True,True,True,885.736,{}
+grpo_base,held_out_v3,79,0,pick up the car and keep in the bottom left side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_C1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C1"", ""modifiers"": []}",True,True,True,True,True,True,882.901,{}
+grpo_base,held_out_v3,80,0,pick up the rubiks cube and keep in the bottom left side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_C1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C1"", ""modifiers"": []}",True,True,True,True,True,True,912.506,{}
+grpo_base,held_out_v3,81,0,move to the bottom left side corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C1""
+}","{""action"": ""move_to"", ""location"": ""grid_C1""}","{""action"": ""move_to"", ""location"": ""grid_C1"", ""modifiers"": []}",True,True,,True,True,True,646.792,{}
+grpo_base,held_out_v3,82,0,go to the bottom left side corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C1""
+}","{""action"": ""move_to"", ""location"": ""grid_C1""}","{""action"": ""move_to"", ""location"": ""grid_C1"", ""modifiers"": []}",True,True,,True,True,True,644.97,{}
+grpo_base,held_out_v3,83,0,navigate to the bottom left side corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C1""
+}","{""action"": ""move_to"", ""location"": ""grid_C1""}","{""action"": ""move_to"", ""location"": ""grid_C1"", ""modifiers"": []}",True,True,,True,True,True,649.674,{}
+grpo_base,held_out_v3,84,0,put the bottle in the bottom side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C2"", ""modifiers"": []}",False,True,True,False,False,False,882.837,{}
+grpo_base,held_out_v3,85,0,put the car in the bottom side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C2"", ""modifiers"": []}",False,True,True,False,False,False,883.541,{}
+grpo_base,held_out_v3,86,0,put the rubiks cube in the bottom side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C2"", ""modifiers"": []}",False,True,True,False,False,False,912.633,{}
+grpo_base,held_out_v3,87,0,can you please keep the bottle in the bottom side middle edge of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_C2""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C2"", ""modifiers"": []}",True,True,True,True,True,True,881.651,{}
+grpo_base,held_out_v3,88,0,can you please keep the car in the bottom side middle edge of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_C2""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C2"", ""modifiers"": []}",True,True,True,True,True,True,881.36,{}
+grpo_base,held_out_v3,89,0,can you please keep the rubiks cube in the bottom side middle edge of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C2"", ""modifiers"": []}",False,True,True,False,False,False,912.582,{}
+grpo_base,held_out_v3,90,0,pick up the bottle and keep in the bottom side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_C2""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C2"", ""modifiers"": []}",True,True,True,True,True,True,882.64,{}
+grpo_base,held_out_v3,91,0,pick up the car and keep in the bottom side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_C2""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C2"", ""modifiers"": []}",True,True,True,True,True,True,883.825,{}
+grpo_base,held_out_v3,92,0,pick up the rubiks cube and keep in the bottom side middle edge of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_B3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_B3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C2"", ""modifiers"": []}",False,True,True,False,False,False,912.436,{}
+grpo_base,held_out_v3,93,0,move to the bottom side middle edge of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C2""
+}","{""action"": ""move_to"", ""location"": ""grid_C2""}","{""action"": ""move_to"", ""location"": ""grid_C2"", ""modifiers"": []}",True,True,,True,True,True,646.992,{}
+grpo_base,held_out_v3,94,0,go to the bottom side middle edge of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C2""
+}","{""action"": ""move_to"", ""location"": ""grid_C2""}","{""action"": ""move_to"", ""location"": ""grid_C2"", ""modifiers"": []}",True,True,,True,True,True,647.475,{}
+grpo_base,held_out_v3,95,0,navigate to the bottom side middle edge of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C2""
+}","{""action"": ""move_to"", ""location"": ""grid_C2""}","{""action"": ""move_to"", ""location"": ""grid_C2"", ""modifiers"": []}",True,True,,True,True,True,649.045,{}
+grpo_base,held_out_v3,96,0,put the bottle in the bottom right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,True,True,True,True,884.192,{}
+grpo_base,held_out_v3,97,0,put the car in the bottom right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,True,True,True,True,887.18,{}
+grpo_base,held_out_v3,98,0,put the rubiks cube in the bottom right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,True,True,True,True,914.7,{}
+grpo_base,held_out_v3,99,0,can you please keep the bottle in the bottom right side corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,True,True,True,True,881.46,{}
+grpo_base,held_out_v3,100,0,can you please keep the car in the bottom right side corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,True,True,True,True,884.567,{}
+grpo_base,held_out_v3,101,0,can you please keep the rubiks cube in the bottom right side corner of the table?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,True,True,True,True,911.484,{}
+grpo_base,held_out_v3,102,0,pick up the bottle and keep in the bottom right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,True,True,True,True,882.968,{}
+grpo_base,held_out_v3,103,0,pick up the car and keep in the bottom right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,True,True,True,True,881.74,{}
+grpo_base,held_out_v3,104,0,pick up the rubiks cube and keep in the bottom right side corner of the table,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_C3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,True,True,True,True,912.13,{}
+grpo_base,held_out_v3,105,0,move to the bottom right side corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C3""
+}","{""action"": ""move_to"", ""location"": ""grid_C3""}","{""action"": ""move_to"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,,True,True,True,647.224,{}
+grpo_base,held_out_v3,106,0,go to the bottom right side corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C3""
+}","{""action"": ""move_to"", ""location"": ""grid_C3""}","{""action"": ""move_to"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,,True,True,True,646.915,{}
+grpo_base,held_out_v3,107,0,navigate to the bottom right side corner of the table,"{
+  ""action"": ""move_to"",
+  ""location"": ""grid_C3""
+}","{""action"": ""move_to"", ""location"": ""grid_C3""}","{""action"": ""move_to"", ""location"": ""grid_C3"", ""modifiers"": []}",True,True,,True,True,True,647.605,{}
+grpo_base,held_out_v3,108,0,put the bottle in the maximum distance you can reach,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""max_reach""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""max_reach""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,True,True,,,883.158,{}
+grpo_base,held_out_v3,109,0,put the car in the maximum distance you can reach,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""max_reach""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""max_reach""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,True,True,,,881.645,{}
+grpo_base,held_out_v3,110,0,put the rubiks cube in the maximum distance you can reach,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""max_reach""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""max_reach""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,True,True,,,911.538,{}
+grpo_base,held_out_v3,111,0,can you please keep the bottle in the maximum distance you can reach?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""max_reach""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""max_reach""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,True,True,,,882.911,{}
+grpo_base,held_out_v3,112,0,can you please keep the car in the maximum distance you can reach?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""max_reach""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""max_reach""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,True,True,,,883.559,{}
+grpo_base,held_out_v3,113,0,can you please keep the rubiks cube in the maximum distance you can reach?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""max_reach""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""max_reach""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,True,True,,,911.624,{}
+grpo_base,held_out_v3,114,0,pick up the bottle and keep in the maximum distance you can reach,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""max_reach""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""max_reach""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,True,True,,,883.434,{}
+grpo_base,held_out_v3,115,0,pick up the car and keep in the maximum distance you can reach,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""max_reach""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""max_reach""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,True,True,,,882.246,{}
+grpo_base,held_out_v3,116,0,pick up the rubiks cube and keep in the maximum distance you can reach,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""max_reach""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""max_reach""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,True,True,,,912.719,{}
+grpo_base,held_out_v3,117,0,move to the maximum distance you can reach,"{
+  ""action"": ""move_to"",
+  ""location"": ""max_reach""
+}","{""action"": ""move_to"", ""location"": ""max_reach""}","{""action"": ""move_to"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,,True,,,647.265,{}
+grpo_base,held_out_v3,118,0,go to the maximum distance you can reach,"{
+  ""action"": ""move_to"",
+  ""location"": ""max_reach""
+}","{""action"": ""move_to"", ""location"": ""max_reach""}","{""action"": ""move_to"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,,True,,,647.374,{}
+grpo_base,held_out_v3,119,0,navigate to the maximum distance you can reach,"{
+  ""action"": ""move_to"",
+  ""location"": ""max_reach""
+}","{""action"": ""move_to"", ""location"": ""max_reach""}","{""action"": ""move_to"", ""location"": ""max_reach"", ""modifiers"": []}",True,True,,True,,,712.819,{}
+grpo_base,held_out_v3,120,0,put the bottle in anywhere you want,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""nearest_free_cell""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,True,True,,,887.193,{}
+grpo_base,held_out_v3,121,0,put the car in anywhere you want,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""nearest_free_cell""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,True,True,,,882.343,{}
+grpo_base,held_out_v3,122,0,put the rubiks cube in anywhere you want,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""nearest_free_cell""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,True,True,,,912.318,{}
+grpo_base,held_out_v3,123,0,can you please keep the bottle in anywhere you want?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""nearest_free_cell""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,True,True,,,883.762,{}
+grpo_base,held_out_v3,124,0,can you please keep the car in anywhere you want?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""nearest_free_cell""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,True,True,,,882.632,{}
+grpo_base,held_out_v3,125,0,can you please keep the rubiks cube in anywhere you want?,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""nearest_free_cell""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,True,True,,,911.528,{}
+grpo_base,held_out_v3,126,0,pick up the bottle and keep in anywhere you want,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""nearest_free_cell""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,True,True,,,882.883,{}
+grpo_base,held_out_v3,127,0,pick up the car and keep in anywhere you want,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""nearest_free_cell""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,True,True,,,881.636,{}
+grpo_base,held_out_v3,128,0,pick up the rubiks cube and keep in anywhere you want,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""nearest_free_cell""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,True,True,,,912.513,{}
+grpo_base,held_out_v3,129,0,move to anywhere you want,"{
+  ""action"": ""move_to"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""move_to"", ""location"": ""nearest_free_cell""}","{""action"": ""move_to"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,,True,,,645.417,{}
+grpo_base,held_out_v3,130,0,go to anywhere you want,"{
+  ""action"": ""move_to"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""move_to"", ""location"": ""nearest_free_cell""}","{""action"": ""move_to"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,,True,,,645.673,{}
+grpo_base,held_out_v3,131,0,navigate to anywhere you want,"{
+  ""action"": ""move_to"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""move_to"", ""location"": ""nearest_free_cell""}","{""action"": ""move_to"", ""location"": ""nearest_free_cell"", ""modifiers"": []}",True,True,,True,,,646.941,{}
+grpo_base,held_out_v3,132,0,transport the bottle to my location,"{
+  ""action"": ""fetch"",
+  ""target"": ""bottle""
+}","{""action"": ""fetch"", ""target"": ""bottle""}","{""action"": ""fetch"", ""target"": ""bottle"", ""modifiers"": []}",True,True,True,,,,588.842,{}
+grpo_base,held_out_v3,133,0,escort the toy car over to me,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""grid_A3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""grid_A3""}","{""action"": ""fetch"", ""target"": ""toy_car"", ""modifiers"": []}",False,False,True,,,,882.559,{}
+grpo_base,held_out_v3,134,0,deliver the rubiks cube here,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""nearest_free_cell""}","{""action"": ""fetch"", ""target"": ""rubiks_cube"", ""modifiers"": []}",False,False,True,,,,912.082,{}
+grpo_base,held_out_v3,135,0,"i require the bottle, please fetch it","{
+  ""action"": ""fetch"",
+  ""target"": ""bottle""
+}","{""action"": ""fetch"", ""target"": ""bottle""}","{""action"": ""fetch"", ""target"": ""bottle"", ""modifiers"": []}",True,True,True,,,,588.292,{}
+grpo_base,held_out_v3,136,0,would you mind bringing the toy car over,"{
+  ""action"": ""fetch"",
+  ""target"": ""toy_car""
+}","{""action"": ""fetch"", ""target"": ""toy_car""}","{""action"": ""fetch"", ""target"": ""toy_car"", ""modifiers"": []}",True,True,True,,,,587.881,{}
+grpo_base,held_out_v3,137,0,locate the rubiks cube and return it to me,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""grid_A3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""grid_A3""}","{""action"": ""fetch"", ""target"": ""rubiks_cube"", ""modifiers"": []}",False,False,True,,,,912.317,{}
+grpo_base,held_out_v3,138,0,secure the bottle and bring it back,"{
+  ""action"": ""fetch"",
+  ""target"": ""bottle""
+}","{""action"": ""fetch"", ""target"": ""bottle""}","{""action"": ""fetch"", ""target"": ""bottle"", ""modifiers"": []}",True,True,True,,,,588.935,{}
+grpo_base,held_out_v3,139,0,transfer the toy car to me,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""nearest_free_cell""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""nearest_free_cell""}","{""action"": ""fetch"", ""target"": ""toy_car"", ""modifiers"": []}",False,False,True,,,,882.596,{}
+grpo_base,held_out_v3,140,0,fetch the rubiks cube from wherever it is,"{
+  ""action"": ""fetch"",
+  ""target"": ""rubiks_cube""
+}","{""action"": ""fetch"", ""target"": ""rubiks_cube""}","{""action"": ""fetch"", ""target"": ""rubiks_cube"", ""modifiers"": []}",True,True,True,,,,617.28,{}
+grpo_base,held_out_v3,141,0,support the weight of the bottle,"{
+  ""action"": ""reject""
+}","{""action"": ""reject""}","{""action"": ""hold"", ""target"": ""bottle"", ""modifiers"": []}",False,False,False,,,,351.315,{}
+grpo_base,held_out_v3,142,0,maintain a grip on the rubiks cube,"{
+  ""action"": ""hold"",
+  ""target"": ""rubiks_cube""
+}","{""action"": ""hold"", ""target"": ""rubiks_cube""}","{""action"": ""hold"", ""target"": ""rubiks_cube"", ""modifiers"": []}",True,True,True,,,,616.286,{}
+grpo_base,held_out_v3,143,0,keep the bottle elevated in your gripper,"{
+  ""action"": ""hold"",
+  ""target"": ""bottle""
+}","{""action"": ""hold"", ""target"": ""bottle""}","{""action"": ""hold"", ""target"": ""bottle"", ""modifiers"": []}",True,True,True,,,,588.388,{}
+grpo_base,held_out_v3,144,0,suspend the toy car in the air,"{
+  ""action"": ""hold"",
+  ""target"": ""toy_car""
+}","{""action"": ""hold"", ""target"": ""toy_car""}","{""action"": ""hold"", ""target"": ""toy_car"", ""modifiers"": []}",True,True,True,,,,587.781,{}
+grpo_base,held_out_v3,145,0,retain possession of the rubiks cube,"{
+  ""action"": ""hold"",
+  ""target"": ""rubiks_cube""
+}","{""action"": ""hold"", ""target"": ""rubiks_cube""}","{""action"": ""hold"", ""target"": ""rubiks_cube"", ""modifiers"": []}",True,True,True,,,,616.177,{}
+grpo_base,held_out_v3,146,0,latch onto the bottle,"{
+  ""action"": ""hold"",
+  ""target"": ""bottle""
+}","{""action"": ""hold"", ""target"": ""bottle""}","{""action"": ""hold"", ""target"": ""bottle"", ""modifiers"": []}",True,True,True,,,,587.357,{}
+grpo_base,held_out_v3,147,0,secure a firm hold on the toy car,"{
+  ""action"": ""hold"",
+  ""target"": ""toy_car""
+}","{""action"": ""hold"", ""target"": ""toy_car""}","{""action"": ""hold"", ""target"": ""toy_car"", ""modifiers"": []}",True,True,True,,,,588.4,{}
+grpo_base,held_out_v3,148,0,do not let go of the rubiks cube,"{
+  ""action"": ""hold"",
+  ""target"": ""rubiks_cube""
+}","{""action"": ""hold"", ""target"": ""rubiks_cube""}","{""action"": ""hold"", ""target"": ""rubiks_cube"", ""modifiers"": []}",True,True,True,,,,617.963,{}
+grpo_base,held_out_v3,149,0,run a visual diagnostic on the rubiks cube,"{
+  ""action"": ""inspect"",
+  ""target"": ""rubiks_cube""
+}","{""action"": ""inspect"", ""target"": ""rubiks_cube""}","{""action"": ""inspect"", ""target"": ""rubiks_cube"", ""modifiers"": []}",True,True,True,,,,617.087,{}
+grpo_base,held_out_v3,150,0,verify the physical condition of the bottle,"{
+  ""action"": ""inspect"",
+  ""target"": ""bottle""
+}","{""action"": ""inspect"", ""target"": ""bottle""}","{""action"": ""inspect"", ""target"": ""bottle"", ""modifiers"": []}",True,True,True,,,,588.223,{}
+grpo_base,held_out_v3,151,0,scrutinize the toy car carefully,"{
+  ""action"": ""inspect"",
+  ""target"": ""toy_car""
+}","{""action"": ""inspect"", ""target"": ""toy_car""}","{""action"": ""inspect"", ""target"": ""toy_car"", ""modifiers"": []}",True,True,True,,,,587.247,{}
+grpo_base,held_out_v3,152,0,perform an inspection of the bottle,"{
+  ""action"": ""inspect"",
+  ""target"": ""bottle""
+}","{""action"": ""inspect"", ""target"": ""bottle""}","{""action"": ""inspect"", ""target"": ""bottle"", ""modifiers"": []}",True,True,True,,,,587.644,{}
+grpo_base,held_out_v3,153,0,assess the rubiks cube visually,"{
+  ""action"": ""inspect"",
+  ""target"": ""rubiks_cube""
+}","{""action"": ""inspect"", ""target"": ""rubiks_cube""}","{""action"": ""inspect"", ""target"": ""rubiks_cube"", ""modifiers"": []}",True,True,True,,,,618.363,{}
+grpo_base,held_out_v3,154,0,give the toy car a thorough look over,"{
+  ""action"": ""inspect"",
+  ""target"": ""toy_car""
+}","{""action"": ""inspect"", ""target"": ""toy_car""}","{""action"": ""inspect"", ""target"": ""toy_car"", ""modifiers"": []}",True,True,True,,,,588.19,{}
+grpo_base,held_out_v3,155,0,study the surface details of the bottle,"{
+  ""action"": ""inspect"",
+  ""target"": ""bottle""
+}","{""action"": ""inspect"", ""target"": ""bottle""}","{""action"": ""inspect"", ""target"": ""bottle"", ""modifiers"": []}",True,True,True,,,,588.242,{}
+grpo_base,held_out_v3,156,0,investigate the rubiks cube for damage,"{
+  ""action"": ""inspect"",
+  ""target"": ""rubiks_cube""
+}","{""action"": ""inspect"", ""target"": ""rubiks_cube""}","{""action"": ""inspect"", ""target"": ""rubiks_cube"", ""modifiers"": []}",True,True,True,,,,617.852,{}
+grpo_base,held_out_v3,157,0,observe the toy car from all angles,"{
+  ""action"": ""inspect"",
+  ""target"": ""toy_car""
+}","{""action"": ""inspect"", ""target"": ""toy_car""}","{""action"": ""inspect"", ""target"": ""toy_car"", ""modifiers"": []}",True,True,True,,,,611.239,{}
+grpo_base,held_out_v3,158,0,conduct a visual sweep of the bottle,"{
+  ""action"": ""inspect"",
+  ""target"": ""bottle""
+}","{""action"": ""inspect"", ""target"": ""bottle""}","{""action"": ""inspect"", ""target"": ""bottle"", ""modifiers"": []}",True,True,True,,,,590.36,{}
+grpo_base,held_out_v3,159,0,hit the emergency brakes,"{
+  ""action"": ""stop""
+}","{""action"": ""stop""}","{""action"": ""stop"", ""modifiers"": []}",True,True,,,,,351.691,{}
+grpo_base,held_out_v3,160,0,suspend all ongoing activities,"{
+  ""action"": ""stop""
+}","{""action"": ""stop""}","{""action"": ""stop"", ""modifiers"": []}",True,True,,,,,352.75,{}
+grpo_base,held_out_v3,161,0,kill the current command sequence,"{
+  ""action"": ""stop""
+}","{""action"": ""stop""}","{""action"": ""stop"", ""modifiers"": []}",True,True,,,,,350.693,{}
+grpo_base,held_out_v3,162,0,deactivate all movement,"{
+  ""action"": ""stop""
+}","{""action"": ""stop""}","{""action"": ""stop"", ""modifiers"": []}",True,True,,,,,351.481,{}
+grpo_base,held_out_v3,163,0,bring yourself to a complete standstill,"{
+  ""action"": ""stop""
+}","{""action"": ""stop""}","{""action"": ""stop"", ""modifiers"": []}",True,True,,,,,352.134,{}
+grpo_base,held_out_v3,164,0,disengage all motors immediately,"{
+  ""action"": ""stop""
+}","{""action"": ""stop""}","{""action"": ""stop"", ""modifiers"": []}",True,True,,,,,350.756,{}
+grpo_base,held_out_v3,165,0,pull the emergency shutoff,"{
+  ""action"": ""reject""
+}","{""action"": ""reject""}","{""action"": ""stop"", ""modifiers"": []}",False,False,,,,,351.251,{}
+grpo_base,held_out_v3,166,0,unscrew the chassis of the robot,"{
+  ""action"": ""reject""
+}","{""action"": ""reject""}","{""action"": ""reject"", ""modifiers"": []}",True,True,,,,,351.67,{}
+grpo_base,held_out_v3,167,0,teleport the bottle to the kitchen counter,"{
+  ""action"": ""reject""
+}","{""action"": ""reject""}","{""action"": ""reject"", ""modifiers"": []}",True,True,,,,,351.733,{}
+grpo_base,held_out_v3,168,0,do a backflip off the edge of the table,"{
+  ""action"": ""reject""
+}","{""action"": ""reject""}","{""action"": ""reject"", ""modifiers"": []}",True,True,,,,,351.634,{}
+grpo_base,held_out_v3,169,0,take the bottle to the adjacent room,"{
+  ""action"": ""fetch"",
+  ""target"": ""bottle""
+}","{""action"": ""fetch"", ""target"": ""bottle""}","{""action"": ""reject"", ""modifiers"": []}",False,False,,,,,587.823,{}
+grpo_base,held_out_v3,170,0,drop the toy car into the trash can,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""trash_can""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""trash_can""}","{""action"": ""reject"", ""modifiers"": []}",False,False,,,,,852.303,{}
+grpo_base,held_out_v3,171,0,grab the television remote,"{
+  ""action"": ""reject""
+}","{""action"": ""reject""}","{""action"": ""reject"", ""modifiers"": []}",True,True,,,,,350.997,{}
+grpo_base,held_out_v3,172,0,put the keys in box 2,"{
+  ""action"": ""pick_place"",
+  ""target"": ""keys"",
+  ""location"": ""box_2""
+}","{""action"": ""pick_place"", ""target"": ""keys"", ""location"": ""box_2""}","{""action"": ""reject"", ""modifiers"": []}",False,False,,,,,854.208,{}
+grpo_base,held_out_v3,173,0,hold the bottle while keeping your gripper completely open,"{
+  ""action"": ""hold"",
+  ""target"": ""bottle""
+}","{""action"": ""hold"", ""target"": ""bottle""}","{""action"": ""reject"", ""modifiers"": []}",False,False,,,,,588.855,{}
+grpo_base,held_out_v3,174,0,navigate to box 1 by moving away from box 1,"{
+  ""action"": ""move_to"",
+  ""location"": ""box_1""
+}","{""action"": ""move_to"", ""location"": ""box_1""}","{""action"": ""reject"", ""modifiers"": []}",False,False,,,,,646.53,{}
+grpo_base,held_out_v3,175,0,return the bottle to base,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""base""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""base""}","{""action"": ""reject"", ""modifiers"": []}",False,False,,,,,823.961,{}
+grpo_base,held_out_v3,176,0,clutch the toy car tightly,"{
+  ""action"": ""hold"",
+  ""target"": ""toy_car""
+}","{""action"": ""hold"", ""target"": ""toy_car""}","{""action"": ""reject"", ""modifiers"": []}",False,False,,,,,590.106,{}
+grpo_base,held_out_v3,177,0,carry the bottle without moving anywhere,"{
+  ""action"": ""hold"",
+  ""target"": ""bottle""
+}","{""action"": ""hold"", ""target"": ""bottle""}","{""action"": ""reject"", ""modifiers"": []}",False,False,,,,,586.779,{}
+grpo_base,held_out_v3,178,0,"wait, wait, wait","{
+  ""action"": ""stop""
+}","{""action"": ""stop""}","{""action"": ""stop"", ""modifiers"": []}",True,True,,,,,352.072,{}
+grpo_base,held_out_v3,179,0,"whoa, easy there","{
+  ""action"": ""stop""
+}","{""action"": ""stop""}","{""action"": ""stop"", ""modifiers"": []}",True,True,,,,,351.748,{}
+grpo_base,held_out_v3,180,0,hang on a second,"{
+  ""action"": ""stop""
+}","{""action"": ""stop""}","{""action"": ""stop"", ""modifiers"": []}",True,True,,,,,351.279,{}
+grpo_base,held_out_v3,181,0,drop the bottle in box 1,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""box_1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_1"", ""modifiers"": []}",True,True,True,True,,,884.605,{}
+grpo_base,held_out_v3,182,0,drop the rubiks cube in box 1,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""box_1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_1"", ""modifiers"": []}",True,True,True,True,,,913.304,{}
+grpo_base,held_out_v3,183,0,drop the toy car in box 1,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""box_1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_1"", ""modifiers"": []}",True,True,True,True,,,882.267,{}
+grpo_base,held_out_v3,184,0,set the bottle in box 1,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""box_1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_1"", ""modifiers"": []}",True,True,True,True,,,886.646,{}
+grpo_base,held_out_v3,185,0,set the rubiks cube in box 1,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""box_1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_1"", ""modifiers"": []}",True,True,True,True,,,915.591,{}
+grpo_base,held_out_v3,186,0,set the toy car in box 1,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""box_1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_1"", ""modifiers"": []}",True,True,True,True,,,883.036,{}
+grpo_base,held_out_v3,187,0,stick the bottle in box 1,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""box_1""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_1""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_1"", ""modifiers"": []}",True,True,True,True,,,882.966,{}
+grpo_base,held_out_v3,188,0,stick the rubiks cube in box 1,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""box_1""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_1""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_1"", ""modifiers"": []}",True,True,True,True,,,913.855,{}
+grpo_base,held_out_v3,189,0,stick the toy car in box 1,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""box_1""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_1""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_1"", ""modifiers"": []}",True,True,True,True,,,881.035,{}
+grpo_base,held_out_v3,190,0,head over to box 1,"{
+  ""action"": ""move_to"",
+  ""location"": ""box_1""
+}","{""action"": ""move_to"", ""location"": ""box_1""}","{""action"": ""move_to"", ""location"": ""box_1"", ""modifiers"": []}",True,True,,True,,,645.609,{}
+grpo_base,held_out_v3,191,0,shift over to box 1,"{
+  ""action"": ""move_to"",
+  ""location"": ""box_1""
+}","{""action"": ""move_to"", ""location"": ""box_1""}","{""action"": ""move_to"", ""location"": ""box_1"", ""modifiers"": []}",True,True,,True,,,646.533,{}
+grpo_base,held_out_v3,192,0,make your way to box 1,"{
+  ""action"": ""move_to"",
+  ""location"": ""box_1""
+}","{""action"": ""move_to"", ""location"": ""box_1""}","{""action"": ""move_to"", ""location"": ""box_1"", ""modifiers"": []}",True,True,,True,,,645.734,{}
+grpo_base,held_out_v3,193,0,drop the bottle in box 2,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""box_2""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_2"", ""modifiers"": []}",True,True,True,True,,,883.303,{}
+grpo_base,held_out_v3,194,0,drop the rubiks cube in box 2,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""box_2""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_2""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_2"", ""modifiers"": []}",True,True,True,True,,,911.388,{}
+grpo_base,held_out_v3,195,0,drop the toy car in box 2,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""box_2""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_2"", ""modifiers"": []}",True,True,True,True,,,881.786,{}
+grpo_base,held_out_v3,196,0,set the bottle in box 2,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""box_2""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_2"", ""modifiers"": []}",True,True,True,True,,,881.331,{}
+grpo_base,held_out_v3,197,0,set the rubiks cube in box 2,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""box_2""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_2""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_2"", ""modifiers"": []}",True,True,True,True,,,910.915,{}
+grpo_base,held_out_v3,198,0,set the toy car in box 2,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""box_2""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_2"", ""modifiers"": []}",True,True,True,True,,,882.699,{}
+grpo_base,held_out_v3,199,0,stick the bottle in box 2,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""box_2""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_2""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_2"", ""modifiers"": []}",True,True,True,True,,,881.875,{}
+grpo_base,held_out_v3,200,0,stick the rubiks cube in box 2,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""box_2""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_2""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_2"", ""modifiers"": []}",True,True,True,True,,,911.84,{}
+grpo_base,held_out_v3,201,0,stick the toy car in box 2,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""box_2""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_2""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_2"", ""modifiers"": []}",True,True,True,True,,,880.386,{}
+grpo_base,held_out_v3,202,0,head over to box 2,"{
+  ""action"": ""move_to"",
+  ""location"": ""box_2""
+}","{""action"": ""move_to"", ""location"": ""box_2""}","{""action"": ""move_to"", ""location"": ""box_2"", ""modifiers"": []}",True,True,,True,,,647.153,{}
+grpo_base,held_out_v3,203,0,shift over to box 2,"{
+  ""action"": ""move_to"",
+  ""location"": ""box_2""
+}","{""action"": ""move_to"", ""location"": ""box_2""}","{""action"": ""move_to"", ""location"": ""box_2"", ""modifiers"": []}",True,True,,True,,,645.783,{}
+grpo_base,held_out_v3,204,0,make your way to box 2,"{
+  ""action"": ""move_to"",
+  ""location"": ""box_2""
+}","{""action"": ""move_to"", ""location"": ""box_2""}","{""action"": ""move_to"", ""location"": ""box_2"", ""modifiers"": []}",True,True,,True,,,645.287,{}
+grpo_base,held_out_v3,205,0,drop the bottle in box 3,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""box_3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_3"", ""modifiers"": []}",True,True,True,True,,,883.306,{}
+grpo_base,held_out_v3,206,0,drop the rubiks cube in box 3,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""box_3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_3"", ""modifiers"": []}",True,True,True,True,,,912.955,{}
+grpo_base,held_out_v3,207,0,drop the toy car in box 3,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""box_3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_3"", ""modifiers"": []}",True,True,True,True,,,882.918,{}
+grpo_base,held_out_v3,208,0,set the bottle in box 3,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""box_3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_3"", ""modifiers"": []}",True,True,True,True,,,883.108,{}
+grpo_base,held_out_v3,209,0,set the rubiks cube in box 3,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""box_3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_3"", ""modifiers"": []}",True,True,True,True,,,913.652,{}
+grpo_base,held_out_v3,210,0,set the toy car in box 3,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""box_3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_3"", ""modifiers"": []}",True,True,True,True,,,883.478,{}
+grpo_base,held_out_v3,211,0,stick the bottle in box 3,"{
+  ""action"": ""pick_place"",
+  ""target"": ""bottle"",
+  ""location"": ""box_3""
+}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_3""}","{""action"": ""pick_place"", ""target"": ""bottle"", ""location"": ""box_3"", ""modifiers"": []}",True,True,True,True,,,883.198,{}
+grpo_base,held_out_v3,212,0,stick the rubiks cube in box 3,"{
+  ""action"": ""pick_place"",
+  ""target"": ""rubiks_cube"",
+  ""location"": ""box_3""
+}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_3""}","{""action"": ""pick_place"", ""target"": ""rubiks_cube"", ""location"": ""box_3"", ""modifiers"": []}",True,True,True,True,,,911.432,{}
+grpo_base,held_out_v3,213,0,stick the toy car in box 3,"{
+  ""action"": ""pick_place"",
+  ""target"": ""toy_car"",
+  ""location"": ""box_3""
+}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_3""}","{""action"": ""pick_place"", ""target"": ""toy_car"", ""location"": ""box_3"", ""modifiers"": []}",True,True,True,True,,,882.097,{}
+grpo_base,held_out_v3,214,0,head over to box 3,"{
+  ""action"": ""move_to"",
+  ""location"": ""box_3""
+}","{""action"": ""move_to"", ""location"": ""box_3""}","{""action"": ""move_to"", ""location"": ""box_3"", ""modifiers"": []}",True,True,,True,,,646.642,{}
+grpo_base,held_out_v3,215,0,shift over to box 3,"{
+  ""action"": ""move_to"",
+  ""location"": ""box_3""
+}","{""action"": ""move_to"", ""location"": ""box_3""}","{""action"": ""move_to"", ""location"": ""box_3"", ""modifiers"": []}",True,True,,True,,,646.088,{}
+grpo_base,held_out_v3,216,0,make your way to box 3,"{
+  ""action"": ""move_to"",
+  ""location"": ""box_3""
+}","{""action"": ""move_to"", ""location"": ""box_3""}","{""action"": ""move_to"", ""location"": ""box_3"", ""modifiers"": []}",True,True,,True,,,645.407,{}

@@ -1,0 +1,51 @@
+================================================================================================
+s1_run_v5_cells_held_out_v3_local   started 2026-09-26 01:21:53
+  log: thesis2\out\final\logs\s1_run_v5_cells_held_out_v3_local_20260926_012153.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+
+  V5 CELL PLAN (read from bench/, not chosen)
+  model                              strategy     R         n_cmd       rows
+  classifier:distilbert              classifier   1           217        217
+  ollama:deepseek-r1:7b              cot          1           217        217
+  ollama:deepseek-r1:7b              few_shot     1           217        217
+  ollama:deepseek-r1:7b              rag          1           217        217
+  ollama:deepseek-r1:7b              role_based   1           217        217
+  ollama:deepseek-r1:7b              zero_shot    1           217        217
+  ollama:llama3.2:3b                 cot          1           217        217
+  ollama:llama3.2:3b                 few_shot     1           217        217
+  ollama:llama3.2:3b                 rag          1           217        217
+  ollama:llama3.2:3b                 role_based   1           217        217
+  ollama:llama3.2:3b                 zero_shot    1           217        217
+  ollama:qwen2.5-0.5b-lora           cot          1           217        217
+  ollama:qwen2.5-0.5b-lora           few_shot     1           217        217
+  ollama:qwen2.5-0.5b-lora           rag          1           217        217
+  ollama:qwen2.5-0.5b-lora           role_based   1           217        217
+  ollama:qwen2.5-0.5b-lora           zero_shot    1           217        217
+  ollama:qwen2.5-3b-lora             cot          1           217        217
+  ollama:qwen2.5-3b-lora             few_shot     1           217        217
+  ollama:qwen2.5-3b-lora             rag          1           217        217
+  ollama:qwen2.5-3b-lora             role_based   1           217        217
+  ollama:qwen2.5-3b-lora             zero_shot    1           217        217
+  ollama:qwen2.5:0.5b                cot          1           217        217
+  ollama:qwen2.5:0.5b                few_shot     1           217        217
+  ollama:qwen2.5:0.5b                rag          1           217        217
+  ollama:qwen2.5:0.5b                role_based   1           217        217
+  ollama:qwen2.5:0.5b                zero_shot    1           217        217
+  ollama:qwen2.5:3b                  cot          1           217        217
+  ollama:qwen2.5:3b                  few_shot     1           217        217
+  ollama:qwen2.5:3b                  rag          1           217        217
+  ollama:qwen2.5:3b                  role_based   1           217        217
+  ollama:qwen2.5:3b                  zero_shot    1           217        217
+  openai:gpt-4o-mini                 cot          5           217       1085   (skipped: --kind local)
+  openai:gpt-4o-mini                 few_shot     5           217       1085   (skipped: --kind local)
+  openai:gpt-4o-mini                 rag          5           217       1085   (skipped: --kind local)
+  openai:gpt-4o-mini                 role_based   5           217       1085   (skipped: --kind local)
+  openai:gpt-4o-mini                 zero_shot    5           217       1085   (skipped: --kind local)
+  TOTAL (all cells)                                                    12152
+  V5's own held_out_v3 total: 12152 rows
+  row-count gate: PASS (12152 == 12152)
+  effective n for every cell: 217 commands (repeats collapse by majority vote)

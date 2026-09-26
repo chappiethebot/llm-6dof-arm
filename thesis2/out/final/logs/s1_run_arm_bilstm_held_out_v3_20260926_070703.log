@@ -1,0 +1,23 @@
+================================================================================================
+s1_run_arm_bilstm_held_out_v3   started 2026-09-26 07:07:03
+  log: thesis2\out\final\logs\s1_run_arm_bilstm_held_out_v3_20260926_070703.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  torch 2.14.0+cu126 cuda=True | transformers 5.17.0
+  gpu: NVIDIA GeForce RTX 4060 Ti
+  arm  : bilstm  (local, deterministic)
+  note : BiLSTM from scratch, train_v2 vocabulary; persisted legacy checkpoint
+  split: held_out_v3
+  frozen-checkpoint gate OK for bilstm (79217a8587d6767c, dev 0.9473684210526315)
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+  R = 1  (read from V5's local cells; not chosen)
+  rows for this arm x split: 217 commands x 1 repeats = 217
+  planned grand total across the registry and both splits: 28 local x 434 x 1 + 2 cloud x 434 x 5 = 16492 rows
+
+------------------------------------------------------------------------------------------------
+  pred_bilstm_held_out_v3.csv already has 217/217 rows -- COMPLETE. Nothing re-run.
+  Each arm runs ONCE per split. To re-run after a crash, pass --force-rerun-after-crash (logged).
+------------------------------------------------------------------------------------------------
+GATE PASS

@@ -1,0 +1,73 @@
+================================================================================================
+s1_check_v5cells_held_out_v3   started 2026-09-26 07:10:14
+  log: thesis2\out\final\logs\s1_check_v5cells_held_out_v3_20260926_071014.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  this run : thesis2\out\final\results_v5cells_held_out_v3.csv  (6727 rows)
+  V5 source: bench/results_v5_*.csv  (36 cells on held_out_v3)
+
+========================================================================================================================================================
+model                      strategy      rows    warm empty/error rows (by stage)           action V5 action   raw agree lat p50 s
+========================================================================================================================================================
+classifier:distilbert      classifier     217       1 none                                  0.7465    0.7500     216/216     0.021
+ollama:deepseek-r1:7b      cot            217       1 extract_failed 3, schema_failed 17    0.1290    0.1250     216/216     8.815
+ollama:deepseek-r1:7b      few_shot       217       1 prompt_error 217                      0.0000    0.3935       1/216     0.000
+ollama:deepseek-r1:7b      rag            217       1 prompt_error 217                      0.0000    0.7130       1/216     0.000
+ollama:deepseek-r1:7b      role_based     217       1 extract_failed 2, schema_failed 11    0.3364    0.3380     216/216     8.797
+ollama:deepseek-r1:7b      zero_shot      217       1 extract_failed 3, schema_failed 16    0.1567    0.1574     216/216     9.151
+ollama:llama3.2:3b         cot            217       1 extract_failed 172, schema_failed     0.0783    0.0787     216/216     3.040
+ollama:llama3.2:3b         few_shot       217       1 prompt_error 217                      0.0000    0.4167       0/216     0.000
+ollama:llama3.2:3b         rag            217       1 prompt_error 217                      0.0000    0.3843       0/216     0.000
+ollama:llama3.2:3b         role_based     217       1 extract_failed 8, schema_failed 50    0.5346    0.5324     216/216     1.802
+ollama:llama3.2:3b         zero_shot      217       1 schema_failed 18                      0.5622    0.5602     216/216     1.798
+ollama:qwen2.5-0.5b-lora   cot            217       1 extract_failed 113, schema_failed     0.0599    0.0602     216/216     1.302
+ollama:qwen2.5-0.5b-lora   few_shot       217       1 prompt_error 217                      0.0000    0.2963       0/216     0.000
+ollama:qwen2.5-0.5b-lora   rag            217       1 prompt_error 217                      0.0000    0.2407       0/216     0.000
+ollama:qwen2.5-0.5b-lora   role_based     217       1 schema_failed 26                      0.4378    0.4352     216/216     1.312
+ollama:qwen2.5-0.5b-lora   zero_shot      217       1 schema_failed 30                      0.4562    0.4537     216/216     1.318
+ollama:qwen2.5-3b-lora     cot            217       1 extract_failed 2, schema_failed 11    0.8157    0.8148     216/216     2.548
+ollama:qwen2.5-3b-lora     few_shot       217       1 prompt_error 217                      0.0000    0.7593       0/216     0.000
+ollama:qwen2.5-3b-lora     rag            217       1 prompt_error 217                      0.0000    0.7454       0/216     0.000
+ollama:qwen2.5-3b-lora     role_based     217       1 schema_failed 1                       0.9493    0.9491     216/216     1.557
+ollama:qwen2.5-3b-lora     zero_shot      217       1 schema_failed 1                       0.9585    0.9583     216/216     1.553
+ollama:qwen2.5:0.5b        cot            217       1 extract_failed 9, schema_failed 19    0.0138    0.0139     216/216     1.644
+ollama:qwen2.5:0.5b        few_shot       217       1 prompt_error 217                      0.0000    0.0046       0/216     0.000
+ollama:qwen2.5:0.5b        rag            217       1 prompt_error 217                      0.0000    0.0602       0/216     0.000
+ollama:qwen2.5:0.5b        role_based     217       1 schema_failed 154                     0.0737    0.0741     216/216     1.325
+ollama:qwen2.5:0.5b        zero_shot      217       1 schema_failed 154                     0.0922    0.0926     216/216     1.332
+ollama:qwen2.5:3b          cot            217       1 extract_failed 5, schema_failed 63    0.4055    0.4074     216/216     2.370
+ollama:qwen2.5:3b          few_shot       217       1 prompt_error 217                      0.0000    0.5926       0/216     0.000
+ollama:qwen2.5:3b          rag            217       1 prompt_error 217                      0.0000    0.6620       0/216     0.000
+ollama:qwen2.5:3b          role_based     217       1 schema_failed 43                      0.3687    0.3704     216/216     1.516
+ollama:qwen2.5:3b          zero_shot      217       1 schema_failed 42                      0.3825    0.3843     216/216     1.521
+========================================================================================================================================================
+  31 cells, 6727 rows; 4237 rows not 'validated'; 2605 rows with empty raw output
+
+  CELLS WHERE **EVERY** ROW FAILED -- these cells carry no measurement:
+     ollama:deepseek-r1:7b      few_shot    stages=['prompt_error']  empty raw=217  no parsed object=217
+     ollama:deepseek-r1:7b      rag         stages=['prompt_error']  empty raw=217  no parsed object=217
+     ollama:llama3.2:3b         few_shot    stages=['prompt_error']  empty raw=217  no parsed object=217
+     ollama:llama3.2:3b         rag         stages=['prompt_error']  empty raw=217  no parsed object=217
+     ollama:qwen2.5-0.5b-lora   few_shot    stages=['prompt_error']  empty raw=217  no parsed object=217
+     ollama:qwen2.5-0.5b-lora   rag         stages=['prompt_error']  empty raw=217  no parsed object=217
+     ollama:qwen2.5-3b-lora     few_shot    stages=['prompt_error']  empty raw=217  no parsed object=217
+     ollama:qwen2.5-3b-lora     rag         stages=['prompt_error']  empty raw=217  no parsed object=217
+     ollama:qwen2.5:0.5b        few_shot    stages=['prompt_error']  empty raw=217  no parsed object=217
+     ollama:qwen2.5:0.5b        rag         stages=['prompt_error']  empty raw=217  no parsed object=217
+     ollama:qwen2.5:3b          few_shot    stages=['prompt_error']  empty raw=217  no parsed object=217
+     ollama:qwen2.5:3b          rag         stages=['prompt_error']  empty raw=217  no parsed object=217
+
+  the recorded reason on those rows:
+     TypeError:list indices must be integers or slices, not str             x2604
+
+  Denominators. This run writes 217 rows per local cell at R = 1 and marks
+  command_id 0 as the warm-up, as V5 did; V5's own cell accuracy above is
+  computed on its NON-warmup rows (216 for a local cell, 1,084-1,085 for a
+  cloud cell with 5 repeats). The two accuracy columns therefore use
+  slightly different denominators and are comparable to within one command.
+
+------------------------------------------------------------------------------------------------
+  REPORT ONLY: nothing written, no model loaded, no inference run
+  12 of 31 cells have every row failed
+------------------------------------------------------------------------------------------------
+GATE PASS

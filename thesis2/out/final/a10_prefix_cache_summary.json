@@ -1,0 +1,44 @@
+{
+  "prefix_tokens": 449,
+  "n_commands": 217,
+  "warmup_prerun_not_excluded": 3,
+  "byte_identical": {
+    "speculative, no prefix cache (A8)": 217,
+    "prefix-cached plain greedy": 217,
+    "PREFIX-CACHED SPECULATIVE (A10)": 217
+  },
+  "all_identity_checks_pass": true,
+  "token_acceptance_rate": 0.8946,
+  "forward_passes": {
+    "plain": 5288,
+    "spec": 746,
+    "prefix_spec": 746
+  },
+  "latency_ms": {
+    "plain greedy": {
+      "p50": 890.37,
+      "p95": 1012.55,
+      "p99": 1076.64,
+      "mean": 816.97
+    },
+    "prefix-cached plain greedy": {
+      "p50": 831.77,
+      "p95": 969.75,
+      "p99": 1041.32,
+      "mean": 761.64
+    },
+    "speculative (A8)": {
+      "p50": 113.83,
+      "p95": 399.85,
+      "p99": 820.11,
+      "mean": 187.43
+    },
+    "PREFIX-CACHED SPECULATIVE (A10)": {
+      "p50": 57.93,
+      "p95": 336.48,
+      "p99": 740.67,
+      "mean": 130.71
+    }
+  },
+  "energy": []
+}

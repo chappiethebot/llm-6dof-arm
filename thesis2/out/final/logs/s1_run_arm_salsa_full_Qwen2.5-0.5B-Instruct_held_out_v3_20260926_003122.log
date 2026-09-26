@@ -1,0 +1,30 @@
+================================================================================================
+s1_run_arm_salsa_full_Qwen2.5-0.5B-Instruct_held_out_v3   started 2026-09-26 00:31:22
+  log: thesis2\out\final\logs\s1_run_arm_salsa_full_Qwen2.5-0.5B-Instruct_held_out_v3_20260926_003122.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  torch 2.14.0+cu126 cuda=True | transformers 5.17.0
+  gpu: NVIDIA GeForce RTX 4060 Ti
+  arm  : salsa_full_Qwen2.5-0.5B-Instruct  (local, deterministic)
+  note : NEW: SALSA-full, every field by letter logits, letters mapping only
+  split: held_out_v3
+  frozen-checkpoint gate OK for salsa_full_Qwen2.5-0.5B-Instruct (n/a: base weight, dev 0.1228)
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+  R = 1  (read from V5's local cells; not chosen)
+  rows for this arm x split: 217 commands x 1 repeats = 217
+  planned grand total across the registry and both splits: 28 local x 434 x 1 + 2 cloud x 434 x 5 = 16492 rows
+      50/217 commands (4s)
+     100/217 commands (8s)
+     150/217 commands (12s)
+     200/217 commands (16s)
+  wrote pred_salsa_full_Qwen2.5-0.5B-Instruct_held_out_v3.csv (217 rows)
+
+------------------------------------------------------------------------------------------------
+  determinism across repeats: NOT TESTABLE at R = 1 (V5's local repeat count). The cross-run check below is the determinism evidence for this arm.
+  action match 0.0461 (n=217); row accuracy 0.3056 (n=108)
+  reproducibility: NOT COMPARABLE on held_out_v3 -- NEW arm -- first measurement
+  output: thesis2\out\final\pred_salsa_full_Qwen2.5-0.5B-Instruct_held_out_v3.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

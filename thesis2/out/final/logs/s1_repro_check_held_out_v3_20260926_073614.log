@@ -1,0 +1,51 @@
+================================================================================================
+s1_repro_check_held_out_v3   started 2026-09-26 07:36:14
+  log: thesis2\out\final\logs\s1_repro_check_held_out_v3_20260926_073614.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  split held_out_v3, 217 commands. Reading CSVs only: no model is loaded.
+  ours  : thesis2/out/final/pred_<arm>_held_out_v3.csv
+  theirs: thesis2/out/ (the earlier run)
+
+============================================================================================================================
+arm                          compared/217  identical  differing command_ids
+============================================================================================================================
+a10_speculative                         -          -  NOT RUN YET (pred_a10_speculative_held_out_v3.csv)
+a12_smalllm                             -          -  NOT RUN YET (pred_a12_smalllm_held_out_v3.csv)
+a8_speculative                          -          -  NOT RUN YET (pred_a8_speculative_held_out_v3.csv)
+bilstm                            217/217        217  all identical
+cascade_cloud_always                    -          -  NOT RUN YET (pred_cascade_cloud_always_held_out_v3.csv)
+cascade_cloud_tauA                      -          -  NOT RUN YET (pred_cascade_cloud_tauA_held_out_v3.csv)
+cascade_local_tauA                217/217        217  all identical
+cascade_oracle                    217/217        217  all identical
+ensemble                                -          -  NOT RUN YET (pred_ensemble_held_out_v3.csv)
+factorized_fp16                   217/217        217  all identical
+factorized_int4                    totals        yes  totals only: ours 0.6083 vs saved 0.6083 (quantization_gate.csv (Phase 3 aggregate))
+flant5                            217/217        217  all identical
+flat_cpu                          217/217        217  all identical
+flat_gpu                          217/217        217  all identical
+knn_minilm                        217/217        217  all identical
+lora_greedy                       217/217        217  all identical
+minilm_probe                      217/217        217  all identical
+pipeline_always_local             217/217        217  all identical
+rules_firewalled                   totals        yes  totals only: ours 0.4470 vs saved 0.4470 (p5_rules_firewalled.py summary row)
+rules_open                        217/217        217  all identical
+tfidf_logreg                      217/217        217  all identical
+tinybert                          217/217        217  all identical
+============================================================================================================================
+
+  NOT COMPARABLE (6 arms) -- each with the reason from the earlier run:
+     a10_speculative              no prediction file pred_a10_speculative_held_out_v3.csv -- run s1_run_arm.py first
+     a12_smalllm                  no prediction file pred_a12_smalllm_held_out_v3.csv -- run s1_run_arm.py first
+     a8_speculative               no prediction file pred_a8_speculative_held_out_v3.csv -- run s1_run_arm.py first
+     cascade_cloud_always         no prediction file pred_cascade_cloud_always_held_out_v3.csv -- run s1_run_arm.py first
+     cascade_cloud_tauA           no prediction file pred_cascade_cloud_tauA_held_out_v3.csv -- run s1_run_arm.py first
+     ensemble                     no prediction file pred_ensemble_held_out_v3.csv -- run s1_run_arm.py first
+
+------------------------------------------------------------------------------------------------
+  NO MODEL RUNS: prediction CSVs and the earlier run's CSVs were read, nothing was written
+  16 arm(s) compared on held_out_v3; 6 not comparable
+  join key is str(command_id) on both sides; comparing ZERO commands is a FAIL
+  totals-only arms: factorized_int4 0.6083, rules_firewalled 0.4470
+------------------------------------------------------------------------------------------------
+GATE PASS

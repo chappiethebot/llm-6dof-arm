@@ -1,0 +1,48 @@
+{
+  "greedy_confirmed": true,
+  "base": "Qwen/Qwen2.5-3B-Instruct",
+  "adapter": "ft\\runs\\qwen3b_lora\\checkpoint-87",
+  "runtime": "transformers fp16, LoRA merged",
+  "dataset": "held_out_v3",
+  "n_commands": 217,
+  "warmup_prerun_not_excluded": 3,
+  "byte_identical_text": 217,
+  "byte_identical_ids": 217,
+  "draft_tokens_offered": 5258,
+  "draft_tokens_accepted": 4704,
+  "token_acceptance_rate": 0.8946,
+  "full_draft_accepted": 162,
+  "full_draft_rate": 0.7465,
+  "one_forward_pass_commands": 162,
+  "forward_passes_plain": 5288,
+  "forward_passes_speculative": 746,
+  "latency_ms": {
+    "plain greedy (transformers fp16)": {
+      "p50": 885.63,
+      "p95": 930.89,
+      "p99": 958.89,
+      "mean": 792.0
+    },
+    "speculative (incl. drafter)": {
+      "p50": 110.26,
+      "p95": 356.71,
+      "p99": 792.49,
+      "mean": 182.59
+    },
+    "speculative (GPU only)": {
+      "p50": 90.17,
+      "p95": 336.41,
+      "p99": 776.54,
+      "mean": 164.4
+    },
+    "SALSA (1 forward pass)": {
+      "p50": 88.45,
+      "p95": 95.81,
+      "p99": 100.4,
+      "mean": 89.6
+    }
+  },
+  "agreement_with_v5_ollama_q4": 0.9816,
+  "energy": [],
+  "accuracy_note": "NOT re-scored: greedy-exact by construction, identical to the plain-greedy arm by the byte-identity check above."
+}

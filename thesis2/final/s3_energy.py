@@ -259,29 +259,42 @@ def mode_arm(name, split):
     measure_loop(name, split, predict, idle, kind=arm.kind, ollama_note=arm.note)
 
 
-def v5_cell_predictor(model, strategy):
+def v5_cell_predictor(model, strategy, split):
     """A V5 cell as a predictor, so an Ollama cell can be energy-measured the
-    same way an arm is. The client is the project's own, unmodified."""
+    same way an arm is. The client is the project's own, unmodified.
+
+    Exemplars and retrieval come from V5's own code (fixed 2026-09-26). The
+    earlier version of this function called `load_seen_split(DEFAULT_K)`, which
+    returns a TUPLE and whose default seen_path is the V1 file, and passed that
+    fixed pool to rag as well. All three faults would have corrupted the
+    few_shot and rag energy figures S3-2 schedules -- the same bug that voided
+    12 cells in s1_run_v5_cells.py. `bench/run_cell._load_rows` now supplies the
+    pool from V5's own DATASETS table, and rag retrieves per command as V5 does
+    (bench/run_cell.py:279-283), with the Retriever built once and reused.
+    """
     from llm.pipeline import run_once
     from llm.clients import all_clients
     from bench.run_cell import apply_legend
     from llm import prompts as P
-    from bench.dataset import load_seen_split, DEFAULT_K
+    from bench.dataset import DEFAULT_K
     apply_legend("v5")
     schema = P.load_schema(str(C.SCHEMA_FILE))
     roster = {c.name: c for c in all_clients()}
     if model not in roster:
         C.gate(False, ["client %r is not in llm.clients.all_clients() -- is Ollama "
-                       "running with OLLAMA_MODELS=D:\\LLM?" % model])
+                       "running with OLLAMA_MODELS=D:\LLM?" % model])
     client = roster[model]
-    try:
-        examples = load_seen_split(DEFAULT_K)
-    except Exception:
-        examples = None
+
+    _, fewshot_examples, retriever = C.v5_pool(split, strategy)
+    print("  exemplars: k=%d from V5's DATASETS[%r]['exemplars_from'] "
+          "(%d in the fixed pool); rag retriever: %s"
+          % (DEFAULT_K, split, len(fewshot_examples or []),
+             "built once, reused" if retriever else "n/a"))
 
     def predict(cmd):
-        res = run_once(cmd, client, strategy, schema,
-                       examples=examples if strategy in ("few_shot", "rag") else None)
+        examples, _lat, _ids, _sc = C.v5_examples_for(cmd, strategy,
+                                                      fewshot_examples, retriever)
+        res = run_once(cmd, client, strategy, schema, examples=examples)
         return (getattr(res, "obj", None) or {}), dict(
             latency_ms=(getattr(res, "latency_s", 0.0) or 0.0) * 1000)
     return predict
@@ -298,7 +311,7 @@ def mode_v5_cell(cell, split):
         C.gate(False, ["%s is a CLOUD cell: energy is not measurable from this "
                        "machine. Its latency comes from Stage 1." % cell])
     idle = require_idle()
-    predict = v5_cell_predictor(model, strategy)
+    predict = v5_cell_predictor(model, strategy, split)
     measure_loop("v5:%s" % cell, split, predict, idle, kind="local",
                  note="V5 Ollama cell measured through llm/pipeline.py run_once; "
                       "GPU watts only, CPU watts NOT measured")

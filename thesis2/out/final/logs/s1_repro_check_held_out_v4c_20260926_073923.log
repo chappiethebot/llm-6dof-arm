@@ -1,0 +1,65 @@
+================================================================================================
+s1_repro_check_held_out_v4c   started 2026-09-26 07:39:23
+  log: thesis2\out\final\logs\s1_repro_check_held_out_v4c_20260926_073923.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  split held_out_v4c, 217 commands. Reading CSVs only: no model is loaded.
+  ours  : thesis2/out/final/pred_<arm>_held_out_v4c.csv
+  theirs: thesis2/out/ (the earlier run)
+
+============================================================================================================================
+arm                          compared/217  identical  differing command_ids
+============================================================================================================================
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+
+  COMPLETENESS AUDIT -- exactly n x R parsed CSV rows over n distinct command_ids
+  file                                            rows   lines   uniq  expected  verdict
+  --------------------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------------------
+  0 file(s) audited; 0 FAIL
+  0 file(s) have more physical LINES than CSV ROWS -- exactly the files the old line-count rule mis-read:
+
+bilstm                                  -          -  NOT RUN YET (pred_bilstm_held_out_v4c.csv)
+cascade_cloud_always                    -          -  NOT RUN YET (pred_cascade_cloud_always_held_out_v4c.csv)
+cascade_cloud_tauA                      -          -  NOT RUN YET (pred_cascade_cloud_tauA_held_out_v4c.csv)
+cascade_local_tauA                      -          -  NOT RUN YET (pred_cascade_local_tauA_held_out_v4c.csv)
+cascade_oracle                          -          -  NOT RUN YET (pred_cascade_oracle_held_out_v4c.csv)
+factorized_fp16                         -          -  NOT RUN YET (pred_factorized_fp16_held_out_v4c.csv)
+factorized_int4                         -          -  NOT RUN YET (pred_factorized_int4_held_out_v4c.csv)
+flant5                                  -          -  NOT RUN YET (pred_flant5_held_out_v4c.csv)
+flat_cpu                                -          -  NOT RUN YET (pred_flat_cpu_held_out_v4c.csv)
+flat_gpu                                -          -  NOT RUN YET (pred_flat_gpu_held_out_v4c.csv)
+lora_greedy                             -          -  NOT RUN YET (pred_lora_greedy_held_out_v4c.csv)
+minilm_probe                            -          -  NOT RUN YET (pred_minilm_probe_held_out_v4c.csv)
+pipeline_always_local                   -          -  NOT RUN YET (pred_pipeline_always_local_held_out_v4c.csv)
+rules_firewalled                        -          -  NOT RUN YET (pred_rules_firewalled_held_out_v4c.csv)
+tinybert                                -          -  NOT RUN YET (pred_tinybert_held_out_v4c.csv)
+============================================================================================================================
+
+  NOT COMPARABLE (15 arms) -- each with the reason from the earlier run:
+     bilstm                       no prediction file pred_bilstm_held_out_v4c.csv -- run s1_run_arm.py first
+     cascade_cloud_always         no prediction file pred_cascade_cloud_always_held_out_v4c.csv -- run s1_run_arm.py first
+     cascade_cloud_tauA           no prediction file pred_cascade_cloud_tauA_held_out_v4c.csv -- run s1_run_arm.py first
+     cascade_local_tauA           no prediction file pred_cascade_local_tauA_held_out_v4c.csv -- run s1_run_arm.py first
+     cascade_oracle               no prediction file pred_cascade_oracle_held_out_v4c.csv -- run s1_run_arm.py first
+     factorized_fp16              no prediction file pred_factorized_fp16_held_out_v4c.csv -- run s1_run_arm.py first
+     factorized_int4              no prediction file pred_factorized_int4_held_out_v4c.csv -- run s1_run_arm.py first
+     flant5                       no prediction file pred_flant5_held_out_v4c.csv -- run s1_run_arm.py first
+     flat_cpu                     no prediction file pred_flat_cpu_held_out_v4c.csv -- run s1_run_arm.py first
+     flat_gpu                     no prediction file pred_flat_gpu_held_out_v4c.csv -- run s1_run_arm.py first
+     lora_greedy                  no prediction file pred_lora_greedy_held_out_v4c.csv -- run s1_run_arm.py first
+     minilm_probe                 no prediction file pred_minilm_probe_held_out_v4c.csv -- run s1_run_arm.py first
+     pipeline_always_local        no prediction file pred_pipeline_always_local_held_out_v4c.csv -- run s1_run_arm.py first
+     rules_firewalled             no prediction file pred_rules_firewalled_held_out_v4c.csv -- run s1_run_arm.py first
+     tinybert                     no prediction file pred_tinybert_held_out_v4c.csv -- run s1_run_arm.py first
+
+------------------------------------------------------------------------------------------------
+  NO MODEL RUNS: prediction CSVs and the earlier run's CSVs were read, nothing was written
+  0 arm(s) compared on held_out_v4c; 15 not comparable
+  join key is str(command_id) on both sides; comparing ZERO commands is a FAIL
+  completeness: exactly n x R PARSED CSV rows over n distinct command_ids (never a line count)
+  totals-only arms: factorized_int4 0.6083, rules_firewalled 0.4470
+------------------------------------------------------------------------------------------------
+GATE PASS

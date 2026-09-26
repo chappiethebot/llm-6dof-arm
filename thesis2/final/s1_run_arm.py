@@ -226,11 +226,14 @@ def main():
              n_local * n_cmd * 2 * 1 + n_cloud * n_cmd * 2 * 5))
 
     # ---- gate 3: never silently overwrite a complete run
-    complete, have = C.pred_is_complete(arm.name, a.split, expected)
+    complete, have, uniq, why = C.pred_census(arm.name, a.split, expected)
+    print("  existing file: %s (%s)"
+          % (C.pred_path(arm.name, a.split).name, why))
     if complete and not a.force_rerun_after_crash:
         C.gate(True, [
-            "%s already has %d/%d rows -- COMPLETE. Nothing re-run."
-            % (C.pred_path(arm.name, a.split).name, have, expected),
+            "%s already has exactly %d parsed CSV rows over %d command_ids "
+            "-- COMPLETE. Nothing re-run."
+            % (C.pred_path(arm.name, a.split).name, have, uniq),
             "Each arm runs ONCE per split. To re-run after a crash, pass "
             "--force-rerun-after-crash (logged).",
         ])
@@ -283,9 +286,13 @@ def main():
     notes, ok = [], True
 
     # ---- gate 4: determinism / repeat collapse
+    # The join key is str(command_id) EVERYWHERE. Freshly computed rows carry an
+    # int from enumerate() while rows re-read from a CSV carry a str, and gate 5
+    # intersected those with the saved table's str keys -- which is why the
+    # reproducibility check silently compared 0 commands (fixed 2026-09-26).
     by_cmd = {}
     for r in out_rows:
-        by_cmd.setdefault(r["command_id"], []).append(r)
+        by_cmd.setdefault(str(r["command_id"]), []).append(r)
     if arm.determinism == "deterministic":
         if R == 1:
             notes.append("determinism across repeats: NOT TESTABLE at R = 1 "
@@ -321,12 +328,27 @@ def main():
     # ---- gate 5: reproducibility against the earlier run
     saved = saved_predictions(arm.name, a.split)
     if saved:
+        saved = {str(k): v for k, v in saved.items()}
         shared = sorted(set(saved) & set(first), key=int)
         same = sum(1 for c in shared if canon(json.loads(first[c]["pred_json"])) == saved[c])
         line = ("reproducibility vs saved %s: %d/%d identical"
                 % (a.split, same, len(shared)))
         is_ollama_or_cloud = arm.kind == "cloud" or "ollama" in arm.note.lower()
-        if same != len(shared) and arm.determinism == "deterministic" and not is_ollama_or_cloud:
+        if not shared:
+            # A comparison of zero commands is not a pass. It used to be one.
+            ok = False
+            line += ("  *** FAIL: ZERO commands compared. %d saved ids (%s...) vs "
+                     "%d run ids (%s...) -- the join key does not match, so this "
+                     "arm is UNVERIFIED ***"
+                     % (len(saved), sorted(saved, key=str)[:3],
+                        len(first), sorted(first, key=str)[:3]))
+        elif len(shared) < len(first):
+            ok = False
+            line += ("  *** FAIL: only %d of this run's %d commands had a saved "
+                     "counterpart; missing ids %s ***"
+                     % (len(shared), len(first),
+                        sorted(set(first) - set(saved), key=int)[:20]))
+        elif same != len(shared) and arm.determinism == "deterministic" and not is_ollama_or_cloud:
             ok = False
             diff = [c for c in shared if canon(json.loads(first[c]["pred_json"])) != saved[c]]
             line += "  *** FAIL, differing command_ids: %s ***" % diff[:20]
@@ -345,7 +367,7 @@ def main():
             notes.append("GATE FAIL: lora_greedy has no predictions on %s; run it "
                          "first -- the speculative arms are checked against it." % a.split)
         else:
-            b = {r["command_id"]: canon(json.loads(r["pred_json"]))
+            b = {str(r["command_id"]): canon(json.loads(r["pred_json"]))
                  for r in base if r["repeat"] == "0"}
             diff = [c for c in first
                     if b.get(c) != canon(json.loads(first[c]["pred_json"]))]
