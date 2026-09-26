@@ -357,28 +357,44 @@ def _cascade(target, tau, oracle=False):
         load_dotenv(C.REPO / ".env")
         from openai import OpenAI
         from salsa_row import build_prompt as row_prompt
-        client = OpenAI()
+        client = C.sdk_no_retries(OpenAI())   # our retries only; see common.py
 
     def predict(cmd, truth_row=None):
         t0 = time.perf_counter()
         obj, info = local(cmd)
         loc = obj.get("location") or ""
         escalated = False
+        cloud = {}          # stage + retries, recorded for the cloud target only
+        if target == "cloud":
+            cloud = dict(stage="ok", retries=0)
         if loc.startswith("grid_") and info.get("p_row", 1.0) < tau:
             if oracle:
                 row = truth_row
             elif target == "qwen3blora":
                 row, _p, _ms = esc.score(cmd, "letters")
             else:
-                r = client.chat.completions.create(
-                    model="gpt-4o-mini", temperature=0.0, max_tokens=2,
-                    messages=[{"role": "user", "content": row_prompt(cmd, "letters")}])
+                # Same prompt, model and temperature on every attempt.
+                msgs = [{"role": "user", "content": row_prompt(cmd, "letters")}]
+                try:
+                    r, n_retry = C.with_retries(lambda: client.chat.completions.create(
+                        model="gpt-4o-mini", temperature=0.0, max_tokens=2,
+                        messages=msgs))
+                except Exception as e:                    # noqa: BLE001
+                    # Retries exhausted, or a non-retryable error. This is NOT a
+                    # measured outcome: no prediction is emitted, the row is
+                    # marked model_error, and --retry-errors re-runs it.
+                    return {}, dict(latency_ms=(time.perf_counter() - t0) * 1000,
+                                    stage="model_error",
+                                    retries=getattr(e, "retries", 0),
+                                    error="%s: %s" % (type(e).__name__, str(e)[:120]),
+                                    escalated=False, p_row=info.get("p_row"))
+                cloud["retries"] = n_retry
                 txt = (r.choices[0].message.content or "").strip().upper()
                 row = txt[:1] if txt[:1] in ROWS else None
             if row in ROWS:
                 obj = dict(obj, location="grid_%s%s" % (row, loc[6]))
                 escalated = True
-        return obj, dict(latency_ms=(time.perf_counter() - t0) * 1000,
+        return obj, dict(latency_ms=(time.perf_counter() - t0) * 1000, **cloud,
                          escalated=escalated, p_row=info.get("p_row"),
                          p_location=info.get("p_location"))
     return predict

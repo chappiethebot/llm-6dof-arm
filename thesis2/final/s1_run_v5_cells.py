@@ -60,7 +60,9 @@ V5_ROW_COLS = ["ts_iso", "model", "strategy", "dataset", "source", "command_id",
                "strict_match", "normalized_match", "category", "pred_json",
                "truth_json", "reasons", "raw", "retrieval_latency_s",
                "retrieved_ids", "retrieved_scores", "tokens_in", "tokens_out",
-               "cost_usd", "temperature"]
+               "cost_usd", "temperature",
+               # not in V5's format: gpt-4o-mini retries for this row ("" = local)
+               "retries"]
 
 
 def out_path(split):
@@ -96,6 +98,9 @@ def main():
     ap.add_argument("--replace-cells", dest="replace_cells", action="store_true",
                     help="delete the named cells' existing rows before re-running; "
                          "held_out_v3 ONLY; every use is logged")
+    ap.add_argument("--retry-errors", dest="retry_errors", action="store_true",
+                    help="remove and re-run ONLY rows whose stage is model_error, in "
+                         "the selected cells; allowed on both splits; logged")
     ap.add_argument("--plan-only", action="store_true",
                     help="print the cell plan and the row-count gate, run nothing")
     ap.add_argument("--no-check", action="store_true",
@@ -113,6 +118,9 @@ def main():
             C.gate(False, ["--cells names cells that are not in the V5 census: %s"
                            % unknown,
                            "known cells: %s" % sorted("%s:%s" % k for k in cells)[:5]])
+
+    if a.replace_cells and a.retry_errors:
+        C.gate(False, ["--replace-cells and --retry-errors are exclusive"])
 
     # ---- rule: --replace-cells is held_out_v3 only
     if a.replace_cells:
@@ -204,6 +212,13 @@ def main():
 
     p = out_path(a.split)
     done, existing = set(), []
+    # --retry-errors: the model_error rows being retried. They stay in the file on
+    # disk until their replacement is written, so a crash part-way loses nothing.
+    pending_err = {}
+    key = lambda r: (r["model"], r["strategy"], str(r["command_id"]), str(r["run_index"]))
+    if a.retry_errors and not p.exists():
+        C.gate(False, ["--retry-errors: %s does not exist -- nothing to retry"
+                       % p.relative_to(C.REPO)])
     if p.exists():
         existing = list(csv.DictReader(p.open(encoding="utf-8", newline="")))
         if a.replace_cells:
@@ -225,8 +240,31 @@ def main():
                                     if (r["model"], r["strategy"]) == cell)])
             print("  *** --replace-cells: removed %d rows for %d cell(s); logged to %s ***"
                   % (removed, len(want), log.name))
-        done = {(r["model"], r["strategy"], r["command_id"], r["run_index"])
-                for r in existing}
+        if a.retry_errors:
+            # Allowed on held_out_v4c as well: a connection failure produced no
+            # answer, so re-running it re-measures nothing.
+            sel = {(m, st) for m, st, _ in chosen}
+            pending_err = {key(r): r for r in existing
+                           if (r["model"], r["strategy"]) in sel
+                           and r.get("stage") == "model_error"}
+            existing = [r for r in existing if key(r) not in pending_err]
+            per_cell = {}
+            for k in pending_err:
+                per_cell[k[:2]] = per_cell.get(k[:2], 0) + 1
+            for cell, n in sorted(per_cell.items()):
+                C.log_rerun("v5cell:%s/%s [--retry-errors]" % cell, a.split, n)
+            if not per_cell:
+                C.log_rerun("v5cells:%d selected cell(s) [--retry-errors]" % len(sel),
+                            a.split, 0)
+            print("  *** --retry-errors: %d model_error row(s) in %d cell(s) will be "
+                  "re-run; nothing else is; logged to force_rerun_log.csv ***"
+                  % (len(pending_err), len(per_cell)))
+            for cell, n in sorted(per_cell.items()):
+                print("       %-34s %-12s %d row(s)" % (cell + (n,)))
+            if not pending_err:
+                C.gate(True, ["--retry-errors: 0 model_error rows in the %d selected "
+                              "cell(s) -- nothing re-run" % len(sel)])
+        done = {key(r) for r in existing}
         print("  RESUMING: %d rows kept; complete (cell, command, repeat) triples "
               "are skipped" % len(existing))
 
@@ -240,19 +278,29 @@ def main():
                   "and recorded as not run ***" % model)
             continue
         client = roster[model]
+        is_cloud = model.startswith("openai:")
+        if is_cloud:
+            # gpt-4o-mini: retried on connection errors, timeouts, 429 and 5xx,
+            # up to 6 attempts from 2 s. Prompt, model and temperature unchanged.
+            client = C.RetryingClient(client)
         # V5's rule, bench/run_cell.py:244 -- the fixed pool is for few_shot ONLY.
         fewshot_examples = exemplars if strategy == "few_shot" else None
         n_new, t_cell = 0, time.time()
         for cid, row in enumerate(rows_in):
             truth = C.truth_of(row)
             for rep in range(v["repeats"]):
-                if (model, strategy, str(cid), str(rep)) in done:
+                k = (model, strategy, str(cid), str(rep))
+                if k in done:
                     continue
+                if a.retry_errors and k not in pending_err:
+                    continue                  # --retry-errors touches nothing else
                 # V5's rag path, bench/run_cell.py:279-283, via common
                 examples, ret_lat, ret_ids, ret_scores = C.v5_examples_for(
                     row["command"], strategy, fewshot_examples, retriever)
                 r = run_once(row["command"], client, strategy, schema,
                              examples=examples)
+                n_retry = client.last_retries if is_cloud else ""
+                pending_err.pop(k, None)
                 obj = getattr(r, "obj", None) or {}
                 sc = C.score(obj, truth)
                 out_rows.append({
@@ -273,6 +321,7 @@ def main():
                     "retrieved_scores": ret_scores,
                     "tokens_in": "", "tokens_out": "", "cost_usd": "",
                     "temperature": getattr(client, "temperature", ""),
+                    "retries": n_retry,
                 })
                 n_new += 1
         print("     %-34s %-12s +%d rows (cell %.0fs, run %.0fs)"
@@ -280,7 +329,7 @@ def main():
         with p.open("w", newline="", encoding="utf-8") as fh:
             w = csv.DictWriter(fh, fieldnames=V5_ROW_COLS, extrasaction="ignore")
             w.writeheader()
-            w.writerows(out_rows)
+            w.writerows(out_rows + list(pending_err.values()))
 
     ran_cells = {(r["model"], r["strategy"]) for r in out_rows}
     print()

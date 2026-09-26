@@ -518,6 +518,122 @@ def preds_from_percommand(arm, split, recs, text_col, ms_col, note="", outdir=No
     return p, len(out)
 
 
+# ------------------------------------------------- cloud retries (gpt-4o-mini)
+#
+# Every gpt-4o-mini call in the final run -- the five V5 cloud cells and both
+# cloud cascades -- goes through with_retries(). Added 2026-09-26.
+#
+#   * retried: connection errors, timeouts, HTTP 429 and HTTP 5xx;
+#   * NOT retried: any other error (400, 401, 403, 404, a bug in our code) --
+#     those fail at once and are recorded as model_error;
+#   * up to RETRY_ATTEMPTS attempts, sleeping 2, 4, 8, 16, 32 s between them;
+#   * the call is re-issued UNCHANGED: same prompt, same model, same
+#     temperature. A retry repeats a request that never produced an answer; it
+#     is not a second sample.
+#
+# The openai SDK retries twice on its own by default (max_retries=2), which
+# would make one "attempt" up to three billed requests and the logged count an
+# undercount. Its retries are switched OFF (max_retries=0) wherever we hold the
+# client, so the retry count logged per row is the exact number of extra
+# requests.
+
+RETRY_ATTEMPTS = 6
+RETRY_BASE_S = 2.0
+
+
+def retryable(e):
+    """True for a connection error, a timeout, HTTP 429 or HTTP 5xx."""
+    try:
+        import openai
+    except ImportError:
+        openai = None
+    if openai is not None:
+        if isinstance(e, (openai.APIConnectionError, openai.RateLimitError,
+                          openai.InternalServerError)):   # APITimeoutError is a
+            return True                                   # APIConnectionError
+        if isinstance(e, openai.APIStatusError):
+            code = getattr(e, "status_code", None)
+            return code == 429 or (code is not None and code >= 500)
+    return isinstance(e, (TimeoutError, ConnectionError))
+
+
+def with_retries(call, what="gpt-4o-mini"):
+    """-> (result, retries). Re-raises the last error with `.retries` attached."""
+    for attempt in range(1, RETRY_ATTEMPTS + 1):
+        try:
+            return call(), attempt - 1
+        except Exception as e:                            # noqa: BLE001
+            if attempt == RETRY_ATTEMPTS or not retryable(e):
+                e.retries = attempt - 1
+                raise
+            wait = RETRY_BASE_S * 2 ** (attempt - 1)
+            print("     retry %d/%d for %s in %.0f s after %s: %s"
+                  % (attempt, RETRY_ATTEMPTS - 1, what, wait, type(e).__name__,
+                     str(e)[:120]))
+            time.sleep(wait)
+
+
+def sdk_no_retries(openai_client):
+    """The same client with the SDK's own retries off (see above)."""
+    return openai_client.with_options(max_retries=0)
+
+
+class RetryingClient:
+    """A V5 cloud client whose complete() goes through with_retries().
+
+    Wraps llm/clients.OpenAIClient without editing it (llm/ is read-only).
+    Everything except complete() is delegated, so run_once sees the same name,
+    temperature and last_thinking. `last_retries` holds the retry count of the
+    most recent call, read by the runner IMMEDIATELY after run_once.
+    """
+
+    def __init__(self, inner):
+        self._inner = inner
+        self.last_retries = 0
+        if hasattr(inner, "_client") and hasattr(inner._client, "with_options"):
+            inner._client = sdk_no_retries(inner._client)
+
+    def complete(self, prompt):
+        try:
+            out, self.last_retries = with_retries(lambda: self._inner.complete(prompt),
+                                                  self._inner.name)
+            return out
+        except Exception as e:                            # noqa: BLE001
+            self.last_retries = getattr(e, "retries", 0)
+            raise
+
+    def __getattr__(self, k):
+        return getattr(self._inner, k)
+
+
+def row_stage(r):
+    """The stage of a pred_<arm>_<split>.csv row, read from its `note` JSON.
+
+    A cloud cascade that exhausts its retries writes stage "model_error" there.
+    Rows written before 2026-09-26 carry no stage and read as "".
+    """
+    note = r.get("note") or ""
+    try:
+        return (json.loads(note) or {}).get("stage", "") or ""
+    except Exception:                                     # noqa: BLE001
+        # a note truncated at 400 chars is not valid JSON; the marker survives
+        return "model_error" if '"stage": "model_error"' in note else ""
+
+
+def log_rerun(label, split, n_rows):
+    """One line in the tracked force_rerun_log.csv. Its 4-column schema is kept;
+    the flag that caused the rerun is part of `label`."""
+    log = OUT / "force_rerun_log.csv"
+    new = not log.exists()
+    with log.open("a", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        if new:
+            w.writerow(["utc", "arm", "split", "rows_discarded"])
+        w.writerow([time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                    label, split, n_rows])
+    return log
+
+
 def read_preds(arm, split):
     p = pred_path(arm, split)
     if not p.exists():

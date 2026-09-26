@@ -293,9 +293,23 @@ check: `python -c "import csv;print(sum(1 for _ in csv.DictReader(open('thesis2/
 
 `s1_check_v5cells.py` runs **automatically at the end of every**
 `s1_run_v5_cells.py` run and its exit code fails the runner's own gate. It GATE
-FAILs on any `prompt_error` row in any cell, on any cell with more empty-raw
-rows than V5 had for the same cell, and on held_out_v3 on any cell whose raw
-agreement with V5 is below **210/216**. To audit an existing file on its own:
+FAILs on:
+
+* **every cell:** any `prompt_error` row, or more empty-raw rows than V5 had
+  for the same cell;
+* **local cells**, held_out_v3: raw agreement with V5 below **210/216**;
+* **cloud cells** (gpt-4o-mini, R = 5): any `model_error` row, on either split;
+  and on held_out_v3, action match more than **3 points** (0.03) from V5's for
+  the same cell, both on non-warmup rows.
+
+Raw agreement is **reported for cloud cells but never gated on**, as the brief
+specified: a sampled API at R = 5 does not repeat its raw text byte for byte.
+On the current file `cot` agrees on 10/217 raw strings yet matches V5's
+action match to four decimals (0.7177 vs 0.7177); all five cloud cells are
+within 3 points (largest gap +0.0083, `few_shot`), 0 `model_error` rows, GATE
+PASS. [Certain — run 2026-09-26]
+
+To audit an existing file on its own:
 `conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\s1_check_v5cells.py --split held_out_v3`
 
 #### S1-4b Re-run the 12 void cells (few_shot and rag)
@@ -330,6 +344,59 @@ above 210/216.
 
 check: `Select-String thesis2\out\final\logs\s1_run_v5_cells_held_out_v3_*.log -Pattern "GATE|prompt_error cells|raw-agreement"` → **GATE PASS**, `prompt_error cells: 0`.
 
+#### S1-4c gpt-4o-mini retries, and `--retry-errors`
+
+**Every gpt-4o-mini call** — the five V5 cloud cells and both cloud cascades
+— goes through `common.with_retries`:
+
+* retried on connection errors, timeouts, **HTTP 429** and **HTTP 5xx**; any
+  other error (400, 401, 403, 404) fails at once;
+* up to **6 attempts**, sleeping **2, 4, 8, 16, 32 s** between them;
+* the request is re-issued **unchanged** — same prompt, model and temperature.
+  A retry repeats a request that produced no answer; it is not a second sample;
+* the openai SDK's own retries (default `max_retries=2`) are switched **off**,
+  so 6 attempts is 6 requests and the logged count is exact;
+* the retry count is logged **per row**: column `retries` in
+  `results_v5cells_<split>.csv` (`""` for local cells), and `"retries"` in the
+  `note` JSON of `pred_cascade_cloud_*_<split>.csv`. Each retry also prints one
+  line to the run log.
+
+V5 cells use a wrapper (`common.RetryingClient`) around the unmodified
+`llm/clients.OpenAIClient`. The cascades call the SDK directly in `arms.py`.
+There, an exhausted retry used to be an **uncaught exception that killed the
+run**; it is now a row with no prediction and `"stage": "model_error"` in its
+`note`.
+
+A `model_error` row is **not a measured outcome**. `s1_check_v5cells.py` fails
+on any in a cloud cell, and `s1_run_arm.py` fails on any, including on an
+already-complete file. `--retry-errors` removes and re-runs **only** the rows
+whose stage is `model_error`. Every other row is kept byte for byte, and no other
+missing row is filled. It is **allowed on held_out_v4c** because a connection
+failure produced no answer, so re-running it re-measures nothing; the v4c
+no-overwrite rule is otherwise unchanged. Every use is logged to
+`force_rerun_log.csv` with the row count, flagged `[--retry-errors]` in the
+`arm` column (the file's 4-column schema is kept). It is exclusive with
+`--replace-cells` and `--force-rerun-after-crash`.
+
+```powershell
+conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\s1_run_v5_cells.py --split held_out_v3 --kind cloud --retry-errors
+conda activate D:\condaenvs\thesis2gpu ; foreach ($a in "cascade_cloud_tauA","cascade_cloud_always") { python thesis2\final\s1_run_arm.py --arm $a --split held_out_v3 --retry-errors }
+```
+
+The same two lines with `--split held_out_v4c` after S1-6. Run them only when
+a gate names `model_error` rows; with none, each logs the use with 0 rows and
+exits GATE PASS.
+
+Stub test, no network and no model, ~1 min [Certain — run, all 4 pass]:
+`conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\test_retries.py`
+— backoff 2-4-8-16-32 s, 6 attempts, 400 not retried; the prompt is identical
+on every attempt; `s1_run_arm.py --retry-errors` on held_out_v4c re-runs 3/1085
+rows and leaves 1,082 byte-identical; a plain run on a file with `model_error`
+rows is GATE FAIL; `s1_run_v5_cells.py --retry-errors` re-runs 10/12,152 rows.
+It writes to a temporary directory only. The cascade's own `model_error` branch
+in `arms.py` is not exercised by the stubs: that needs the factorized model
+loaded.
+
 ### S1-5 held_out_v3 — cloud cascades and the ensemble
 
 ```powershell
@@ -337,7 +404,9 @@ conda activate D:\condaenvs\thesis2gpu ; foreach ($a in "cascade_cloud_tauA","ca
 ```
 
 The two cloud cascades are R = 5 → **2,170 billed calls**. `ensemble` pairs three
-already-measured V5 cells and must come after S1-4.
+already-measured V5 cells and must come after S1-4. Both cascades retry
+gpt-4o-mini as in S1-4c. If the gate reports `model_error` rows, re-run only those
+with `--retry-errors`.
 
 > ### ⏸ PASTE TO ADVISOR AFTER STAGE 1 v3 (reproducibility)
 > Every `reproducibility ...` line from the S1-2/S1-3 logs, plus the 12,152 row
@@ -459,7 +528,9 @@ conda activate D:\condaenvs\thesis2gpu ; foreach ($a in "cascade_cloud_tauA","ca
 ```
 
 `ensemble` on v4c requires the three V5 cells it pairs to exist on v4c first, so
-it must follow the v4c V5 grid. ~4.5 h and **7,595 billed calls** [Guessing on
+it must follow the v4c V5 grid. If the V5 audit or a cascade gate reports
+`model_error` rows on v4c, re-run **only those rows** with `--retry-errors`
+(S1-4c). It is the one re-run allowed on v4c. ~4.5 h and **7,595 billed calls** [Guessing on
 time]. Most arms will report "reproducibility: NOT COMPARABLE on held_out_v4c"
 with the reason — expected for a first measurement, not a failure.
 
@@ -611,6 +682,12 @@ chosen by correctness. [Certain]
 | **total** | **≈ 15,210** |
 
 All `gpt-4o-mini`. Decide the budget before S1-4. [Certain on the counts]
+
+These counts are **first attempts**. Retries (S1-4c) add requests on top: at
+most 5 per row, logged per row in `retries`, so the true number of requests
+is the table plus the sum of that column. Any `--retry-errors` run adds its
+re-run rows again. The cascades' 2,170 per split is an upper bound: a cascade calls
+gpt-4o-mini only for a grid-typed row that escalates.
 
 ---
 

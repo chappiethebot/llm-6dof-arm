@@ -2,8 +2,8 @@
 
     python thesis2/final/s1_check_v5cells.py [--split held_out_v3]
 
-Reads thesis2/out/final/results_v5cells_<split>.csv and, for each local cell,
-prints:
+Reads thesis2/out/final/results_v5cells_<split>.csv and, for each cell (local
+and cloud), prints:
 
   rows                  rows written for the cell
   empty/error           rows that produced no usable object: stage != validated,
@@ -19,7 +19,16 @@ GATE (this script FAILS the run, it does not merely report):
   * any cell containing any `prompt_error` row -- a prompt_error is a crash
     BEFORE the model call, so those rows are not a result;
   * any cell whose empty-raw count exceeds V5's for the same cell;
-  * on held_out_v3, any cell whose raw agreement with V5 is below 210/216.
+  * LOCAL cells, on held_out_v3: raw agreement with V5 below 210/216;
+  * CLOUD cells (gpt-4o-mini, R = 5): any `model_error` row, on either split --
+    a failed call is not a measured outcome and is re-run with --retry-errors;
+  * CLOUD cells, on held_out_v3: action match more than 3 points (0.03) away
+    from V5's for the same cell, both on non-warmup rows.
+
+Raw agreement is REPORTED for cloud cells but never gated on, as the brief
+specified: gpt-4o-mini at R = 5 is a sampled API whose raw text is not
+expected to repeat byte for byte, so agreement there is information, not a
+test. The floor applies to local cells only.
 
 Nothing is written, no model is loaded, and no held-out inference is performed:
 this reads two CSV families and the scorer. s1_run_v5_cells.py invokes this
@@ -43,7 +52,10 @@ V5_GLOB = str(C.BENCH / "results_v5_*.csv")
 # The raw-agreement floor on held_out_v3. 216 non-warmup commands are compared;
 # 210 allows six commands of sampling/server drift and no more. Set by the
 # 2026-09-26 ruling on the V5-cells audit, not tuned against any result.
-MIN_AGREE, MIN_SHARED = 210, 216
+MIN_AGREE, MIN_SHARED = 210, 216        # LOCAL cells only
+# Cloud cells are gated on accuracy instead: |ours - V5| <= 3 points on
+# held_out_v3, both on non-warmup rows. Set by the 2026-09-26 ruling.
+CLOUD_ACC_TOL = 0.03
 SKIP = ("_scored.csv", "_tokens.csv", "results_v5_all.csv", "results_v5_slim.csv",
         "results_v5_check.csv", "results_v5_smoke.csv")
 
@@ -104,6 +116,7 @@ def main():
     if a.split != "held_out_v3":
         print("  NOTE: V5 never ran %s, so the V5 columns will read 'n/a'" % a.split)
 
+    census = C.v5_census()
     by_cell = collections.defaultdict(list)
     for r in mine:
         by_cell[(r["model"], r["strategy"])].append(r)
@@ -119,9 +132,15 @@ def main():
     flagged = []
     prompt_err_cells = []       # any prompt_error at all -> GATE FAIL
     worse_empty_cells = []      # empty raw count above V5's -> GATE FAIL
-    low_agree_cells = []        # raw agreement below MIN_AGREE -> GATE FAIL (v3)
+    low_agree_cells = []        # LOCAL: raw agreement below MIN_AGREE -> FAIL (v3)
+    model_err_cells = []        # CLOUD: any model_error row -> FAIL (both splits)
+    cloud_acc_cells = []        # CLOUD: |acc - V5 acc| > CLOUD_ACC_TOL -> FAIL (v3)
+    cloud_lines = []
     for key in sorted(by_cell):
         rows = by_cell[key]
+        is_cloud = census.get(key, {}).get(
+            "kind", "cloud" if key[0].startswith("openai:") else "local") == "cloud"
+        nonwarm = [r for r in rows if str(r.get("is_warmup", "")).lower() != "true"]
         warm = sum(1 for r in rows if str(r.get("is_warmup", "")).lower() == "true")
         stages = collections.Counter(r["stage"] for r in rows)
         bad = {s: n for s, n in stages.items() if s != "validated"}
@@ -140,8 +159,12 @@ def main():
             v5_hits = sum(1 for x in v5_flat
                           if str(x["strict_match"]).lower() == "true")
             v5_acc = "%.4f" % (v5_hits / len(v5_flat))
-            shared = sorted(set(vr) & {r["command_id"] for r in rows}, key=int)
-            mine_by = {r["command_id"]: r for r in rows}
+            shared = sorted(set(vr) & {r["command_id"] for r in nonwarm}, key=int)
+            # first non-warmup row per command, mirroring V5's vr[cid][0]; a plain
+            # dict comprehension kept the LAST repeat of a cloud cell instead
+            mine_by = {}
+            for r in nonwarm:
+                mine_by.setdefault(r["command_id"], r)
             same = sum(1 for cid in shared
                        if (mine_by[cid].get("raw") or "").strip()
                        == (vr[cid][0].get("raw") or "").strip())
@@ -149,8 +172,23 @@ def main():
             v5_empty = sum(1 for x in v5_flat if not (x.get("raw") or "").strip())
             if n_empty > v5_empty:
                 worse_empty_cells.append((key, n_empty, v5_empty))
-            if a.split == "held_out_v3" and shared and same < MIN_AGREE:
+            if (not is_cloud and a.split == "held_out_v3" and shared
+                    and same < MIN_AGREE):
                 low_agree_cells.append((key, same, len(shared)))
+            if is_cloud and a.split == "held_out_v3":
+                acc_nw = (sum(1 for r in nonwarm if bool(C.score(
+                    obj_of(r), json.loads(r["truth_json"])).strict_match))
+                    / len(nonwarm)) if nonwarm else float("nan")
+                v5_nw = v5_hits / len(v5_flat)
+                d = acc_nw - v5_nw
+                okc = abs(d) <= CLOUD_ACC_TOL
+                cloud_lines.append("%-26s %-11s action %.4f vs V5 %.4f (%+.4f) %s; "
+                                   "raw agreement %s (reported, not gated)"
+                                   % (key[0], key[1], acc_nw, v5_nw, d,
+                                      "within 3 pts" if okc else "*** OUTSIDE 3 pts ***",
+                                      agree))
+                if not okc:
+                    cloud_acc_cells.append((key, acc_nw, v5_nw))
         else:
             v5_acc, agree = "n/a", "n/a"
 
@@ -168,6 +206,9 @@ def main():
         totals["empty"] += n_empty
         if n_bad == len(rows):
             flagged.append((key, sorted(bad), n_empty, n_noobj))
+        n_model_err = stages.get("model_error", 0)
+        if is_cloud and n_model_err:
+            model_err_cells.append((key, n_model_err, len(rows)))
         n_prompt_err = stages.get("prompt_error", 0)
         if n_prompt_err:
             prompt_err_cells.append((key, n_prompt_err, len(rows)))
@@ -210,8 +251,19 @@ def main():
         for key, mine_n, v5_n in worse_empty_cells:
             fails.append("     %-26s %-11s empty raw %d > V5's %d"
                          % (key + (mine_n, v5_n)))
+    if model_err_cells:
+        fails.append("%d CLOUD cell(s) contain model_error rows -- the call failed "
+                     "after retries, so no answer was measured. Re-run ONLY those "
+                     "rows with s1_run_v5_cells.py --retry-errors:" % len(model_err_cells))
+        for key, n, tot in model_err_cells:
+            fails.append("     %-26s %-11s %d/%d rows model_error" % (key + (n, tot)))
+    if cloud_acc_cells:
+        fails.append("%d CLOUD cell(s) are more than 3 points from V5's action match "
+                     "on held_out_v3:" % len(cloud_acc_cells))
+        for key, x, y in cloud_acc_cells:
+            fails.append("     %-26s %-11s %.4f vs V5 %.4f" % (key + (x, y)))
     if low_agree_cells:
-        fails.append("%d cell(s) fall below the raw-agreement floor of %d/%d on "
+        fails.append("%d LOCAL cell(s) fall below the raw-agreement floor of %d/%d on "
                      "held_out_v3:" % (len(low_agree_cells), MIN_AGREE, MIN_SHARED))
         for key, same, shared_n in low_agree_cells:
             fails.append("     %-26s %-11s raw agreement %d/%d"
@@ -224,10 +276,15 @@ def main():
         "prompt_error cells: %d (any is a FAIL)" % len(prompt_err_cells),
         "cells worse than V5 on empty output: %d (any is a FAIL)"
         % len(worse_empty_cells),
-        ("cells below the %d/%d raw-agreement floor: %d (any is a FAIL)"
+        ("LOCAL cells below the %d/%d raw-agreement floor: %d (any is a FAIL)"
          % (MIN_AGREE, MIN_SHARED, len(low_agree_cells))) if a.split == "held_out_v3"
         else "raw-agreement floor: not applied (V5 never ran %s)" % a.split,
-    ] + fails))
+        "CLOUD cells with model_error rows: %d (any is a FAIL)" % len(model_err_cells),
+        ("CLOUD cells outside +/-3 pts of V5's action match: %d (any is a FAIL)"
+         % len(cloud_acc_cells)) if a.split == "held_out_v3"
+        else "cloud accuracy check: not applied (V5 never ran %s)" % a.split,
+        "CLOUD raw agreement is reported below, never gated on:",
+    ] + ["   " + x for x in cloud_lines] + fails))
 
 
 def _isfloat(x):

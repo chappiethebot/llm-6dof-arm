@@ -192,8 +192,13 @@ def main():
     ap.add_argument("--split", choices=list(C.SPLITS))
     ap.add_argument("--force-rerun-after-crash", action="store_true",
                     help="overwrite a COMPLETE prediction file; every use is logged")
+    ap.add_argument("--retry-errors", dest="retry_errors", action="store_true",
+                    help="remove and re-run ONLY rows whose stage is model_error; "
+                         "allowed on both splits; every use is logged")
     ap.add_argument("--list", action="store_true", help="print the registry and exit")
     a = ap.parse_args()
+    if a.retry_errors and a.force_rerun_after_crash:
+        ap.error("--retry-errors and --force-rerun-after-crash are exclusive")
     if a.list:
         A.summary()
         return
@@ -225,37 +230,56 @@ def main():
           % (n_local, n_cmd * 2, n_cloud, n_cmd * 2,
              n_local * n_cmd * 2 * 1 + n_cloud * n_cmd * 2 * 5))
 
-    # ---- gate 3: never silently overwrite a complete run
-    complete, have, uniq, why = C.pred_census(arm.name, a.split, expected)
-    print("  existing file: %s (%s)"
-          % (C.pred_path(arm.name, a.split).name, why))
-    if complete and not a.force_rerun_after_crash:
-        C.gate(True, [
-            "%s already has exactly %d parsed CSV rows over %d command_ids "
-            "-- COMPLETE. Nothing re-run."
-            % (C.pred_path(arm.name, a.split).name, have, uniq),
-            "Each arm runs ONCE per split. To re-run after a crash, pass "
-            "--force-rerun-after-crash (logged).",
-        ])
-    if complete and a.force_rerun_after_crash:
-        log = C.OUT / "force_rerun_log.csv"
-        new = not log.exists()
-        with log.open("a", newline="", encoding="utf-8") as fh:
-            w = csv.writer(fh)
-            if new:
-                w.writerow(["utc", "arm", "split", "rows_discarded"])
-            w.writerow([time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-                        arm.name, a.split, have])
-        print("  *** --force-rerun-after-crash: discarding %d existing rows; "
-              "logged to %s ***" % (have, log.name))
-    if have and not complete:
-        print("  RESUMING: %d/%d rows already present" % (have, expected))
-
     done = set()
     existing = []
-    if have and not complete and not a.force_rerun_after_crash:
-        existing = C.read_preds(arm.name, a.split)
+    only = set()          # --retry-errors: the ONLY (command, repeat) pairs re-run
+    if a.retry_errors:
+        # ---- --retry-errors: drop ONLY model_error rows, keep every measured row.
+        # Allowed on held_out_v4c as well: a connection failure produced no
+        # answer, so re-running it re-measures nothing. The file on disk is
+        # rewritten only at the end, so a crash here loses nothing.
+        rows = C.read_preds(arm.name, a.split)
+        if not rows:
+            C.gate(False, ["--retry-errors: %s does not exist -- nothing to retry"
+                           % C.pred_path(arm.name, a.split).name])
+        errs = [r for r in rows if C.row_stage(r) == "model_error"]
+        log = C.log_rerun("%s [--retry-errors]" % arm.name, a.split, len(errs))
+        print("  *** --retry-errors: %d model_error row(s) of %d removed for "
+              "re-run; logged to %s ***" % (len(errs), len(rows), log.name))
+        if not errs:
+            C.gate(True, ["--retry-errors: 0 model_error rows in %s -- nothing re-run"
+                          % C.pred_path(arm.name, a.split).name])
+        existing = [r for r in rows if C.row_stage(r) != "model_error"]
         done = {(r["command_id"], r["repeat"]) for r in existing}
+        only = {(str(r["command_id"]), str(r["repeat"])) for r in errs}
+    else:
+        # ---- gate 3: never silently overwrite a complete run
+        complete, have, uniq, why = C.pred_census(arm.name, a.split, expected)
+        print("  existing file: %s (%s)"
+              % (C.pred_path(arm.name, a.split).name, why))
+        if complete and not a.force_rerun_after_crash:
+            n_err = sum(1 for r in C.read_preds(arm.name, a.split)
+                        if C.row_stage(r) == "model_error")
+            C.gate(n_err == 0, [
+                "%s already has exactly %d parsed CSV rows over %d command_ids "
+                "-- COMPLETE. Nothing re-run."
+                % (C.pred_path(arm.name, a.split).name, have, uniq),
+                "Each arm runs ONCE per split. To re-run after a crash, pass "
+                "--force-rerun-after-crash (logged).",
+                "model_error rows: %d%s" % (n_err, " -- NOT a measured outcome; "
+                                            "re-run them with --retry-errors"
+                                            if n_err else ""),
+            ])
+        if complete and a.force_rerun_after_crash:
+            log = C.log_rerun(arm.name, a.split, have)
+            print("  *** --force-rerun-after-crash: discarding %d existing rows; "
+                  "logged to %s ***" % (have, log.name))
+        if have and not complete:
+            print("  RESUMING: %d/%d rows already present" % (have, expected))
+        if have and not complete and not a.force_rerun_after_crash:
+            existing = C.read_preds(arm.name, a.split)
+            done = {(r["command_id"], r["repeat"]) for r in existing}
+    if done:
         print("  skipping %d already-complete (command, repeat) pairs" % len(done))
 
     # ---- run
@@ -267,6 +291,8 @@ def main():
         for rep in range(R):
             if (str(cid), str(rep)) in done:
                 continue
+            if a.retry_errors and (str(cid), str(rep)) not in only:
+                continue                      # --retry-errors touches nothing else
             kw = {}
             if arm.name == "cascade_oracle":
                 kw["truth_row"] = C.rowof(truth.get("location"))
@@ -379,6 +405,26 @@ def main():
                 notes.append("byte-identical to lora_greedy on %d/%d commands"
                              % (len(first), len(first)))
 
+    # ---- a model_error row is not a measured outcome
+    n_err = sum(1 for r in out_rows if C.row_stage(r) == "model_error")
+    retr = []
+    for r in out_rows:
+        try:
+            d = json.loads(r.get("note") or "{}")
+        except ValueError:
+            continue
+        if isinstance(d, dict) and "retries" in d and C.row_stage(r) != "model_error":
+            retr.append(int(d["retries"] or 0))
+    if arm.kind == "cloud":
+        notes.append("gpt-4o-mini retries: %d row(s) needed a retry, %d retries in "
+                     "total (up to %d attempts, backoff from %.0f s)"
+                     % (sum(1 for x in retr if x), sum(retr), C.RETRY_ATTEMPTS,
+                        C.RETRY_BASE_S))
+    if n_err:
+        ok = False
+        notes.append("*** %d model_error row(s): the call failed after retries, so "
+                     "no answer was measured. Re-run ONLY those rows with "
+                     "--retry-errors ***" % n_err)
     C.gate(ok, notes + ["output: %s" % p.relative_to(C.REPO)])
 
 
