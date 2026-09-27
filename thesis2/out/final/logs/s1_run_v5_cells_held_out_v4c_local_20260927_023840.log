@@ -1,0 +1,102 @@
+================================================================================================
+s1_run_v5_cells_held_out_v4c_local   started 2026-09-27 02:38:40
+  log: thesis2\out\final\logs\s1_run_v5_cells_held_out_v4c_local_20260927_023840.log
+  python: C:\Users\USER\.conda\envs\thesis\python.exe
+================================================================================================
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+
+  V5 CELL PLAN (read from bench/, not chosen)
+  model                              strategy     R         n_cmd       rows
+  classifier:distilbert              classifier   1           217        217
+  ollama:deepseek-r1:7b              cot          1           217        217
+  ollama:deepseek-r1:7b              few_shot     1           217        217
+  ollama:deepseek-r1:7b              rag          1           217        217
+  ollama:deepseek-r1:7b              role_based   1           217        217
+  ollama:deepseek-r1:7b              zero_shot    1           217        217
+  ollama:llama3.2:3b                 cot          1           217        217
+  ollama:llama3.2:3b                 few_shot     1           217        217
+  ollama:llama3.2:3b                 rag          1           217        217
+  ollama:llama3.2:3b                 role_based   1           217        217
+  ollama:llama3.2:3b                 zero_shot    1           217        217
+  ollama:qwen2.5-0.5b-lora           cot          1           217        217
+  ollama:qwen2.5-0.5b-lora           few_shot     1           217        217
+  ollama:qwen2.5-0.5b-lora           rag          1           217        217
+  ollama:qwen2.5-0.5b-lora           role_based   1           217        217
+  ollama:qwen2.5-0.5b-lora           zero_shot    1           217        217
+  ollama:qwen2.5-3b-lora             cot          1           217        217
+  ollama:qwen2.5-3b-lora             few_shot     1           217        217
+  ollama:qwen2.5-3b-lora             rag          1           217        217
+  ollama:qwen2.5-3b-lora             role_based   1           217        217
+  ollama:qwen2.5-3b-lora             zero_shot    1           217        217
+  ollama:qwen2.5:0.5b                cot          1           217        217
+  ollama:qwen2.5:0.5b                few_shot     1           217        217
+  ollama:qwen2.5:0.5b                rag          1           217        217
+  ollama:qwen2.5:0.5b                role_based   1           217        217
+  ollama:qwen2.5:0.5b                zero_shot    1           217        217
+  ollama:qwen2.5:3b                  cot          1           217        217
+  ollama:qwen2.5:3b                  few_shot     1           217        217
+  ollama:qwen2.5:3b                  rag          1           217        217
+  ollama:qwen2.5:3b                  role_based   1           217        217
+  ollama:qwen2.5:3b                  zero_shot    1           217        217
+  openai:gpt-4o-mini                 cot          5           217       1085   (skipped: --kind local)
+  openai:gpt-4o-mini                 few_shot     5           217       1085   (skipped: --kind local)
+  openai:gpt-4o-mini                 rag          5           217       1085   (skipped: --kind local)
+  openai:gpt-4o-mini                 role_based   5           217       1085   (skipped: --kind local)
+  openai:gpt-4o-mini                 zero_shot    5           217       1085   (skipped: --kind local)
+  TOTAL (all cells)                                                    12152
+  V5's own held_out_v3 total: 12152 rows
+  row-count gate: held_out_v4c uses the same cells and repeats -> 12152 rows
+  this run will execute 31 cell(s)
+  effective n per cell: 217 commands (repeats collapse by majority vote)
+
+  exemplars: k=3 from V5's DATASETS['held_out_v4c']['exemplars_from'] via bench/run_cell._load_rows
+     3 exemplar(s): ['put the bottle in the far left corner of', 'put the bottle in the far side middle ed', 'put the bottle in the farthest spot you ']
+  building the rag Retriever ONCE for reuse across cells
+     classifier:distilbert              classifier   +217 rows (cell 5s, run 5s)
+     ollama:deepseek-r1:7b              cot          +217 rows (cell 2871s, run 2876s)
+     ollama:deepseek-r1:7b              few_shot     +217 rows (cell 2328s, run 5204s)
+     ollama:deepseek-r1:7b              rag          +217 rows (cell 3732s, run 8937s)
+     ollama:deepseek-r1:7b              role_based   +217 rows (cell 2258s, run 11194s)
+     ollama:deepseek-r1:7b              zero_shot    +217 rows (cell 2242s, run 13436s)
+     ollama:llama3.2:3b                 cot          +217 rows (cell 695s, run 14131s)
+     ollama:llama3.2:3b                 few_shot     +217 rows (cell 403s, run 14535s)
+     ollama:llama3.2:3b                 rag          +217 rows (cell 410s, run 14944s)
+     ollama:llama3.2:3b                 role_based   +217 rows (cell 397s, run 15342s)
+     ollama:llama3.2:3b                 zero_shot    +217 rows (cell 397s, run 15738s)
+     ollama:qwen2.5-0.5b-lora           cot          +217 rows (cell 4451s, run 20189s)
+     ollama:qwen2.5-0.5b-lora           few_shot     +217 rows (cell 292s, run 20482s)
+     ollama:qwen2.5-0.5b-lora           rag          +217 rows (cell 293s, run 20775s)
+     ollama:qwen2.5-0.5b-lora           role_based   +217 rows (cell 293s, run 21068s)
+     ollama:qwen2.5-0.5b-lora           zero_shot    +217 rows (cell 294s, run 21362s)
+     ollama:qwen2.5-3b-lora             cot          +217 rows (cell 610s, run 21973s)
+     ollama:qwen2.5-3b-lora             few_shot     +217 rows (cell 350s, run 22323s)
+     ollama:qwen2.5-3b-lora             rag          +217 rows (cell 350s, run 22673s)
+     ollama:qwen2.5-3b-lora             role_based   +217 rows (cell 345s, run 23018s)
+     ollama:qwen2.5-3b-lora             zero_shot    +217 rows (cell 344s, run 23362s)
+     ollama:qwen2.5:0.5b                cot          +217 rows (cell 495s, run 23858s)
+     ollama:qwen2.5:0.5b                few_shot     +217 rows (cell 307s, run 24165s)
+     ollama:qwen2.5:0.5b                rag          +217 rows (cell 307s, run 24472s)
+     ollama:qwen2.5:0.5b                role_based   +217 rows (cell 298s, run 24770s)
+     ollama:qwen2.5:0.5b                zero_shot    +217 rows (cell 299s, run 25069s)
+     ollama:qwen2.5:3b                  cot          +217 rows (cell 560s, run 25630s)
+     ollama:qwen2.5:3b                  few_shot     +217 rows (cell 349s, run 25979s)
+     ollama:qwen2.5:3b                  rag          +217 rows (cell 352s, run 26331s)
+     ollama:qwen2.5:3b                  role_based   +217 rows (cell 341s, run 26672s)
+     ollama:qwen2.5:3b                  zero_shot    +217 rows (cell 340s, run 27012s)
+
+  cells in the file: 31 ; rows: 6727
+  output: thesis2\out\final\results_v5cells_held_out_v4c.csv
+
+================================================================================================
+RUNNING s1_check_v5cells.py -- the audit is part of every run
+================================================================================================
+
+  s1_check_v5cells.py exit code: 1
+
+------------------------------------------------------------------------------------------------
+  the audit FAILED (exit 1) -- see its gate lines above
+  rows written: 6727 ; cells: 31
+------------------------------------------------------------------------------------------------
+GATE FAIL

@@ -1,0 +1,39 @@
+{
+  "drafter": "Qwen/Qwen2.5-0.5B-Instruct",
+  "verifier": "Qwen/Qwen2.5-3B-Instruct",
+  "adapter": "ft\\runs\\qwen3b_lora\\checkpoint-87",
+  "gamma": 4,
+  "gamma_swept": false,
+  "prefix_tokens": 449,
+  "n_commands": 217,
+  "warmup_prerun_not_excluded": 3,
+  "byte_identical_vs_plain_greedy": 217,
+  "draft_tokens_offered": 7540,
+  "draft_tokens_accepted": 3920,
+  "token_acceptance_rate": 0.5199,
+  "verifier_passes": 1885,
+  "drafter_passes": 7540,
+  "plain_greedy_passes": 5288,
+  "one_verifier_pass_commands": 0,
+  "latency_ms": {
+    "prefix-cached plain greedy": {
+      "p50": 822.96,
+      "p95": 854.95,
+      "p99": 857.22,
+      "mean": 718.35
+    },
+    "0.5b-drafted speculative (A12)": {
+      "p50": 948.46,
+      "p95": 1164.32,
+      "p99": 1251.83,
+      "mean": 917.13
+    },
+    "   of which the drafter": {
+      "p50": 645.14,
+      "p95": 791.77,
+      "p99": 846.22,
+      "mean": 624.14
+    }
+  },
+  "energy": []
+}

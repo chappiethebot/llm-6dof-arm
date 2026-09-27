@@ -16,14 +16,24 @@ and cloud), prints:
   latency p50           median latency_s per row, where recorded
 
 GATE (this script FAILS the run, it does not merely report):
+
+  on EVERY split
   * any cell containing any `prompt_error` row -- a prompt_error is a crash
     BEFORE the model call, so those rows are not a result;
+  * any cell containing any `model_error` row -- the call failed (after
+    retries, for gpt-4o-mini), so no answer was measured; re-run ONLY those
+    rows with s1_run_v5_cells.py --retry-errors;
+  * any cell in which EVERY row failed (no row reached `validated`).
+
+  on held_out_v3 ONLY -- the rules that compare against V5's own numbers
   * any cell whose empty-raw count exceeds V5's for the same cell;
-  * LOCAL cells, on held_out_v3: raw agreement with V5 below 210/216;
-  * CLOUD cells (gpt-4o-mini, R = 5): any `model_error` row, on either split --
-    a failed call is not a measured outcome and is re-run with --retry-errors;
-  * CLOUD cells, on held_out_v3: action match more than 3 points (0.03) away
-    from V5's for the same cell, both on non-warmup rows.
+  * LOCAL cells: raw agreement with V5 below 210/216;
+  * CLOUD cells (gpt-4o-mini, R = 5): action match more than 3 points (0.03)
+    away from V5's for the same cell, both on non-warmup rows.
+
+V5 ran held_out_v3 only. On held_out_v4c there is nothing of V5's to compare
+with, so the V5 columns read n/a and the three comparison rules are not
+applied; empty-raw counts are reported as information.
 
 Raw agreement is REPORTED for cloud cells but never gated on, as the brief
 specified: gpt-4o-mini at R = 5 is a sampled API whose raw text is not
@@ -133,7 +143,8 @@ def main():
     prompt_err_cells = []       # any prompt_error at all -> GATE FAIL
     worse_empty_cells = []      # empty raw count above V5's -> GATE FAIL
     low_agree_cells = []        # LOCAL: raw agreement below MIN_AGREE -> FAIL (v3)
-    model_err_cells = []        # CLOUD: any model_error row -> FAIL (both splits)
+    model_err_cells = []        # any model_error row -> FAIL (every split)
+    empty_info = []             # empty-raw counts, reported (gated on v3 only)
     cloud_acc_cells = []        # CLOUD: |acc - V5 acc| > CLOUD_ACC_TOL -> FAIL (v3)
     cloud_lines = []
     for key in sorted(by_cell):
@@ -153,7 +164,10 @@ def main():
                    if bool(C.score(obj_of(r), json.loads(r["truth_json"])).strict_match))
         acc = hits / len(rows)
 
-        vr = v5.get(key)
+        # V5's rows are held_out_v3 rows (load_v5 filters on it). Comparing a
+        # v4c cell with them is meaningless, so on any other split there is no
+        # V5 counterpart: the V5 columns read n/a and no comparison rule runs.
+        vr = v5.get(key) if a.split == "held_out_v3" else None
         if vr:
             v5_flat = [x for reps in vr.values() for x in reps]
             v5_hits = sum(1 for x in v5_flat
@@ -207,8 +221,10 @@ def main():
         if n_bad == len(rows):
             flagged.append((key, sorted(bad), n_empty, n_noobj))
         n_model_err = stages.get("model_error", 0)
-        if is_cloud and n_model_err:
+        if n_model_err:
             model_err_cells.append((key, n_model_err, len(rows)))
+        if n_empty:
+            empty_info.append((key, n_empty, len(rows)))
         n_prompt_err = stages.get("prompt_error", 0)
         if n_prompt_err:
             prompt_err_cells.append((key, n_prompt_err, len(rows)))
@@ -239,6 +255,11 @@ def main():
     print("  slightly different denominators and are comparable to within one command.")
     # ------------------------------------------------------------------ gate
     fails = []
+    if flagged:
+        fails.append("%d cell(s) in which EVERY row failed -- no measurement:"
+                     % len(flagged))
+        for key, stages, n_empty, n_noobj in flagged:
+            fails.append("     %-26s %-11s stages=%s" % (key[0], key[1], stages))
     if prompt_err_cells:
         fails.append("%d cell(s) contain prompt_error rows -- a prompt_error means "
                      "NO MODEL CALL was made, so the cell carries no measurement:"
@@ -252,9 +273,9 @@ def main():
             fails.append("     %-26s %-11s empty raw %d > V5's %d"
                          % (key + (mine_n, v5_n)))
     if model_err_cells:
-        fails.append("%d CLOUD cell(s) contain model_error rows -- the call failed "
-                     "after retries, so no answer was measured. Re-run ONLY those "
-                     "rows with s1_run_v5_cells.py --retry-errors:" % len(model_err_cells))
+        fails.append("%d cell(s) contain model_error rows -- the call failed, so "
+                     "no answer was measured. Re-run ONLY those rows with "
+                     "s1_run_v5_cells.py --retry-errors:" % len(model_err_cells))
         for key, n, tot in model_err_cells:
             fails.append("     %-26s %-11s %d/%d rows model_error" % (key + (n, tot)))
     if cloud_acc_cells:
@@ -272,19 +293,24 @@ def main():
         "REPORT ONLY: nothing written, no model loaded, no inference run",
         "%d cells, %d rows; %d not 'validated'; %d empty raw"
         % (len(by_cell), totals["rows"], totals["bad"], totals["empty"]),
-        "%d of %d cells have every row failed" % (len(flagged), len(by_cell)),
+        "cells in which every row failed: %d of %d (any is a FAIL)"
+        % (len(flagged), len(by_cell)),
         "prompt_error cells: %d (any is a FAIL)" % len(prompt_err_cells),
-        "cells worse than V5 on empty output: %d (any is a FAIL)"
-        % len(worse_empty_cells),
+        "model_error cells: %d (any is a FAIL)" % len(model_err_cells),
+        ("cells worse than V5 on empty output: %d (any is a FAIL)"
+         % len(worse_empty_cells)) if a.split == "held_out_v3"
+        else ("empty-raw rule: not applied (V5 never ran %s); INFORMATION ONLY -- "
+              "cells with empty raw rows: %s"
+              % (a.split, ", ".join("%s/%s %d/%d" % (k[0], k[1], n, t)
+                                    for k, n, t in empty_info) or "none")),
         ("LOCAL cells below the %d/%d raw-agreement floor: %d (any is a FAIL)"
          % (MIN_AGREE, MIN_SHARED, len(low_agree_cells))) if a.split == "held_out_v3"
         else "raw-agreement floor: not applied (V5 never ran %s)" % a.split,
-        "CLOUD cells with model_error rows: %d (any is a FAIL)" % len(model_err_cells),
         ("CLOUD cells outside +/-3 pts of V5's action match: %d (any is a FAIL)"
          % len(cloud_acc_cells)) if a.split == "held_out_v3"
         else "cloud accuracy check: not applied (V5 never ran %s)" % a.split,
-        "CLOUD raw agreement is reported below, never gated on:",
-    ] + ["   " + x for x in cloud_lines] + fails))
+    ] + (["CLOUD raw agreement is reported below, never gated on:"]
+         + ["   " + x for x in cloud_lines] if cloud_lines else []) + fails))
 
 
 def _isfloat(x):

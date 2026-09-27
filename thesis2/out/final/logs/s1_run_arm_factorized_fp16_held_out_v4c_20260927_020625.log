@@ -1,0 +1,30 @@
+================================================================================================
+s1_run_arm_factorized_fp16_held_out_v4c   started 2026-09-27 02:06:25
+  log: thesis2\out\final\logs\s1_run_arm_factorized_fp16_held_out_v4c_20260927_020625.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  torch 2.14.0+cu126 cuda=True | transformers 5.17.0
+  gpu: NVIDIA GeForce RTX 4060 Ti
+  arm  : factorized_fp16  (local, deterministic)
+  note : factorized location head, FP16
+  split: held_out_v4c
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+  R = 1  (read from V5's local cells; not chosen)
+  rows for this arm x split: 217 commands x 1 repeats = 217
+  planned grand total across the registry and both splits: 28 local x 434 x 1 + 2 cloud x 434 x 5 = 16492 rows
+  existing file: pred_factorized_fp16_held_out_v4c.csv (file absent or empty)
+      50/217 commands (0s)
+     100/217 commands (1s)
+     150/217 commands (1s)
+     200/217 commands (1s)
+  wrote pred_factorized_fp16_held_out_v4c.csv (217 rows)
+
+------------------------------------------------------------------------------------------------
+  determinism across repeats: NOT TESTABLE at R = 1 (V5's local repeat count). The cross-run check below is the determinism evidence for this arm.
+  action match 0.6359 (n=217); row accuracy 0.3889 (n=108)
+  reproducibility vs saved held_out_v4c: 217/217 identical
+  output: thesis2\out\final\pred_factorized_fp16_held_out_v4c.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

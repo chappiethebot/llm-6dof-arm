@@ -1,0 +1,58 @@
+2026-09-27 02:06:04  PHASE B - held_out_v4c, energy, metrics, significance, report. Keep the machine untouched.
+2026-09-27 02:06:04  START  S1-6 flat_gpu held_out_v4c
+2026-09-27 02:06:11  DONE   S1-6 flat_gpu held_out_v4c  (0.1 min)
+2026-09-27 02:06:11  START  S1-6 flat_cpu held_out_v4c
+2026-09-27 02:06:21  DONE   S1-6 flat_cpu held_out_v4c  (0.2 min)
+2026-09-27 02:06:21  START  S1-6 factorized_fp16 held_out_v4c
+2026-09-27 02:06:28  DONE   S1-6 factorized_fp16 held_out_v4c  (0.1 min)
+2026-09-27 02:06:28  START  S1-6 factorized_int4 held_out_v4c
+2026-09-27 02:06:36  DONE   S1-6 factorized_int4 held_out_v4c  (0.1 min)
+2026-09-27 02:06:36  START  S1-6 tinybert held_out_v4c
+2026-09-27 02:06:43  DONE   S1-6 tinybert held_out_v4c  (0.1 min)
+2026-09-27 02:06:43  START  S1-6 minilm_probe held_out_v4c
+2026-09-27 02:06:52  DONE   S1-6 minilm_probe held_out_v4c  (0.2 min)
+2026-09-27 02:06:52  START  S1-6 knn_minilm held_out_v4c
+2026-09-27 02:07:01  DONE   S1-6 knn_minilm held_out_v4c  (0.1 min)
+2026-09-27 02:07:01  START  S1-6 rules_open held_out_v4c
+2026-09-27 02:07:05  DONE   S1-6 rules_open held_out_v4c  (0.1 min)
+2026-09-27 02:07:05  START  S1-6 rules_firewalled held_out_v4c
+2026-09-27 02:07:10  DONE   S1-6 rules_firewalled held_out_v4c  (0.1 min)
+2026-09-27 02:07:10  START  S1-6 tfidf_logreg held_out_v4c
+2026-09-27 02:07:15  DONE   S1-6 tfidf_logreg held_out_v4c  (0.1 min)
+2026-09-27 02:07:15  START  S1-6 bilstm held_out_v4c
+2026-09-27 02:07:20  DONE   S1-6 bilstm held_out_v4c  (0.1 min)
+2026-09-27 02:07:20  START  S1-6 textcnn held_out_v4c
+2026-09-27 02:07:25  DONE   S1-6 textcnn held_out_v4c  (0.1 min)
+2026-09-27 02:07:26  START  S1-6 mlpbow held_out_v4c
+2026-09-27 02:07:30  DONE   S1-6 mlpbow held_out_v4c  (0.1 min)
+2026-09-27 02:07:30  START  S1-6 flant5 held_out_v4c
+2026-09-27 02:08:34  DONE   S1-6 flant5 held_out_v4c  (1.1 min)
+2026-09-27 02:08:34  START  S1-6 lora_greedy held_out_v4c
+2026-09-27 02:11:44  DONE   S1-6 lora_greedy held_out_v4c  (3.2 min)
+2026-09-27 02:11:44  START  S1-6 salsa_full_qwen2.5-3b-lora held_out_v4c
+2026-09-27 02:12:40  DONE   S1-6 salsa_full_qwen2.5-3b-lora held_out_v4c  (0.9 min)
+2026-09-27 02:12:40  START  S1-6 salsa_full_Qwen2.5-3B-Instruct held_out_v4c
+2026-09-27 02:13:31  DONE   S1-6 salsa_full_Qwen2.5-3B-Instruct held_out_v4c  (0.9 min)
+2026-09-27 02:13:31  START  S1-6 salsa_full_qwen2.5-0.5b-lora held_out_v4c
+2026-09-27 02:13:58  DONE   S1-6 salsa_full_qwen2.5-0.5b-lora held_out_v4c  (0.4 min)
+2026-09-27 02:13:58  START  S1-6 salsa_full_Qwen2.5-0.5B-Instruct held_out_v4c
+2026-09-27 02:14:24  DONE   S1-6 salsa_full_Qwen2.5-0.5B-Instruct held_out_v4c  (0.4 min)
+2026-09-27 02:14:24  START  S1-6 grpo_base held_out_v4c
+2026-09-27 02:17:31  DONE   S1-6 grpo_base held_out_v4c  (3.1 min)
+2026-09-27 02:17:31  START  S1-6 grpo_sft held_out_v4c
+2026-09-27 02:20:33  DONE   S1-6 grpo_sft held_out_v4c  (3 min)
+2026-09-27 02:20:33  START  S1-6 cascade_local_tauA held_out_v4c
+2026-09-27 02:20:50  DONE   S1-6 cascade_local_tauA held_out_v4c  (0.3 min)
+2026-09-27 02:20:50  START  S1-6 pipeline_always_local held_out_v4c
+2026-09-27 02:21:09  DONE   S1-6 pipeline_always_local held_out_v4c  (0.3 min)
+2026-09-27 02:21:09  START  S1-6 cascade_oracle held_out_v4c
+2026-09-27 02:21:17  DONE   S1-6 cascade_oracle held_out_v4c  (0.1 min)
+2026-09-27 02:21:17  START  S1-6 a8_speculative held_out_v4c
+2026-09-27 02:25:23  DONE   S1-6 a8_speculative held_out_v4c  (4.1 min)
+2026-09-27 02:25:23  START  S1-6 a10_speculative held_out_v4c
+2026-09-27 02:32:18  DONE   S1-6 a10_speculative held_out_v4c  (6.9 min)
+2026-09-27 02:32:18  START  S1-6 a12_smalllm held_out_v4c
+2026-09-27 02:38:35  DONE   S1-6 a12_smalllm held_out_v4c  (6.3 min)
+2026-09-27 02:38:35  START  S1-6 V5 local cells, held_out_v4c
+2026-09-27 10:09:05  AUTORUN STOPPED: S1-6 V5 local cells, held_out_v4c  (exit code 1, after 450.5 min)
+2026-09-27 10:09:05  Paste the lines above to your advisor. Fix, then run the SAME command again.
