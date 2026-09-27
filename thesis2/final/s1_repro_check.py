@@ -70,15 +70,15 @@ def mine(arm, split):
     """
     p = C.pred_path(arm, split)
     rows = C.pred_rows_of(p)
-    out, acc_hits, acc_n = {}, 0, 0
+    out, correct = {}, {}
     for r in rows:
         cid = str(r["command_id"])
         if str(r.get("repeat", "0")) != "0":
             continue
         out[cid] = R.canon(json.loads(r["pred_json"] or "{}"))
-        acc_n += 1
-        acc_hits += 1 if str(r["correct"]).lower() == "true" else 0
-    return p, out, (acc_hits / acc_n if acc_n else float("nan")), len(rows)
+        correct[cid] = str(r["correct"]).lower() == "true"
+    acc = sum(correct.values()) / len(correct) if correct else float("nan")
+    return p, out, acc, len(rows), correct
 
 
 def census(split, n_cmd):
@@ -157,7 +157,7 @@ def main():
         print()
     for name in names:
         arm = R.A.REGISTRY.get(name)
-        p, ours, acc, n_rows = mine(name, a.split)
+        p, ours, acc, n_rows, ours_correct = mine(name, a.split)
         if not p.exists():
             skipped.append((name, "no prediction file %s -- run s1_run_arm.py first"
                             % p.name))
@@ -185,36 +185,15 @@ def main():
             skipped.append((name, why))
             print("%-28s %12s %10s  NOT COMPARABLE: %s" % (name, "-", "-", why[:58]))
             continue
-        saved = {str(k): v for k, v in saved.items()}
-
-        shared = sorted(set(saved) & set(ours), key=int)
-        diff = [c for c in shared if ours[c] != saved[c]]
-        same = len(shared) - len(diff)
-
-        is_ollama_or_cloud = bool(arm) and (arm.kind == "cloud"
-                                           or "ollama" in (arm.note or "").lower())
-        tag = ""
-        if not shared:
-            tag = ("*** FAIL: ZERO commands compared. saved ids %s... vs ours %s... "
-                   "-- join key mismatch, arm UNVERIFIED ***"
-                   % (sorted(saved, key=str)[:3], sorted(ours, key=str)[:3]))
-            fails.append("%s: compared 0 of %d commands (saved %d ids, ours %d ids)"
-                         % (name, n_cmd, len(saved), len(ours)))
-        elif len(shared) < len(ours):
-            tag = ("*** FAIL: %d of our %d commands have no saved counterpart: %s ***"
-                   % (len(ours) - len(shared), len(ours),
-                      sorted(set(ours) - set(saved), key=int)[:12]))
-            fails.append("%s: compared only %d of our %d commands"
-                         % (name, len(shared), len(ours)))
-        elif diff:
-            if is_ollama_or_cloud:
-                tag = "%s  (reported only: Ollama/cloud arm, not bit-exact)" % diff[:12]
-            else:
-                tag = "*** FAIL *** %s" % diff[:20]
-                fails.append("%s: %d of %d commands differ from the earlier run: %s"
-                             % (name, len(diff), len(shared), diff[:20]))
+        # the SAME rule as s1_run_arm.py gate 5 -- one function, two callers
+        truths = {str(i): C.truth_of(rw) for i, rw in enumerate(C.load_split(a.split))}
+        okc, line, n_sh, same = R.repro_compare(arm, a.split, ours, saved,
+                                                ours_correct, truths)
+        tag = line.split("identical", 1)[1].strip()
+        if not okc:
+            fails.append("%s: %s" % (name, line))
         print("%-28s %12s %10d  %s"
-              % (name, "%d/%d" % (len(shared), n_cmd), same, tag or "all identical"))
+              % (name, "%d/%d" % (n_sh, n_cmd), same, tag or "all identical"))
         done += 1
 
     print("=" * 124)

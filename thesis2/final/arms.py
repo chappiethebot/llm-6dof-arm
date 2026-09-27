@@ -414,17 +414,108 @@ register("cascade_oracle", "local", "deterministic", lambda: _cascade("oracle", 
          "CEILING, accuracy only: the true row is supplied", probs=True)
 
 
+ENSEMBLE_CELLS = (("classifier:distilbert", "classifier"),
+                  ("ollama:qwen2.5-3b-lora", "zero_shot"),
+                  ("openai:gpt-4o-mini", "rag"))
+
+
 def _ensemble():
-    raise SystemExit(
-        "GATE FAIL: arm 'ensemble' pairs three ALREADY-MEASURED V5 cells offline "
-        "(classifier, qwen2.5-3b-lora, gpt-4o-mini/rag). It has no inference path "
-        "of its own: run s1_run_v5_cells.py for the split first, then "
-        "s1_run_arm.py --arm ensemble, which pairs those rows. On held_out_v4c "
-        "the three V5 cells do not exist until s1_run_v5_cells.py has run there.")
+    """The disagreement ensemble, rebuilt OFFLINE from results_v5cells_<split>.csv.
+
+    No model and no API call: every input is a row s1_run_v5_cells.py already
+    measured. The rule is the original one (thesis2/scripts/a1_rest.py
+    run_ensemble): if the classifier and qwen2.5-3b-lora/zero_shot agree on
+    (action, target, location), emit the CLASSIFIER's object; otherwise emit
+    gpt-4o-mini/rag's.
+
+    gpt-4o-mini/rag has R = 5 repeats. They are collapsed by MAJORITY VOTE over
+    the canonical prediction (json, sorted keys); a tie goes to the earliest
+    run_index among the tied predictions. The original kept the LAST repeat
+    instead (its loader overwrote a dict); on V5's own files the two rules give
+    the same 216/216 predictions, with no ties.
+
+    Warm-up rows are used as predictions: a warm-up row is a real, validated
+    answer, excluded by V5 from timing and denominators only. That is what gives
+    command_id 0 a prediction (the classifier and LoRA cells have only their
+    warm-up row there), so this arm has all n commands like every other arm.
+    The original file has 216 -- command_id 0 was dropped with the warm-up.
+
+    The runner passes command_id and split; the command text is checked
+    against the V5 row so a misaligned pairing fails instead of scoring.
+    """
+    import collections
+    import csv as _csv
+    _csv.field_size_limit(2 ** 31 - 1)
+    cache = {}
+
+    def load(split):
+        p = C.OUT / ("results_v5cells_%s.csv" % split)
+        if not p.exists():
+            C.gate(False, ["ensemble: %s does not exist -- run s1_run_v5_cells.py "
+                           "--split %s first" % (p.relative_to(C.REPO), split)])
+        by = {k: {} for k in ENSEMBLE_CELLS}
+        with p.open(encoding="utf-8", newline="") as fh:
+            for r in _csv.DictReader(fh):
+                k = (r["model"], r["strategy"])
+                if k in by:
+                    by[k].setdefault(r["command_id"], []).append(r)
+        n, census, bad = len(C.load_split(split)), C.v5_census(), []
+        for k in ENSEMBLE_CELLS:
+            R = census[k]["repeats"]
+            short = [c for c in map(str, range(n)) if len(by[k].get(c, [])) != R]
+            errs = sum(1 for rs in by[k].values() for r in rs
+                       if r["stage"] in ("model_error", "prompt_error"))
+            if short or errs:
+                bad.append("%s/%s: %d command(s) without exactly R=%d rows %s; "
+                           "%d model_error/prompt_error row(s)"
+                           % (k[0], k[1], len(short), R, short[:8], errs))
+        if bad:
+            C.gate(False, ["ensemble: an input cell in %s is incomplete or has "
+                           "errors -- fix it with s1_run_v5_cells.py first" % p.name]
+                   + bad)
+        print("  ensemble inputs: %s -- 3 cells complete, no errors" % p.name)
+        return by
+
+    def pred(r):
+        try:
+            o = json.loads(r["pred_json"] or "{}")
+        except ValueError:
+            o = {}
+        return o if isinstance(o, dict) else {}
+
+    def vote(reps):
+        reps = sorted(reps, key=lambda r: int(r["run_index"]))
+        keys = [json.dumps(pred(r), sort_keys=True) for r in reps]
+        cnt = collections.Counter(keys)
+        top = max(cnt.values())
+        win = next(k for k in keys if cnt[k] == top)     # tie -> earliest run
+        tied = sum(1 for v in cnt.values() if v == top) > 1
+        return json.loads(win), "%d/%d%s" % (top, len(keys), " TIE" if tied else "")
+
+    field3 = lambda o: (o.get("action"), o.get("target"), o.get("location"))
+
+    def predict(cmd, command_id=None, split=None):
+        if command_id is None or split is None:
+            C.gate(False, ["ensemble pairs rows by command_id: call it through "
+                           "s1_run_arm.py, which passes command_id and split"])
+        if split not in cache:
+            cache[split] = load(split)
+        cid = str(command_id)
+        cls, lora, rag = (cache[split][k][cid] for k in ENSEMBLE_CELLS)
+        if any(r["command"] != cmd for r in cls + lora + rag):
+            C.gate(False, ["ensemble: command_id %s in results_v5cells_%s.csv is "
+                           "not %r -- misaligned pairing" % (cid, split, cmd)])
+        a, b = pred(cls[0]), pred(lora[0])               # both R = 1
+        if field3(a) == field3(b):
+            return a, dict(latency_ms=None, route="agree")
+        c, votes = vote(rag)
+        return c, dict(latency_ms=None, route="escalate_cloud", cloud_votes=votes)
+    return predict
 
 
 register("ensemble", "local", "deterministic", _ensemble,
-         "offline pairing of three measured V5 cells; claim withdrawn (p = 1.0)")
+         "offline pairing of three measured V5 cells (classifier, qwen2.5-3b-lora/"
+         "zero_shot, gpt-4o-mini/rag by majority vote); claim withdrawn (p = 1.0)")
 
 
 def get(name) -> Arm:

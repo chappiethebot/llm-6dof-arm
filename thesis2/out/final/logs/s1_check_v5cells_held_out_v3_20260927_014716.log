@@ -1,0 +1,76 @@
+================================================================================================
+s1_check_v5cells_held_out_v3   started 2026-09-27 01:47:16
+  log: thesis2\out\final\logs\s1_check_v5cells_held_out_v3_20260927_014716.log
+  python: C:\Users\USER\.conda\envs\thesis\python.exe
+================================================================================================
+  this run : thesis2\out\final\results_v5cells_held_out_v3.csv  (12152 rows)
+  V5 source: bench/results_v5_*.csv  (36 cells on held_out_v3)
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+
+========================================================================================================================================================
+model                      strategy      rows    warm empty/error rows (by stage)           action V5 action   raw agree lat p50 s
+========================================================================================================================================================
+classifier:distilbert      classifier     217       1 none                                  0.7465    0.7500     216/216     0.021
+ollama:deepseek-r1:7b      cot            217       1 extract_failed 3, schema_failed 17    0.1290    0.1250     216/216     8.815
+ollama:deepseek-r1:7b      few_shot       217       1 extract_failed 1, schema_failed 11    0.3963    0.3935     216/216     8.742
+ollama:deepseek-r1:7b      rag            217       1 extract_failed 1, schema_failed 43    0.7143    0.7130     216/216     8.618
+ollama:deepseek-r1:7b      role_based     217       1 extract_failed 2, schema_failed 11    0.3364    0.3380     216/216     8.797
+ollama:deepseek-r1:7b      zero_shot      217       1 extract_failed 3, schema_failed 16    0.1567    0.1574     216/216     9.151
+ollama:llama3.2:3b         cot            217       1 extract_failed 172, schema_failed     0.0783    0.0787     216/216     3.040
+ollama:llama3.2:3b         few_shot       217       1 schema_failed 99                      0.4194    0.4167     216/216     1.855
+ollama:llama3.2:3b         rag            217       1 extract_failed 1, schema_failed 22    0.3871    0.3843     216/216     1.877
+ollama:llama3.2:3b         role_based     217       1 extract_failed 8, schema_failed 50    0.5346    0.5324     216/216     1.802
+ollama:llama3.2:3b         zero_shot      217       1 schema_failed 18                      0.5622    0.5602     216/216     1.798
+ollama:qwen2.5-0.5b-lora   cot            217       1 extract_failed 113, schema_failed     0.0599    0.0602     216/216     1.302
+ollama:qwen2.5-0.5b-lora   few_shot       217       1 schema_failed 5                       0.2995    0.2963     216/216     1.333
+ollama:qwen2.5-0.5b-lora   rag            217       1 schema_failed 13                      0.2442    0.2407     216/216     1.340
+ollama:qwen2.5-0.5b-lora   role_based     217       1 schema_failed 26                      0.4378    0.4352     216/216     1.312
+ollama:qwen2.5-0.5b-lora   zero_shot      217       1 schema_failed 30                      0.4562    0.4537     216/216     1.318
+ollama:qwen2.5-3b-lora     cot            217       1 extract_failed 2, schema_failed 11    0.8157    0.8148     216/216     2.548
+ollama:qwen2.5-3b-lora     few_shot       217       1 schema_failed 1                       0.7604    0.7593     216/216     1.587
+ollama:qwen2.5-3b-lora     rag            217       1 schema_failed 9                       0.7465    0.7454     216/216     1.615
+ollama:qwen2.5-3b-lora     role_based     217       1 schema_failed 1                       0.9493    0.9491     216/216     1.557
+ollama:qwen2.5-3b-lora     zero_shot      217       1 schema_failed 1                       0.9585    0.9583     216/216     1.553
+ollama:qwen2.5:0.5b        cot            217       1 extract_failed 9, schema_failed 19    0.0138    0.0139     216/216     1.644
+ollama:qwen2.5:0.5b        few_shot       217       1 schema_failed 210                     0.0092    0.0046     216/216     1.396
+ollama:qwen2.5:0.5b        rag            217       1 schema_failed 107                     0.0599    0.0602     216/216     1.384
+ollama:qwen2.5:0.5b        role_based     217       1 schema_failed 154                     0.0737    0.0741     216/216     1.325
+ollama:qwen2.5:0.5b        zero_shot      217       1 schema_failed 154                     0.0922    0.0926     216/216     1.332
+ollama:qwen2.5:3b          cot            217       1 extract_failed 5, schema_failed 63    0.4055    0.4074     216/216     2.370
+ollama:qwen2.5:3b          few_shot       217       1 extract_failed 1, schema_failed 47    0.5945    0.5926     216/216     1.605
+ollama:qwen2.5:3b          rag            217       1 extract_failed 1, schema_failed 13    0.6636    0.6620     216/216     1.605
+ollama:qwen2.5:3b          role_based     217       1 schema_failed 43                      0.3687    0.3704     216/216     1.516
+ollama:qwen2.5:3b          zero_shot      217       1 schema_failed 42                      0.3825    0.3843     216/216     1.521
+openai:gpt-4o-mini         cot           1085       1 extract_failed 35, schema_failed 1    0.7180    0.7177      10/217     1.855
+openai:gpt-4o-mini         few_shot      1085       1 schema_failed 2                       0.8369    0.8284     204/217     0.632
+openai:gpt-4o-mini         rag           1085       1 none                                  0.9364    0.9382     213/217     0.664
+openai:gpt-4o-mini         role_based    1085       1 schema_failed 5                       0.9143    0.9133     213/217     0.618
+openai:gpt-4o-mini         zero_shot     1085       1 schema_failed 24                      0.8774    0.8745     202/217     0.603
+========================================================================================================================================================
+  36 cells, 12152 rows; 2523 rows not 'validated'; 3 rows with empty raw output
+
+  Denominators. This run writes 217 rows per local cell at R = 1 and marks
+  command_id 0 as the warm-up, as V5 did; V5's own cell accuracy above is
+  computed on its NON-warmup rows (216 for a local cell, 1,084-1,085 for a
+  cloud cell with 5 repeats). The two accuracy columns therefore use
+  slightly different denominators and are comparable to within one command.
+
+------------------------------------------------------------------------------------------------
+  REPORT ONLY: nothing written, no model loaded, no inference run
+  36 cells, 12152 rows; 2523 not 'validated'; 3 empty raw
+  0 of 36 cells have every row failed
+  prompt_error cells: 0 (any is a FAIL)
+  cells worse than V5 on empty output: 0 (any is a FAIL)
+  LOCAL cells below the 210/216 raw-agreement floor: 0 (any is a FAIL)
+  CLOUD cells with model_error rows: 0 (any is a FAIL)
+  CLOUD cells outside +/-3 pts of V5's action match: 0 (any is a FAIL)
+  CLOUD raw agreement is reported below, never gated on:
+     openai:gpt-4o-mini         cot         action 0.7177 vs V5 0.7177 (+0.0000) within 3 pts; raw agreement 10/217 (reported, not gated)
+     openai:gpt-4o-mini         few_shot    action 0.8367 vs V5 0.8284 (+0.0083) within 3 pts; raw agreement 204/217 (reported, not gated)
+     openai:gpt-4o-mini         rag         action 0.9363 vs V5 0.9382 (-0.0018) within 3 pts; raw agreement 213/217 (reported, not gated)
+     openai:gpt-4o-mini         role_based  action 0.9142 vs V5 0.9133 (+0.0009) within 3 pts; raw agreement 213/217 (reported, not gated)
+     openai:gpt-4o-mini         zero_shot   action 0.8773 vs V5 0.8745 (+0.0028) within 3 pts; raw agreement 202/217 (reported, not gated)
+------------------------------------------------------------------------------------------------
+GATE PASS

@@ -1,0 +1,11 @@
+2026-09-27 01:46:58  PHASE A - finish held_out_v3
+2026-09-27 01:46:58  START  S1-4 V5 cloud cells, held_out_v3 (5,425 billed calls)
+2026-09-27 01:47:18  DONE   S1-4 V5 cloud cells, held_out_v3 (5,425 billed calls)  (0.3 min)
+2026-09-27 01:47:19  CHECK  held_out_v3: 12152 rows
+2026-09-27 01:47:19  START  S1-5 cascade_cloud_tauA held_out_v3
+2026-09-27 01:48:54  DONE   S1-5 cascade_cloud_tauA held_out_v3  (1.6 min)
+2026-09-27 01:48:55  START  S1-5 cascade_cloud_always held_out_v3
+2026-09-27 01:54:20  DONE   S1-5 cascade_cloud_always held_out_v3  (5.4 min)
+2026-09-27 01:54:20  START  S1-5 ensemble held_out_v3
+2026-09-27 01:54:25  AUTORUN STOPPED: S1-5 ensemble held_out_v3  (exit code 1, after 0.1 min)
+2026-09-27 01:54:25  Paste the lines above to your advisor. Fix, then run the SAME command again.

@@ -463,7 +463,10 @@ def score_row(arm, split, cid, rep, command, raw, obj, truth, latency_ms, note="
                 location_correct=("" if not tl else pl == tl),
                 row_correct=("" if not rowof(tl) else rowof(pl) == rowof(tl)),
                 col_correct=("" if not colof(tl) else colof(pl) == colof(tl)),
-                latency_ms=round(latency_ms, 3), note=note)
+                # None = the arm has no latency of its own (the offline ensemble);
+                # written empty so Stage 2 reports n/a, never a fake 0
+                latency_ms="" if latency_ms is None else round(latency_ms, 3),
+                note=note)
 
 
 def write_preds(arm, split, rows):

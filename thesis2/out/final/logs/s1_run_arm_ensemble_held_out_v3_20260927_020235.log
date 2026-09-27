@@ -1,0 +1,34 @@
+================================================================================================
+s1_run_arm_ensemble_held_out_v3   started 2026-09-27 02:02:35
+  log: thesis2\out\final\logs\s1_run_arm_ensemble_held_out_v3_20260927_020235.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  torch 2.14.0+cu126 cuda=True | transformers 5.17.0
+  gpu: NVIDIA GeForce RTX 4060 Ti
+  arm  : ensemble  (local, deterministic)
+  note : offline pairing of three measured V5 cells (classifier, qwen2.5-3b-lora/zero_shot, gpt-4o-mini/rag by majority vote); claim withdrawn (p = 1.0)
+  split: held_out_v3
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+  R = 1  (read from V5's local cells; not chosen)
+  rows for this arm x split: 217 commands x 1 repeats = 217
+  planned grand total across the registry and both splits: 28 local x 434 x 1 + 2 cloud x 434 x 5 = 16492 rows
+  existing file: pred_ensemble_held_out_v3.csv (file absent or empty)
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+  ensemble inputs: results_v5cells_held_out_v3.csv -- 3 cells complete, no errors
+      50/217 commands (0s)
+     100/217 commands (0s)
+     150/217 commands (0s)
+     200/217 commands (0s)
+  wrote pred_ensemble_held_out_v3.csv (217 rows)
+
+------------------------------------------------------------------------------------------------
+  determinism across repeats: NOT TESTABLE at R = 1 (V5's local repeat count). The cross-run check below is the determinism evidence for this arm.
+  action match 0.9631 (n=217); row accuracy 1.0000 (n=108)
+  reproducibility vs saved held_out_v3: 215/216 identical  (differing command_ids ['132']: reported only -- its gpt-4o-mini/rag input is sampled (R = 5, majority vote); per-command outcome identical on 216/216); not in the saved file by design: 0 (V5's warm-up row, dropped by the original loader)
+  output: thesis2\out\final\pred_ensemble_held_out_v3.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

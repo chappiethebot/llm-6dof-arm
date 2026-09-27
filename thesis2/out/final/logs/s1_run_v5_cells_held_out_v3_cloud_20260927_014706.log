@@ -1,0 +1,81 @@
+================================================================================================
+s1_run_v5_cells_held_out_v3_cloud   started 2026-09-27 01:47:06
+  log: thesis2\out\final\logs\s1_run_v5_cells_held_out_v3_cloud_20260927_014706.log
+  python: C:\Users\USER\.conda\envs\thesis\python.exe
+================================================================================================
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+
+  V5 CELL PLAN (read from bench/, not chosen)
+  model                              strategy     R         n_cmd       rows
+  classifier:distilbert              classifier   1           217        217   (skipped: --kind cloud)
+  ollama:deepseek-r1:7b              cot          1           217        217   (skipped: --kind cloud)
+  ollama:deepseek-r1:7b              few_shot     1           217        217   (skipped: --kind cloud)
+  ollama:deepseek-r1:7b              rag          1           217        217   (skipped: --kind cloud)
+  ollama:deepseek-r1:7b              role_based   1           217        217   (skipped: --kind cloud)
+  ollama:deepseek-r1:7b              zero_shot    1           217        217   (skipped: --kind cloud)
+  ollama:llama3.2:3b                 cot          1           217        217   (skipped: --kind cloud)
+  ollama:llama3.2:3b                 few_shot     1           217        217   (skipped: --kind cloud)
+  ollama:llama3.2:3b                 rag          1           217        217   (skipped: --kind cloud)
+  ollama:llama3.2:3b                 role_based   1           217        217   (skipped: --kind cloud)
+  ollama:llama3.2:3b                 zero_shot    1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5-0.5b-lora           cot          1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5-0.5b-lora           few_shot     1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5-0.5b-lora           rag          1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5-0.5b-lora           role_based   1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5-0.5b-lora           zero_shot    1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5-3b-lora             cot          1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5-3b-lora             few_shot     1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5-3b-lora             rag          1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5-3b-lora             role_based   1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5-3b-lora             zero_shot    1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5:0.5b                cot          1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5:0.5b                few_shot     1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5:0.5b                rag          1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5:0.5b                role_based   1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5:0.5b                zero_shot    1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5:3b                  cot          1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5:3b                  few_shot     1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5:3b                  rag          1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5:3b                  role_based   1           217        217   (skipped: --kind cloud)
+  ollama:qwen2.5:3b                  zero_shot    1           217        217   (skipped: --kind cloud)
+  openai:gpt-4o-mini                 cot          5           217       1085
+  openai:gpt-4o-mini                 few_shot     5           217       1085
+  openai:gpt-4o-mini                 rag          5           217       1085
+  openai:gpt-4o-mini                 role_based   5           217       1085
+  openai:gpt-4o-mini                 zero_shot    5           217       1085
+  TOTAL (all cells)                                                    12152
+  V5's own held_out_v3 total: 12152 rows
+  row-count gate: PASS (12152 == 12152)
+  this run will execute 5 cell(s)
+  effective n per cell: 217 commands (repeats collapse by majority vote)
+
+  exemplars: k=3 from V5's DATASETS['held_out_v3']['exemplars_from'] via bench/run_cell._load_rows
+     3 exemplar(s): ['put the bottle in the far left corner of', 'put the bottle in the far side middle ed', 'put the bottle in the farthest spot you ']
+  building the rag Retriever ONCE for reuse across cells
+  RESUMING: 12152 rows kept; complete (cell, command, repeat) triples are skipped
+     openai:gpt-4o-mini                 cot          +0 rows (cell 0s, run 0s)
+     openai:gpt-4o-mini                 few_shot     +0 rows (cell 0s, run 0s)
+     openai:gpt-4o-mini                 rag          +0 rows (cell 0s, run 0s)
+     openai:gpt-4o-mini                 role_based   +0 rows (cell 0s, run 0s)
+     openai:gpt-4o-mini                 zero_shot    +0 rows (cell 0s, run 1s)
+
+  cells in the file: 36 ; rows: 12152
+  output: thesis2\out\final\results_v5cells_held_out_v3.csv
+
+================================================================================================
+RUNNING s1_check_v5cells.py -- the audit is part of every run
+================================================================================================
+
+  s1_check_v5cells.py exit code: 0
+
+------------------------------------------------------------------------------------------------
+  cells written: 36 of the 5 selected
+  rows written: 12152
+  effective n per cell: 217 commands; repeats collapse by majority vote (A9)
+  clients missing from llm.clients: none
+  the audit ran and passed
+  output: thesis2\out\final\results_v5cells_held_out_v3.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

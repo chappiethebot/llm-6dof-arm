@@ -186,6 +186,72 @@ def canon(obj):
     return json.dumps(obj if isinstance(obj, dict) else {}, sort_keys=True)
 
 
+# Saved files that leave commands out BY DESIGN. Every other saved file must
+# cover every command this run produced, or the comparison FAILS.
+SAVED_EXCLUDES = {
+    "ensemble": {"0": "V5's warm-up row, dropped by the original loader"},
+}
+
+# Arms with a SAMPLED input. Where that input's repeats split differently
+# between two runs, the prediction can differ with the code unchanged, so the
+# prediction is reported and the per-command OUTCOME (correct / wrong) is gated.
+SAMPLED_INPUT = {
+    "ensemble": "its gpt-4o-mini/rag input is sampled (R = 5, majority vote)",
+}
+
+
+def repro_compare(arm, split, ours, saved, ours_correct, truths):
+    """The reproducibility rule, shared by gate 5 here and s1_repro_check.py.
+
+    ours / saved: {str(command_id): canonical json}; ours_correct: {cid: bool};
+    truths: {cid: truth dict}. Returns (ok, line, n_shared, n_same).
+    """
+    saved = {str(k): v for k, v in saved.items()}
+    shared = sorted(set(saved) & set(ours), key=int)
+    diff = [c for c in shared if ours[c] != saved[c]]
+    same = len(shared) - len(diff)
+    line = "reproducibility vs saved %s: %d/%d identical" % (split, same, len(shared))
+    excl = SAVED_EXCLUDES.get(arm.name, {})
+    uncovered = sorted(set(ours) - set(saved), key=int)
+    unexpected = [c for c in uncovered if c not in excl]
+    cloudish = arm.kind == "cloud" or "ollama" in (arm.note or "").lower()
+    ok = True
+    if not shared:
+        # A comparison of zero commands is not a pass. It used to be one.
+        ok = False
+        line += ("  *** FAIL: ZERO commands compared. %d saved ids (%s...) vs "
+                 "%d run ids (%s...) -- the join key does not match, so this "
+                 "arm is UNVERIFIED ***"
+                 % (len(saved), sorted(saved, key=str)[:3],
+                    len(ours), sorted(ours, key=str)[:3]))
+    elif unexpected:
+        ok = False
+        line += ("  *** FAIL: %d of this run's %d commands had no saved counterpart; "
+                 "missing ids %s ***" % (len(unexpected), len(ours), unexpected[:20]))
+    elif diff and arm.name in SAMPLED_INPUT:
+        from llm.score import score
+        out_diff = [c for c in diff
+                    if bool(score(json.loads(saved[c]), truths[c]).strict_match)
+                    != ours_correct[c]]
+        if out_diff:
+            ok = False
+            line += ("  *** FAIL: prediction differs on %s and the OUTCOME differs "
+                     "on %s ***" % (diff[:20], out_diff[:20]))
+        else:
+            line += ("  (differing command_ids %s: reported only -- %s; per-command "
+                     "outcome identical on %d/%d)"
+                     % (diff[:20], SAMPLED_INPUT[arm.name], len(shared), len(shared)))
+    elif diff and arm.determinism == "deterministic" and not cloudish:
+        ok = False
+        line += "  *** FAIL, differing command_ids: %s ***" % diff[:20]
+    elif diff:
+        line += "  (differing %s; reported only: Ollama/cloud arm)" % diff[:20]
+    if uncovered and not unexpected:
+        line += "; not in the saved file by design: %s" % ", ".join(
+            "%s (%s)" % (c, excl[c]) for c in uncovered)
+    return ok, line, len(shared), same
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--arm")
@@ -296,6 +362,8 @@ def main():
             kw = {}
             if arm.name == "cascade_oracle":
                 kw["truth_row"] = C.rowof(truth.get("location"))
+            elif arm.name == "ensemble":
+                kw.update(command_id=cid, split=a.split)   # pairs V5 rows by id
             obj, info = predict(row["command"], **kw) if kw else predict(row["command"])
             out_rows.append(C.score_row(
                 arm.name, a.split, cid, rep, row["command"],
@@ -354,32 +422,13 @@ def main():
     # ---- gate 5: reproducibility against the earlier run
     saved = saved_predictions(arm.name, a.split)
     if saved:
-        saved = {str(k): v for k, v in saved.items()}
-        shared = sorted(set(saved) & set(first), key=int)
-        same = sum(1 for c in shared if canon(json.loads(first[c]["pred_json"])) == saved[c])
-        line = ("reproducibility vs saved %s: %d/%d identical"
-                % (a.split, same, len(shared)))
-        is_ollama_or_cloud = arm.kind == "cloud" or "ollama" in arm.note.lower()
-        if not shared:
-            # A comparison of zero commands is not a pass. It used to be one.
-            ok = False
-            line += ("  *** FAIL: ZERO commands compared. %d saved ids (%s...) vs "
-                     "%d run ids (%s...) -- the join key does not match, so this "
-                     "arm is UNVERIFIED ***"
-                     % (len(saved), sorted(saved, key=str)[:3],
-                        len(first), sorted(first, key=str)[:3]))
-        elif len(shared) < len(first):
-            ok = False
-            line += ("  *** FAIL: only %d of this run's %d commands had a saved "
-                     "counterpart; missing ids %s ***"
-                     % (len(shared), len(first),
-                        sorted(set(first) - set(saved), key=int)[:20]))
-        elif same != len(shared) and arm.determinism == "deterministic" and not is_ollama_or_cloud:
-            ok = False
-            diff = [c for c in shared if canon(json.loads(first[c]["pred_json"])) != saved[c]]
-            line += "  *** FAIL, differing command_ids: %s ***" % diff[:20]
-        elif same != len(shared):
-            line += "  (reported only: Ollama/cloud arm)"
+        ok5, line, _n, _s = repro_compare(
+            arm, a.split,
+            {c: canon(json.loads(r["pred_json"])) for c, r in first.items()},
+            saved,
+            {c: str(r["correct"]).lower() == "true" for c, r in first.items()},
+            {str(i): C.truth_of(rw) for i, rw in enumerate(rows_in)})
+        ok = ok and ok5
         notes.append(line)
     else:
         why = NO_SAVED.get(arm.name, "no saved per-command file for this arm x split")
