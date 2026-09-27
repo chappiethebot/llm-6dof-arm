@@ -1,0 +1,45 @@
+2026-09-27 02:04:25  PHASE A - finish held_out_v3
+2026-09-27 02:04:25  START  S1-4 V5 cloud cells, held_out_v3 (5,425 billed calls)
+2026-09-27 02:04:41  DONE   S1-4 V5 cloud cells, held_out_v3 (5,425 billed calls)  (0.3 min)
+2026-09-27 02:04:41  CHECK  held_out_v3: 12152 rows
+2026-09-27 02:04:41  START  S1-5 cascade_cloud_tauA held_out_v3
+2026-09-27 02:04:46  DONE   S1-5 cascade_cloud_tauA held_out_v3  (0.1 min)
+2026-09-27 02:04:46  START  S1-5 cascade_cloud_always held_out_v3
+2026-09-27 02:04:51  DONE   S1-5 cascade_cloud_always held_out_v3  (0.1 min)
+2026-09-27 02:04:51  START  S1-5 ensemble held_out_v3
+2026-09-27 02:04:56  DONE   S1-5 ensemble held_out_v3  (0.1 min)
+2026-09-27 02:04:56  START  S1-5b reproducibility gate held_out_v3
+2026-09-27 02:05:01  DONE   S1-5b reproducibility gate held_out_v3  (0.1 min)
+2026-09-27 02:05:01  SUMMARY action match per arm on held_out_v3
+2026-09-27 02:05:01     a10_speculative                          0.9539
+2026-09-27 02:05:01     a12_smalllm                              0.9539
+2026-09-27 02:05:01     a8_speculative                           0.9539
+2026-09-27 02:05:01     bilstm                                   0.7005
+2026-09-27 02:05:01     cascade_cloud_always                     0.7908
+2026-09-27 02:05:01     cascade_cloud_tauA                       0.7327
+2026-09-27 02:05:01     cascade_local_tauA                       0.7327
+2026-09-27 02:05:01     cascade_oracle                           0.9401
+2026-09-27 02:05:01     ensemble                                 0.9631
+2026-09-27 02:05:01     factorized_fp16                          0.6083
+2026-09-27 02:05:01     factorized_int4                          0.6083
+2026-09-27 02:05:01     flant5                                   0.6175
+2026-09-27 02:05:01     flat_cpu                                 0.7465
+2026-09-27 02:05:01     flat_gpu                                 0.7465
+2026-09-27 02:05:01     grpo_base                                0.7926
+2026-09-27 02:05:01     grpo_sft                                 0.9585
+2026-09-27 02:05:01     knn_minilm                               0.6452
+2026-09-27 02:05:01     lora_greedy                              0.9539
+2026-09-27 02:05:01     minilm_probe                             0.6498
+2026-09-27 02:05:01     mlpbow                                   0.6406
+2026-09-27 02:05:01     pipeline_always_local                    0.8433
+2026-09-27 02:05:01     rules_firewalled                         0.4470
+2026-09-27 02:05:01     rules_open                               0.7235
+2026-09-27 02:05:01     salsa_full_Qwen2.5-0.5B-Instruct         0.0461
+2026-09-27 02:05:01     salsa_full_qwen2.5-0.5b-lora             0.0369
+2026-09-27 02:05:01     salsa_full_Qwen2.5-3B-Instruct           0.3594
+2026-09-27 02:05:01     salsa_full_qwen2.5-3b-lora               0.5023
+2026-09-27 02:05:01     textcnn                                  0.6959
+2026-09-27 02:05:01     tfidf_logreg                             0.6221
+2026-09-27 02:05:01     tinybert                                 0.5760
+2026-09-27 02:05:01  PHASE A COMPLETE. Paste this log to the advisor. Do NOT start Phase B before review.
+2026-09-27 02:05:01  step log: C:\Users\USER\llm-6dof-arm\thesis2\out\final\logs\autorun_phaseA_20260927_020425.log
