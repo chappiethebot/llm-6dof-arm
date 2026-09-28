@@ -1,0 +1,44 @@
+================================================================================================
+s3_energy_pipeline_always_local_held_out_v4c   started 2026-09-28 04:36:28
+  log: thesis2\out\final\logs\s3_energy_pipeline_always_local_held_out_v4c_20260928_043628.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  idle baseline: 10.35 W median, 3.3 min old
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 5 s elapsed
+     434 commands, 9 s elapsed
+     651 commands, 14 s elapsed
+     868 commands, 19 s elapsed
+     1085 commands, 23 s elapsed
+     1302 commands, 28 s elapsed
+     1519 commands, 32 s elapsed
+     1736 commands, 37 s elapsed
+     1953 commands, 42 s elapsed
+     2170 commands, 46 s elapsed
+     2387 commands, 51 s elapsed
+     2604 commands, 56 s elapsed
+     2821 commands, 60 s elapsed
+     3038 commands, 65 s elapsed
+     3255 commands, 69 s elapsed
+     3472 commands, 74 s elapsed
+     3689 commands, 79 s elapsed
+     3906 commands, 83 s elapsed
+     4123 commands, 88 s elapsed
+     4340 commands, 92 s elapsed
+     4557 commands, 97 s elapsed
+     4774 commands, 100 s elapsed
+     4991 commands, 104 s elapsed
+     5208 commands, 109 s elapsed
+     5425 commands, 114 s elapsed
+     5642 commands, 118 s elapsed
+     5859 commands, 123 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  pipeline_always_local on held_out_v4c: N=5859 commands in 122.8 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 38.18 / 39.26 / 39.90 ms
+  energy 2.27149 J/command (mean 118.7 W - idle 10.35 W)
+  max GPU temp 65 C; peak VRAM 8476.0 MB; CPU 21.17 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples pipeline_always_local_held_out_v4c_20260928_043842.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

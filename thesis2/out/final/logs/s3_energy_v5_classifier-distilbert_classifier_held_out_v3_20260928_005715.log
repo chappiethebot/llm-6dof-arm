@@ -1,0 +1,47 @@
+================================================================================================
+s3_energy_v5_classifier-distilbert_classifier_held_out_v3   started 2026-09-28 00:57:15
+  log: thesis2\out\final\logs\s3_energy_v5_classifier-distilbert_classifier_held_out_v3_20260928_005715.log
+  python: C:\Users\USER\.conda\envs\thesis\python.exe
+================================================================================================
+  idle baseline: 11.03 W median, 92.3 min old
+  exemplars: k=3 from V5's DATASETS['held_out_v3']['exemplars_from'] (0 in the fixed pool); rag retriever: n/a
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 4 s elapsed
+     434 commands, 9 s elapsed
+     651 commands, 13 s elapsed
+     868 commands, 17 s elapsed
+     1085 commands, 22 s elapsed
+     1302 commands, 26 s elapsed
+     1519 commands, 30 s elapsed
+     1736 commands, 34 s elapsed
+     1953 commands, 38 s elapsed
+     2170 commands, 42 s elapsed
+     2387 commands, 47 s elapsed
+     2604 commands, 51 s elapsed
+     2821 commands, 55 s elapsed
+     3038 commands, 59 s elapsed
+     3255 commands, 63 s elapsed
+     3472 commands, 67 s elapsed
+     3689 commands, 72 s elapsed
+     3906 commands, 76 s elapsed
+     4123 commands, 80 s elapsed
+     4340 commands, 84 s elapsed
+     4557 commands, 88 s elapsed
+     4774 commands, 92 s elapsed
+     4991 commands, 97 s elapsed
+     5208 commands, 101 s elapsed
+     5425 commands, 105 s elapsed
+     5642 commands, 109 s elapsed
+     5859 commands, 113 s elapsed
+     6076 commands, 117 s elapsed
+     6293 commands, 122 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  v5:classifier:distilbert/classifier on held_out_v3: N=6293 commands in 121.6 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 19.04 / 24.00 / 25.35 ms
+  energy -0.00613 J/command (mean 10.7 W - idle 11.03 W)
+  max GPU temp 41 C; peak VRAM 1409.0 MB; CPU 19.14 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples v5-classifier-distilbert_classifier_held_out_v3_20260928_005923.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

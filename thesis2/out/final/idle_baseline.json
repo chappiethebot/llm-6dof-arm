@@ -1,0 +1,10 @@
+{
+  "utc": "2026-09-28T02:33:07Z",
+  "epoch": 1790562787.9490385,
+  "idle_median_w": 10.35,
+  "idle_mean_w": 10.562,
+  "mean_util_pct": 0.792,
+  "max_temp_c": 45.0,
+  "n_samples": 289,
+  "raw": "thesis2\\out\\final\\power_logs\\idle_20260928_043307.csv"
+}

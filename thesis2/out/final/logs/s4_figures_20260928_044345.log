@@ -1,0 +1,18 @@
+================================================================================================
+s4_figures   started 2026-09-28 04:43:45
+  log: thesis2\out\final\logs\s4_figures_20260928_044345.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  60 metric rows, 1740 significance rows
+
+------------------------------------------------------------------------------------------------
+  6 figures in thesis2\figures\final
+    fig1_action_vs_latency.png
+    fig2_action_vs_energy.png
+    fig3_row_by_wordgroup.png
+    fig4_row_confusion.png
+    fig5_a10_breakdown.png
+    fig6_action_vs_vram.png
+  claimable differences marked: filled = CLAIMABLE in the primary family
+------------------------------------------------------------------------------------------------
+GATE PASS

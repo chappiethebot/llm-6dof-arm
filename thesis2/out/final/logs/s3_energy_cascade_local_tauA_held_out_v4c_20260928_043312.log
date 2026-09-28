@@ -1,0 +1,83 @@
+================================================================================================
+s3_energy_cascade_local_tauA_held_out_v4c   started 2026-09-28 04:33:12
+  log: thesis2\out\final\logs\s3_energy_cascade_local_tauA_held_out_v4c_20260928_043312.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  idle baseline: 10.35 W median, 0.1 min old
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 2 s elapsed
+     434 commands, 4 s elapsed
+     651 commands, 6 s elapsed
+     868 commands, 7 s elapsed
+     1085 commands, 9 s elapsed
+     1302 commands, 11 s elapsed
+     1519 commands, 13 s elapsed
+     1736 commands, 15 s elapsed
+     1953 commands, 17 s elapsed
+     2170 commands, 18 s elapsed
+     2387 commands, 20 s elapsed
+     2604 commands, 22 s elapsed
+     2821 commands, 24 s elapsed
+     3038 commands, 26 s elapsed
+     3255 commands, 27 s elapsed
+     3472 commands, 29 s elapsed
+     3689 commands, 31 s elapsed
+     3906 commands, 33 s elapsed
+     4123 commands, 35 s elapsed
+     4340 commands, 37 s elapsed
+     4557 commands, 38 s elapsed
+     4774 commands, 40 s elapsed
+     4991 commands, 42 s elapsed
+     5208 commands, 44 s elapsed
+     5425 commands, 46 s elapsed
+     5642 commands, 48 s elapsed
+     5859 commands, 49 s elapsed
+     6076 commands, 51 s elapsed
+     6293 commands, 53 s elapsed
+     6510 commands, 55 s elapsed
+     6727 commands, 57 s elapsed
+     6944 commands, 59 s elapsed
+     7161 commands, 60 s elapsed
+     7378 commands, 62 s elapsed
+     7595 commands, 64 s elapsed
+     7812 commands, 66 s elapsed
+     8029 commands, 68 s elapsed
+     8246 commands, 70 s elapsed
+     8463 commands, 71 s elapsed
+     8680 commands, 73 s elapsed
+     8897 commands, 75 s elapsed
+     9114 commands, 77 s elapsed
+     9331 commands, 79 s elapsed
+     9548 commands, 80 s elapsed
+     9765 commands, 82 s elapsed
+     9982 commands, 84 s elapsed
+     10199 commands, 86 s elapsed
+     10416 commands, 88 s elapsed
+     10633 commands, 90 s elapsed
+     10850 commands, 91 s elapsed
+     11067 commands, 93 s elapsed
+     11284 commands, 95 s elapsed
+     11501 commands, 97 s elapsed
+     11718 commands, 99 s elapsed
+     11935 commands, 101 s elapsed
+     12152 commands, 102 s elapsed
+     12369 commands, 104 s elapsed
+     12586 commands, 106 s elapsed
+     12803 commands, 108 s elapsed
+     13020 commands, 110 s elapsed
+     13237 commands, 111 s elapsed
+     13454 commands, 113 s elapsed
+     13671 commands, 115 s elapsed
+     13888 commands, 117 s elapsed
+     14105 commands, 119 s elapsed
+     14322 commands, 121 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  cascade_local_tauA on held_out_v4c: N=14322 commands in 120.6 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 3.49 / 38.73 / 39.36 ms
+  energy 0.80298 J/command (mean 105.7 W - idle 10.35 W)
+  max GPU temp 65 C; peak VRAM 8476.0 MB; CPU 8.39 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples cascade_local_tauA_held_out_v4c_20260928_043523.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

@@ -1,0 +1,19 @@
+================================================================================================
+s3_energy_v5_ollama-llama3.2-3b_cot_held_out_v3   started 2026-09-27 20:24:33
+  log: thesis2\out\final\logs\s3_energy_v5_ollama-llama3.2-3b_cot_held_out_v3_20260927_202433.log
+  python: C:\Users\USER\.conda\envs\thesis\python.exe
+================================================================================================
+  idle baseline: 10.93 W median, 63.6 min old
+  exemplars: k=3 from V5's DATASETS['held_out_v3']['exemplars_from'] (0 in the fixed pool); rag retriever: n/a
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 698 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  v5:ollama:llama3.2:3b/cot on held_out_v3: N=217 commands in 697.7 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 3111.16 / 4059.18 / 4351.14 ms
+  energy 214.10761 J/command (mean 77.5 W - idle 10.93 W)
+  max GPU temp 65 C; peak VRAM 4293.0 MB; CPU 9.86 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples v5-ollama-llama3.2-3b_cot_held_out_v3_20260927_203627.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

@@ -1,0 +1,20 @@
+================================================================================================
+s3_energy_grpo_base_held_out_v4c   started 2026-09-28 04:19:56
+  log: thesis2\out\final\logs\s3_energy_grpo_base_held_out_v4c_20260928_041956.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  idle baseline: 10.78 W median, 95.8 min old
+  frozen-checkpoint gate OK for grpo_base (86acbd3da67a78ac, dev 0.8421052631578947)
+  frozen-checkpoint gate OK for grpo_base (86acbd3da67a78ac, dev 0.8421052631578947)
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 167 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  grpo_base on held_out_v4c: N=217 commands in 166.9 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 879.67 / 910.76 / 912.28 ms
+  energy 70.08044 J/command (mean 101.9 W - idle 10.78 W)
+  max GPU temp 69 C; peak VRAM 8206.0 MB; CPU 750.43 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples grpo_base_held_out_v4c_20260928_042256.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

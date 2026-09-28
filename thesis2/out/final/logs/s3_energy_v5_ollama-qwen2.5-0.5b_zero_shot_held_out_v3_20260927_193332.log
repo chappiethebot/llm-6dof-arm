@@ -1,0 +1,19 @@
+================================================================================================
+s3_energy_v5_ollama-qwen2.5-0.5b_zero_shot_held_out_v3   started 2026-09-27 19:33:32
+  log: thesis2\out\final\logs\s3_energy_v5_ollama-qwen2.5-0.5b_zero_shot_held_out_v3_20260927_193332.log
+  python: C:\Users\USER\.conda\envs\thesis\python.exe
+================================================================================================
+  idle baseline: 10.93 W median, 12.6 min old
+  exemplars: k=3 from V5's DATASETS['held_out_v3']['exemplars_from'] (0 in the fixed pool); rag retriever: n/a
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 303 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  v5:ollama:qwen2.5:0.5b/zero_shot on held_out_v3: N=217 commands in 303.0 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 1397.50 / 1439.34 / 1460.55 ms
+  energy 30.84484 J/command (mean 33.0 W - idle 10.93 W)
+  max GPU temp 60 C; peak VRAM 2393.0 MB; CPU 4.18 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples v5-ollama-qwen2.5-0.5b_zero_shot_held_out_v3_20260927_193843.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

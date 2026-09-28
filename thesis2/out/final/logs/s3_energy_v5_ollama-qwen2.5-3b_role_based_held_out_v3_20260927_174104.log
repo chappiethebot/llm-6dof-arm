@@ -1,0 +1,19 @@
+================================================================================================
+s3_energy_v5_ollama-qwen2.5-3b_role_based_held_out_v3   started 2026-09-27 17:41:04
+  log: thesis2\out\final\logs\s3_energy_v5_ollama-qwen2.5-3b_role_based_held_out_v3_20260927_174104.log
+  python: C:\Users\USER\.conda\envs\thesis\python.exe
+================================================================================================
+  idle baseline: 10.42 W median, 32.1 min old
+  exemplars: k=3 from V5's DATASETS['held_out_v3']['exemplars_from'] (0 in the fixed pool); rag retriever: n/a
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 341 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  v5:ollama:qwen2.5:3b/role_based on held_out_v3: N=217 commands in 341.0 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 1570.84 / 1668.10 / 1716.08 ms
+  energy 58.84008 J/command (mean 47.9 W - idle 10.42 W)
+  max GPU temp 64 C; peak VRAM 3951.0 MB; CPU 4.68 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples v5-ollama-qwen2.5-3b_role_based_held_out_v3_20260927_174654.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

@@ -1,0 +1,22 @@
+================================================================================================
+s3_energy_flant5_held_out_v3   started 2026-09-28 01:46:59
+  log: thesis2\out\final\logs\s3_energy_flant5_held_out_v3_20260928_014659.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  idle baseline: 10.80 W median, 35.2 min old
+  frozen-checkpoint gate OK for flant5 (3de022196f12a9b5, dev 0.9298245614035088)
+  frozen-checkpoint gate OK for flant5 (3de022196f12a9b5, dev 0.9298245614035088)
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 51 s elapsed
+     434 commands, 102 s elapsed
+     651 commands, 153 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  flant5 on held_out_v3: N=651 commands in 153.2 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 260.32 / 326.24 / 347.53 ms
+  energy 4.42635 J/command (mean 29.6 W - idle 10.80 W)
+  max GPU temp 48 C; peak VRAM 2582.0 MB; CPU 232.48 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples flant5_held_out_v3_20260928_014939.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

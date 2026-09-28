@@ -1,0 +1,22 @@
+================================================================================================
+s3_energy_salsa_full_qwen2.5-3b-lora_held_out_v4c   started 2026-09-28 04:05:40
+  log: thesis2\out\final\logs\s3_energy_salsa_full_qwen2.5-3b-lora_held_out_v4c_20260928_040540.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  idle baseline: 10.78 W median, 81.5 min old
+  frozen-checkpoint gate OK for salsa_full_qwen2.5-3b-lora (5b409e547527340b, dev 0.5614)
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 39 s elapsed
+     434 commands, 78 s elapsed
+     651 commands, 117 s elapsed
+     868 commands, 156 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  salsa_full_qwen2.5-3b-lora on held_out_v4c: N=868 commands in 155.9 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 196.77 / 198.47 / 199.05 ms
+  energy 21.57315 J/command (mean 130.9 W - idle 10.78 W)
+  max GPU temp 70 C; peak VRAM 8480.0 MB; CPU 167.00 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples salsa_full_qwen2.5-3b-lora_held_out_v4c_20260928_040826.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

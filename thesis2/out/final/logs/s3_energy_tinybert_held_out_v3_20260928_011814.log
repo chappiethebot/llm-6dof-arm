@@ -1,0 +1,177 @@
+================================================================================================
+s3_energy_tinybert_held_out_v3   started 2026-09-28 01:18:14
+  log: thesis2\out\final\logs\s3_energy_tinybert_held_out_v3_20260928_011814.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  idle baseline: 10.80 W median, 6.4 min old
+  frozen-checkpoint gate OK for tinybert (b8e9a679966326f5, dev 0.9473684210526315)
+  frozen-checkpoint gate OK for tinybert (b8e9a679966326f5, dev 0.9473684210526315)
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 1 s elapsed
+     434 commands, 2 s elapsed
+     651 commands, 2 s elapsed
+     868 commands, 3 s elapsed
+     1085 commands, 4 s elapsed
+     1302 commands, 5 s elapsed
+     1519 commands, 5 s elapsed
+     1736 commands, 6 s elapsed
+     1953 commands, 7 s elapsed
+     2170 commands, 8 s elapsed
+     2387 commands, 8 s elapsed
+     2604 commands, 9 s elapsed
+     2821 commands, 10 s elapsed
+     3038 commands, 11 s elapsed
+     3255 commands, 11 s elapsed
+     3472 commands, 12 s elapsed
+     3689 commands, 13 s elapsed
+     3906 commands, 14 s elapsed
+     4123 commands, 14 s elapsed
+     4340 commands, 15 s elapsed
+     4557 commands, 16 s elapsed
+     4774 commands, 17 s elapsed
+     4991 commands, 17 s elapsed
+     5208 commands, 18 s elapsed
+     5425 commands, 19 s elapsed
+     5642 commands, 20 s elapsed
+     5859 commands, 20 s elapsed
+     6076 commands, 21 s elapsed
+     6293 commands, 22 s elapsed
+     6510 commands, 23 s elapsed
+     6727 commands, 23 s elapsed
+     6944 commands, 24 s elapsed
+     7161 commands, 25 s elapsed
+     7378 commands, 26 s elapsed
+     7595 commands, 27 s elapsed
+     7812 commands, 27 s elapsed
+     8029 commands, 28 s elapsed
+     8246 commands, 29 s elapsed
+     8463 commands, 30 s elapsed
+     8680 commands, 30 s elapsed
+     8897 commands, 31 s elapsed
+     9114 commands, 32 s elapsed
+     9331 commands, 33 s elapsed
+     9548 commands, 33 s elapsed
+     9765 commands, 34 s elapsed
+     9982 commands, 35 s elapsed
+     10199 commands, 36 s elapsed
+     10416 commands, 36 s elapsed
+     10633 commands, 37 s elapsed
+     10850 commands, 38 s elapsed
+     11067 commands, 39 s elapsed
+     11284 commands, 39 s elapsed
+     11501 commands, 40 s elapsed
+     11718 commands, 41 s elapsed
+     11935 commands, 42 s elapsed
+     12152 commands, 43 s elapsed
+     12369 commands, 43 s elapsed
+     12586 commands, 44 s elapsed
+     12803 commands, 45 s elapsed
+     13020 commands, 46 s elapsed
+     13237 commands, 46 s elapsed
+     13454 commands, 47 s elapsed
+     13671 commands, 48 s elapsed
+     13888 commands, 49 s elapsed
+     14105 commands, 49 s elapsed
+     14322 commands, 50 s elapsed
+     14539 commands, 51 s elapsed
+     14756 commands, 52 s elapsed
+     14973 commands, 53 s elapsed
+     15190 commands, 53 s elapsed
+     15407 commands, 54 s elapsed
+     15624 commands, 55 s elapsed
+     15841 commands, 56 s elapsed
+     16058 commands, 56 s elapsed
+     16275 commands, 57 s elapsed
+     16492 commands, 58 s elapsed
+     16709 commands, 59 s elapsed
+     16926 commands, 59 s elapsed
+     17143 commands, 60 s elapsed
+     17360 commands, 61 s elapsed
+     17577 commands, 62 s elapsed
+     17794 commands, 62 s elapsed
+     18011 commands, 63 s elapsed
+     18228 commands, 64 s elapsed
+     18445 commands, 65 s elapsed
+     18662 commands, 65 s elapsed
+     18879 commands, 66 s elapsed
+     19096 commands, 67 s elapsed
+     19313 commands, 68 s elapsed
+     19530 commands, 68 s elapsed
+     19747 commands, 69 s elapsed
+     19964 commands, 70 s elapsed
+     20181 commands, 71 s elapsed
+     20398 commands, 71 s elapsed
+     20615 commands, 72 s elapsed
+     20832 commands, 73 s elapsed
+     21049 commands, 74 s elapsed
+     21266 commands, 75 s elapsed
+     21483 commands, 75 s elapsed
+     21700 commands, 76 s elapsed
+     21917 commands, 77 s elapsed
+     22134 commands, 78 s elapsed
+     22351 commands, 78 s elapsed
+     22568 commands, 79 s elapsed
+     22785 commands, 80 s elapsed
+     23002 commands, 81 s elapsed
+     23219 commands, 81 s elapsed
+     23436 commands, 82 s elapsed
+     23653 commands, 83 s elapsed
+     23870 commands, 84 s elapsed
+     24087 commands, 84 s elapsed
+     24304 commands, 85 s elapsed
+     24521 commands, 86 s elapsed
+     24738 commands, 87 s elapsed
+     24955 commands, 88 s elapsed
+     25172 commands, 88 s elapsed
+     25389 commands, 89 s elapsed
+     25606 commands, 90 s elapsed
+     25823 commands, 91 s elapsed
+     26040 commands, 91 s elapsed
+     26257 commands, 92 s elapsed
+     26474 commands, 93 s elapsed
+     26691 commands, 94 s elapsed
+     26908 commands, 94 s elapsed
+     27125 commands, 95 s elapsed
+     27342 commands, 96 s elapsed
+     27559 commands, 97 s elapsed
+     27776 commands, 97 s elapsed
+     27993 commands, 98 s elapsed
+     28210 commands, 99 s elapsed
+     28427 commands, 100 s elapsed
+     28644 commands, 101 s elapsed
+     28861 commands, 101 s elapsed
+     29078 commands, 102 s elapsed
+     29295 commands, 103 s elapsed
+     29512 commands, 104 s elapsed
+     29729 commands, 104 s elapsed
+     29946 commands, 105 s elapsed
+     30163 commands, 106 s elapsed
+     30380 commands, 107 s elapsed
+     30597 commands, 107 s elapsed
+     30814 commands, 108 s elapsed
+     31031 commands, 109 s elapsed
+     31248 commands, 110 s elapsed
+     31465 commands, 110 s elapsed
+     31682 commands, 111 s elapsed
+     31899 commands, 112 s elapsed
+     32116 commands, 113 s elapsed
+     32333 commands, 113 s elapsed
+     32550 commands, 114 s elapsed
+     32767 commands, 115 s elapsed
+     32984 commands, 116 s elapsed
+     33201 commands, 116 s elapsed
+     33418 commands, 117 s elapsed
+     33635 commands, 118 s elapsed
+     33852 commands, 119 s elapsed
+     34069 commands, 119 s elapsed
+     34286 commands, 120 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  tinybert on held_out_v3: N=34286 commands in 120.2 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 3.43 / 3.92 / 4.45 ms
+  energy 0.01745 J/command (mean 15.8 W - idle 10.80 W)
+  max GPU temp 48 C; peak VRAM 1612.0 MB; CPU 3.49 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples tinybert_held_out_v3_20260928_012019.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

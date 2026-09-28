@@ -1,0 +1,83 @@
+2026-09-27 12:20:59  PHASE B - held_out_v4c, energy, metrics, significance, report. Keep the machine untouched.
+2026-09-27 12:20:59  SKIP   flat_gpu held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   flat_cpu held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   factorized_fp16 held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   factorized_int4 held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   tinybert held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   minilm_probe held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   knn_minilm held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   rules_open held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   rules_firewalled held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   tfidf_logreg held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   bilstm held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   textcnn held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   mlpbow held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   flant5 held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   lora_greedy held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   salsa_full_qwen2.5-3b-lora held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   salsa_full_Qwen2.5-3B-Instruct held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   salsa_full_qwen2.5-0.5b-lora held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   salsa_full_Qwen2.5-0.5B-Instruct held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   grpo_base held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   grpo_sft held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   cascade_local_tauA held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   pipeline_always_local held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   cascade_oracle held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   a8_speculative held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   a10_speculative held_out_v4c (exists)
+2026-09-27 12:20:59  SKIP   a12_smalllm held_out_v4c (exists)
+2026-09-27 12:20:59  START  S1-6 V5 local cells, held_out_v4c
+2026-09-27 12:21:21  DONE   S1-6 V5 local cells, held_out_v4c  (0.4 min)
+2026-09-27 12:21:21  START  S1-6 V5 cloud cells, held_out_v4c
+2026-09-27 13:38:23  DONE   S1-6 V5 cloud cells, held_out_v4c  (77 min)
+2026-09-27 13:38:24  CHECK  held_out_v4c: 12152 rows
+2026-09-27 13:38:24  START  S1-6 cascade_cloud_tauA held_out_v4c
+2026-09-27 13:40:03  DONE   S1-6 cascade_cloud_tauA held_out_v4c  (1.7 min)
+2026-09-27 13:40:03  START  S1-6 cascade_cloud_always held_out_v4c
+2026-09-27 13:45:25  DONE   S1-6 cascade_cloud_always held_out_v4c  (5.4 min)
+2026-09-27 13:45:25  START  S1-6 ensemble held_out_v4c
+2026-09-27 13:45:30  DONE   S1-6 ensemble held_out_v4c  (0.1 min)
+2026-09-27 13:45:30  SUMMARY action match per arm on held_out_v4c
+2026-09-27 13:45:30     a10_speculative                          0.6221
+2026-09-27 13:45:30     a12_smalllm                              0.6221
+2026-09-27 13:45:30     a8_speculative                           0.6221
+2026-09-27 13:45:30     bilstm                                   0.7005
+2026-09-27 13:45:30     cascade_cloud_always                     0.7788
+2026-09-27 13:45:30     cascade_cloud_tauA                       0.7696
+2026-09-27 13:45:30     cascade_local_tauA                       0.6452
+2026-09-27 13:45:30     cascade_oracle                           0.9401
+2026-09-27 13:45:30     ensemble                                 0.8387
+2026-09-27 13:45:30     factorized_fp16                          0.6359
+2026-09-27 13:45:30     factorized_int4                          0.6175
+2026-09-27 13:45:30     flant5                                   0.5714
+2026-09-27 13:45:30     flat_cpu                                 0.7143
+2026-09-27 13:45:30     flat_gpu                                 0.7143
+2026-09-27 13:45:30     grpo_base                                0.6959
+2026-09-27 13:45:30     grpo_sft                                 0.7005
+2026-09-27 13:45:30     knn_minilm                               0.6959
+2026-09-27 13:45:30     lora_greedy                              0.6221
+2026-09-27 13:45:30     minilm_probe                             0.6544
+2026-09-27 13:45:30     mlpbow                                   0.6406
+2026-09-27 13:45:30     pipeline_always_local                    0.5438
+2026-09-27 13:45:31     rules_firewalled                         0.4470
+2026-09-27 13:45:31     rules_open                               0.7235
+2026-09-27 13:45:31     salsa_full_Qwen2.5-0.5B-Instruct         0.0599
+2026-09-27 13:45:31     salsa_full_qwen2.5-0.5b-lora             0.0369
+2026-09-27 13:45:31     salsa_full_Qwen2.5-3B-Instruct           0.3502
+2026-09-27 13:45:31     salsa_full_qwen2.5-3b-lora               0.4055
+2026-09-27 13:45:31     textcnn                                  0.6959
+2026-09-27 13:45:31     tfidf_logreg                             0.6221
+2026-09-27 13:45:31     tinybert                                 0.5806
+2026-09-27 13:45:31  START  S3-1 idle baseline
+2026-09-27 13:50:35  DONE   S3-1 idle baseline  (5.1 min)
+2026-09-27 13:50:35  START  S3-2 energy ollama:qwen2.5-3b-lora/zero_shot held_out_v3
+2026-09-27 13:57:40  DONE   S3-2 energy ollama:qwen2.5-3b-lora/zero_shot held_out_v3  (7.1 min)
+2026-09-27 13:57:40  START  S3-2 energy ollama:qwen2.5-3b-lora/few_shot held_out_v3
+2026-09-27 14:04:46  DONE   S3-2 energy ollama:qwen2.5-3b-lora/few_shot held_out_v3  (7.1 min)
+2026-09-27 14:04:46  START  S3-2 energy ollama:qwen2.5-3b-lora/cot held_out_v3
+2026-09-27 14:16:01  DONE   S3-2 energy ollama:qwen2.5-3b-lora/cot held_out_v3  (11.2 min)
+2026-09-27 14:16:01  START  S3-2 energy ollama:qwen2.5-3b-lora/role_based held_out_v3
+2026-09-27 14:23:06  DONE   S3-2 energy ollama:qwen2.5-3b-lora/role_based held_out_v3  (7.1 min)
+2026-09-27 14:23:06  START  S3-2 energy ollama:qwen2.5-3b-lora/rag held_out_v3
+2026-09-27 14:23:15  AUTORUN STOPPED: S3-2 energy ollama:qwen2.5-3b-lora/rag held_out_v3  (exit code 1, after 0.1 min)
+2026-09-27 14:23:15  Paste the lines above to your advisor. Fix, then run the SAME command again.

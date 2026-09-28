@@ -1,0 +1,18 @@
+================================================================================================
+s3_energy_lora_greedy_held_out_v3   started 2026-09-28 01:50:43
+  log: thesis2\out\final\logs\s3_energy_lora_greedy_held_out_v3_20260928_015043.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  idle baseline: 10.80 W median, 38.9 min old
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 168 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  lora_greedy on held_out_v3: N=217 commands in 168.1 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 878.51 / 910.00 / 914.00 ms
+  energy 71.40392 J/command (mean 103.0 W - idle 10.80 W)
+  max GPU temp 69 C; peak VRAM 8426.0 MB; CPU 759.94 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples lora_greedy_held_out_v3_20260928_015346.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

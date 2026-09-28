@@ -1,0 +1,168 @@
+2026-09-27 17:03:24  PHASE B - held_out_v4c, energy, metrics, significance, report. Keep the machine untouched.
+2026-09-27 17:03:24  SKIP   flat_gpu held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   flat_cpu held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   factorized_fp16 held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   factorized_int4 held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   tinybert held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   minilm_probe held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   knn_minilm held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   rules_open held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   rules_firewalled held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   tfidf_logreg held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   bilstm held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   textcnn held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   mlpbow held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   flant5 held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   lora_greedy held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   salsa_full_qwen2.5-3b-lora held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   salsa_full_Qwen2.5-3B-Instruct held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   salsa_full_qwen2.5-0.5b-lora held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   salsa_full_Qwen2.5-0.5B-Instruct held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   grpo_base held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   grpo_sft held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   cascade_local_tauA held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   pipeline_always_local held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   cascade_oracle held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   a8_speculative held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   a10_speculative held_out_v4c (exists)
+2026-09-27 17:03:24  SKIP   a12_smalllm held_out_v4c (exists)
+2026-09-27 17:03:24  START  S1-6 V5 local cells, held_out_v4c
+2026-09-27 17:03:41  DONE   S1-6 V5 local cells, held_out_v4c  (0.3 min)
+2026-09-27 17:03:41  START  S1-6 V5 cloud cells, held_out_v4c
+2026-09-27 17:03:53  DONE   S1-6 V5 cloud cells, held_out_v4c  (0.2 min)
+2026-09-27 17:03:53  CHECK  held_out_v4c: 12152 rows
+2026-09-27 17:03:53  SKIP   cascade_cloud_tauA held_out_v4c (exists)
+2026-09-27 17:03:53  SKIP   cascade_cloud_always held_out_v4c (exists)
+2026-09-27 17:03:53  SKIP   ensemble held_out_v4c (exists)
+2026-09-27 17:03:53  SUMMARY action match per arm on held_out_v4c
+2026-09-27 17:03:53     a10_speculative                          0.6221
+2026-09-27 17:03:53     a12_smalllm                              0.6221
+2026-09-27 17:03:53     a8_speculative                           0.6221
+2026-09-27 17:03:53     bilstm                                   0.7005
+2026-09-27 17:03:53     cascade_cloud_always                     0.7788
+2026-09-27 17:03:54     cascade_cloud_tauA                       0.7696
+2026-09-27 17:03:54     cascade_local_tauA                       0.6452
+2026-09-27 17:03:54     cascade_oracle                           0.9401
+2026-09-27 17:03:54     ensemble                                 0.8387
+2026-09-27 17:03:54     factorized_fp16                          0.6359
+2026-09-27 17:03:54     factorized_int4                          0.6175
+2026-09-27 17:03:54     flant5                                   0.5714
+2026-09-27 17:03:54     flat_cpu                                 0.7143
+2026-09-27 17:03:54     flat_gpu                                 0.7143
+2026-09-27 17:03:54     grpo_base                                0.6959
+2026-09-27 17:03:54     grpo_sft                                 0.7005
+2026-09-27 17:03:54     knn_minilm                               0.6959
+2026-09-27 17:03:54     lora_greedy                              0.6221
+2026-09-27 17:03:54     minilm_probe                             0.6544
+2026-09-27 17:03:54     mlpbow                                   0.6406
+2026-09-27 17:03:54     pipeline_always_local                    0.5438
+2026-09-27 17:03:54     rules_firewalled                         0.4470
+2026-09-27 17:03:54     rules_open                               0.7235
+2026-09-27 17:03:54     salsa_full_Qwen2.5-0.5B-Instruct         0.0599
+2026-09-27 17:03:54     salsa_full_qwen2.5-0.5b-lora             0.0369
+2026-09-27 17:03:54     salsa_full_Qwen2.5-3B-Instruct           0.3502
+2026-09-27 17:03:54     salsa_full_qwen2.5-3b-lora               0.4055
+2026-09-27 17:03:54     textcnn                                  0.6959
+2026-09-27 17:03:54     tfidf_logreg                             0.6221
+2026-09-27 17:03:54     tinybert                                 0.5806
+2026-09-27 17:03:54  SKIP   energy ollama:qwen2.5-3b-lora/zero_shot held_out_v3
+2026-09-27 17:03:54  SKIP   energy ollama:qwen2.5-3b-lora/few_shot held_out_v3
+2026-09-27 17:03:54  SKIP   energy ollama:qwen2.5-3b-lora/cot held_out_v3
+2026-09-27 17:03:54  SKIP   energy ollama:qwen2.5-3b-lora/role_based held_out_v3
+2026-09-27 17:03:54  START  S3-1 idle baseline
+2026-09-27 17:09:00  DONE   S3-1 idle baseline  (5.1 min)
+2026-09-27 17:09:00  START  S3-2 energy ollama:qwen2.5-3b-lora/rag held_out_v3
+2026-09-27 17:16:12  DONE   S3-2 energy ollama:qwen2.5-3b-lora/rag held_out_v3  (7.2 min)
+2026-09-27 17:16:12  START  S3-2 energy ollama:qwen2.5:3b/zero_shot held_out_v3
+2026-09-27 17:23:11  DONE   S3-2 energy ollama:qwen2.5:3b/zero_shot held_out_v3  (7 min)
+2026-09-27 17:23:11  START  S3-2 energy ollama:qwen2.5:3b/few_shot held_out_v3
+2026-09-27 17:30:29  DONE   S3-2 energy ollama:qwen2.5:3b/few_shot held_out_v3  (7.3 min)
+2026-09-27 17:30:29  START  S3-2 energy ollama:qwen2.5:3b/cot held_out_v3
+2026-09-27 17:41:00  DONE   S3-2 energy ollama:qwen2.5:3b/cot held_out_v3  (10.5 min)
+2026-09-27 17:41:00  START  S3-2 energy ollama:qwen2.5:3b/role_based held_out_v3
+2026-09-27 17:47:55  DONE   S3-2 energy ollama:qwen2.5:3b/role_based held_out_v3  (6.9 min)
+2026-09-27 17:47:55  START  S3-2 energy ollama:qwen2.5:3b/rag held_out_v3
+2026-09-27 17:55:09  DONE   S3-2 energy ollama:qwen2.5:3b/rag held_out_v3  (7.2 min)
+2026-09-27 17:55:09  START  S3-2 energy ollama:qwen2.5-0.5b-lora/zero_shot held_out_v3
+2026-09-27 18:01:21  DONE   S3-2 energy ollama:qwen2.5-0.5b-lora/zero_shot held_out_v3  (6.2 min)
+2026-09-27 18:01:21  START  S3-2 energy ollama:qwen2.5-0.5b-lora/few_shot held_out_v3
+2026-09-27 18:07:31  DONE   S3-2 energy ollama:qwen2.5-0.5b-lora/few_shot held_out_v3  (6.2 min)
+2026-09-27 18:07:31  START  S3-2 energy ollama:qwen2.5-0.5b-lora/cot held_out_v3
+2026-09-27 19:15:53  DONE   S3-2 energy ollama:qwen2.5-0.5b-lora/cot held_out_v3  (68.4 min)
+2026-09-27 19:15:53  START  S3-1 idle baseline
+2026-09-27 19:20:59  DONE   S3-1 idle baseline  (5.1 min)
+2026-09-27 19:20:59  START  S3-2 energy ollama:qwen2.5-0.5b-lora/role_based held_out_v3
+2026-09-27 19:27:13  DONE   S3-2 energy ollama:qwen2.5-0.5b-lora/role_based held_out_v3  (6.2 min)
+2026-09-27 19:27:13  START  S3-2 energy ollama:qwen2.5-0.5b-lora/rag held_out_v3
+2026-09-27 19:33:28  DONE   S3-2 energy ollama:qwen2.5-0.5b-lora/rag held_out_v3  (6.3 min)
+2026-09-27 19:33:28  START  S3-2 energy ollama:qwen2.5:0.5b/zero_shot held_out_v3
+2026-09-27 19:39:44  DONE   S3-2 energy ollama:qwen2.5:0.5b/zero_shot held_out_v3  (6.3 min)
+2026-09-27 19:39:44  START  S3-2 energy ollama:qwen2.5:0.5b/few_shot held_out_v3
+2026-09-27 19:46:08  DONE   S3-2 energy ollama:qwen2.5:0.5b/few_shot held_out_v3  (6.4 min)
+2026-09-27 19:46:08  START  S3-2 energy ollama:qwen2.5:0.5b/cot held_out_v3
+2026-09-27 19:55:41  DONE   S3-2 energy ollama:qwen2.5:0.5b/cot held_out_v3  (9.6 min)
+2026-09-27 19:55:41  START  S3-2 energy ollama:qwen2.5:0.5b/role_based held_out_v3
+2026-09-27 20:01:58  DONE   S3-2 energy ollama:qwen2.5:0.5b/role_based held_out_v3  (6.3 min)
+2026-09-27 20:01:58  START  S3-2 energy ollama:qwen2.5:0.5b/rag held_out_v3
+2026-09-27 20:08:25  DONE   S3-2 energy ollama:qwen2.5:0.5b/rag held_out_v3  (6.5 min)
+2026-09-27 20:08:25  START  S3-2 energy ollama:llama3.2:3b/zero_shot held_out_v3
+2026-09-27 20:16:25  DONE   S3-2 energy ollama:llama3.2:3b/zero_shot held_out_v3  (8 min)
+2026-09-27 20:16:25  START  S3-2 energy ollama:llama3.2:3b/few_shot held_out_v3
+2026-09-27 20:24:29  DONE   S3-2 energy ollama:llama3.2:3b/few_shot held_out_v3  (8.1 min)
+2026-09-27 20:24:29  START  S3-2 energy ollama:llama3.2:3b/cot held_out_v3
+2026-09-27 20:37:27  DONE   S3-2 energy ollama:llama3.2:3b/cot held_out_v3  (13 min)
+2026-09-27 20:37:27  START  S3-2 energy ollama:llama3.2:3b/role_based held_out_v3
+2026-09-27 20:45:28  DONE   S3-2 energy ollama:llama3.2:3b/role_based held_out_v3  (8 min)
+2026-09-27 20:45:28  START  S3-2 energy ollama:llama3.2:3b/rag held_out_v3
+2026-09-27 20:53:45  DONE   S3-2 energy ollama:llama3.2:3b/rag held_out_v3  (8.3 min)
+2026-09-27 20:53:45  START  S3-2 energy ollama:deepseek-r1:7b/zero_shot held_out_v3
+2026-09-27 21:32:58  DONE   S3-2 energy ollama:deepseek-r1:7b/zero_shot held_out_v3  (39.2 min)
+2026-09-27 21:32:58  START  S3-1 idle baseline
+2026-09-27 21:38:03  DONE   S3-1 idle baseline  (5.1 min)
+2026-09-27 21:38:03  START  S3-2 energy ollama:deepseek-r1:7b/few_shot held_out_v3
+2026-09-27 22:30:44  DONE   S3-2 energy ollama:deepseek-r1:7b/few_shot held_out_v3  (52.7 min)
+2026-09-27 22:30:44  START  S3-2 energy ollama:deepseek-r1:7b/cot held_out_v3
+2026-09-27 23:19:51  DONE   S3-2 energy ollama:deepseek-r1:7b/cot held_out_v3  (49.1 min)
+2026-09-27 23:19:51  START  S3-1 idle baseline
+2026-09-27 23:24:57  DONE   S3-1 idle baseline  (5.1 min)
+2026-09-27 23:24:57  START  S3-2 energy ollama:deepseek-r1:7b/role_based held_out_v3
+2026-09-28 00:04:57  DONE   S3-2 energy ollama:deepseek-r1:7b/role_based held_out_v3  (40 min)
+2026-09-28 00:04:57  START  S3-2 energy ollama:deepseek-r1:7b/rag held_out_v3
+2026-09-28 00:57:10  DONE   S3-2 energy ollama:deepseek-r1:7b/rag held_out_v3  (52.2 min)
+2026-09-28 00:57:10  START  S3-2 energy classifier:distilbert/classifier held_out_v3
+2026-09-28 01:00:24  DONE   S3-2 energy classifier:distilbert/classifier held_out_v3  (3.2 min)
+2026-09-28 01:00:24  START  S3-2 energy flat_gpu held_out_v3
+2026-09-28 01:03:34  DONE   S3-2 energy flat_gpu held_out_v3  (3.2 min)
+2026-09-28 01:03:34  START  S3-2 energy flat_cpu held_out_v3
+2026-09-28 01:06:45  DONE   S3-2 energy flat_cpu held_out_v3  (3.2 min)
+2026-09-28 01:06:45  START  S3-1 idle baseline
+2026-09-28 01:11:50  DONE   S3-1 idle baseline  (5.1 min)
+2026-09-28 01:11:50  START  S3-2 energy factorized_fp16 held_out_v3
+2026-09-28 01:15:00  DONE   S3-2 energy factorized_fp16 held_out_v3  (3.2 min)
+2026-09-28 01:15:00  START  S3-2 energy factorized_int4 held_out_v3
+2026-09-28 01:18:10  DONE   S3-2 energy factorized_int4 held_out_v3  (3.2 min)
+2026-09-28 01:18:10  START  S3-2 energy tinybert held_out_v3
+2026-09-28 01:21:19  DONE   S3-2 energy tinybert held_out_v3  (3.2 min)
+2026-09-28 01:21:19  START  S3-2 energy minilm_probe held_out_v3
+2026-09-28 01:24:32  DONE   S3-2 energy minilm_probe held_out_v3  (3.2 min)
+2026-09-28 01:24:32  START  S3-2 energy knn_minilm held_out_v3
+2026-09-28 01:27:43  DONE   S3-2 energy knn_minilm held_out_v3  (3.2 min)
+2026-09-28 01:27:43  START  S3-2 energy rules_open held_out_v3
+2026-09-28 01:31:01  DONE   S3-2 energy rules_open held_out_v3  (3.3 min)
+2026-09-28 01:31:01  START  S3-2 energy rules_firewalled held_out_v3
+2026-09-28 01:34:18  DONE   S3-2 energy rules_firewalled held_out_v3  (3.3 min)
+2026-09-28 01:34:18  START  S3-2 energy tfidf_logreg held_out_v3
+2026-09-28 01:37:27  DONE   S3-2 energy tfidf_logreg held_out_v3  (3.2 min)
+2026-09-28 01:37:27  START  S3-2 energy bilstm held_out_v3
+2026-09-28 01:40:37  DONE   S3-2 energy bilstm held_out_v3  (3.2 min)
+2026-09-28 01:40:37  START  S3-2 energy textcnn held_out_v3
+2026-09-28 01:43:46  DONE   S3-2 energy textcnn held_out_v3  (3.2 min)
+2026-09-28 01:43:46  START  S3-2 energy mlpbow held_out_v3
+2026-09-28 01:46:55  DONE   S3-2 energy mlpbow held_out_v3  (3.1 min)
+2026-09-28 01:46:55  START  S3-2 energy flant5 held_out_v3
+2026-09-28 01:50:40  DONE   S3-2 energy flant5 held_out_v3  (3.7 min)
+2026-09-28 01:50:40  START  S3-2 energy lora_greedy held_out_v3
+2026-09-28 01:54:48  DONE   S3-2 energy lora_greedy held_out_v3  (4.1 min)
+2026-09-28 01:54:48  START  S3-2 energy a8_speculative held_out_v3
+2026-09-28 01:54:53  AUTORUN STOPPED: S3-2 energy a8_speculative held_out_v3  (exit code 1, after 0.1 min)
+2026-09-28 01:54:53  Paste the lines above to your advisor. Fix, then run the SAME command again.

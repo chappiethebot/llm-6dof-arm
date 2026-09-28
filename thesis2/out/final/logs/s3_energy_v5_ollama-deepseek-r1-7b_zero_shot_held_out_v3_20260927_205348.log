@@ -1,0 +1,19 @@
+================================================================================================
+s3_energy_v5_ollama-deepseek-r1-7b_zero_shot_held_out_v3   started 2026-09-27 20:53:48
+  log: thesis2\out\final\logs\s3_energy_v5_ollama-deepseek-r1-7b_zero_shot_held_out_v3_20260927_205348.log
+  python: C:\Users\USER\.conda\envs\thesis\python.exe
+================================================================================================
+  idle baseline: 10.93 W median, 92.8 min old
+  exemplars: k=3 from V5's DATASETS['held_out_v3']['exemplars_from'] (0 in the fixed pool); rag retriever: n/a
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 2239 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  v5:ollama:deepseek-r1:7b/zero_shot on held_out_v3: N=217 commands in 2238.9 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 9208.68 / 19145.48 / 28090.44 ms
+  energy 1060.84655 J/command (mean 113.8 W - idle 10.93 W)
+  max GPU temp 68 C; peak VRAM 6367.0 MB; CPU 27.29 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples v5-ollama-deepseek-r1-7b_zero_shot_held_out_v3_20260927_213158.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

@@ -1,0 +1,31 @@
+================================================================================================
+s1_run_arm_cascade_cloud_tauA_held_out_v4c   started 2026-09-27 13:38:31
+  log: thesis2\out\final\logs\s1_run_arm_cascade_cloud_tauA_held_out_v4c_20260927_133831.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  torch 2.14.0+cu126 cuda=True | transformers 5.17.0
+  gpu: NVIDIA GeForce RTX 4060 Ti
+  arm  : cascade_cloud_tauA  (cloud, sampling)
+  note : pre-registered tau_A = 0.50; row -> gpt-4o-mini
+  split: held_out_v4c
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+  R = 5  (read from V5's cloud cells; not chosen)
+  rows for this arm x split: 217 commands x 5 repeats = 1085
+  planned grand total across the registry and both splits: 28 local x 434 x 1 + 2 cloud x 434 x 5 = 16492 rows
+  existing file: pred_cascade_cloud_tauA_held_out_v4c.csv (file absent or empty)
+      50/217 commands (52s)
+     100/217 commands (73s)
+     150/217 commands (87s)
+     200/217 commands (88s)
+  wrote pred_cascade_cloud_tauA_held_out_v4c.csv (1085 rows)
+
+------------------------------------------------------------------------------------------------
+  sampling arm: 5 repeats collapsed by majority vote (A9's rule); per-command repeat agreement 217/217; collapsed action match 0.7696
+  action match 0.7696 (n=217); row accuracy 0.6574 (n=108)
+  reproducibility vs saved held_out_v4c: 217/217 identical
+  gpt-4o-mini retries: 0 row(s) needed a retry, 0 retries in total (up to 6 attempts, backoff from 2 s)
+  output: thesis2\out\final\pred_cascade_cloud_tauA_held_out_v4c.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

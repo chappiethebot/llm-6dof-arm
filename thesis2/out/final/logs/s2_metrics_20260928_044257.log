@@ -1,0 +1,75 @@
+================================================================================================
+s2_metrics   started 2026-09-28 04:42:57
+  log: thesis2\out\final\logs\s2_metrics_20260928_044257.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  Stage 3 efficiency: 79 (arm, split) rows
+
+  arm                                split            action      row row by word group
+  a10_speculative                    held_out_v3      0.9539      1.0 mixed 24/24; seen 36/36; unseen 48/48
+  a12_smalllm                        held_out_v3      0.9539      1.0 mixed 24/24; seen 36/36; unseen 48/48
+  a8_speculative                     held_out_v3      0.9539      1.0 mixed 24/24; seen 36/36; unseen 48/48
+  bilstm                             held_out_v3      0.7005   0.6852 mixed 2/24; seen 36/36; unseen 36/48
+  cascade_cloud_always               held_out_v3      0.7926   0.7037 mixed 1/24; seen 27/36; unseen 48/48
+  cascade_cloud_tauA                 held_out_v3      0.7327   0.5833 mixed 0/24; seen 36/36; unseen 27/48
+  cascade_local_tauA                 held_out_v3      0.7327   0.5833 mixed 0/24; seen 36/36; unseen 27/48
+  cascade_oracle                     held_out_v3      0.9401      1.0 mixed 24/24; seen 36/36; unseen 48/48
+  ensemble                           held_out_v3      0.9631      1.0 mixed 24/24; seen 36/36; unseen 48/48
+  factorized_fp16                    held_out_v3      0.6083   0.3333 mixed 0/24; seen 36/36; unseen 0/48
+  factorized_int4                    held_out_v3      0.6083   0.3426 mixed 0/24; seen 36/36; unseen 1/48
+  flant5                             held_out_v3      0.6175   0.4259 mixed 0/24; seen 36/36; unseen 10/48
+  flat_cpu                           held_out_v3      0.7465   0.6204 mixed 8/24; seen 36/36; unseen 23/48
+  flat_gpu                           held_out_v3      0.7465   0.6204 mixed 8/24; seen 36/36; unseen 23/48
+  grpo_base                          held_out_v3      0.7926   0.7222 mixed 7/24; seen 36/36; unseen 35/48
+  grpo_sft                           held_out_v3      0.9585      1.0 mixed 24/24; seen 36/36; unseen 48/48
+  knn_minilm                         held_out_v3      0.6452   0.5648 mixed 6/24; seen 34/36; unseen 21/48
+  lora_greedy                        held_out_v3      0.9539      1.0 mixed 24/24; seen 36/36; unseen 48/48
+  minilm_probe                       held_out_v3      0.6498   0.6204 mixed 9/24; seen 34/36; unseen 24/48
+  mlpbow                             held_out_v3      0.6406   0.6667 mixed 9/24; seen 33/36; unseen 30/48
+  pipeline_always_local              held_out_v3      0.8433   0.8056 mixed 24/24; seen 15/36; unseen 48/48
+  rules_firewalled                   held_out_v3       0.447   0.3333 mixed 0/24; seen 36/36; unseen 0/48
+  rules_open                         held_out_v3      0.7235   0.8889 mixed 12/24; seen 36/36; unseen 48/48
+  salsa_full_Qwen2.5-0.5B-Instruct   held_out_v3      0.0461   0.3056 mixed 6/24; seen 16/36; unseen 11/48
+  salsa_full_Qwen2.5-3B-Instruct     held_out_v3      0.3594   0.2963 mixed 9/24; seen 1/36; unseen 22/48
+  salsa_full_qwen2.5-0.5b-lora       held_out_v3      0.0369   0.0093 mixed 0/24; seen 1/36; unseen 0/48
+  salsa_full_qwen2.5-3b-lora         held_out_v3      0.5023   0.6574 mixed 24/24; seen 3/36; unseen 44/48
+  textcnn                            held_out_v3      0.6959   0.6759 mixed 1/24; seen 36/36; unseen 36/48
+  tfidf_logreg                       held_out_v3      0.6221     0.75 mixed 9/24; seen 36/36; unseen 36/48
+  tinybert                           held_out_v3       0.576   0.3333 mixed 0/24; seen 36/36; unseen 0/48
+  a10_speculative                    held_out_v4c     0.6221   0.3333 mixed 0/24; seen 36/36; unseen 0/48
+  a12_smalllm                        held_out_v4c     0.6221   0.3333 mixed 0/24; seen 36/36; unseen 0/48
+  a8_speculative                     held_out_v4c     0.6221   0.3333 mixed 0/24; seen 36/36; unseen 0/48
+  bilstm                             held_out_v4c     0.7005   0.6852 mixed 2/24; seen 36/36; unseen 36/48
+  cascade_cloud_always               held_out_v4c     0.7788   0.6759 mixed 0/24; seen 27/36; unseen 46/48
+  cascade_cloud_tauA                 held_out_v4c     0.7696   0.6574 mixed 0/24; seen 36/36; unseen 35/48
+  cascade_local_tauA                 held_out_v4c     0.6452   0.4074 mixed 0/24; seen 36/36; unseen 8/48
+  cascade_oracle                     held_out_v4c     0.9401      1.0 mixed 24/24; seen 36/36; unseen 48/48
+  ensemble                           held_out_v4c     0.8387     0.75 mixed 12/24; seen 36/36; unseen 33/48
+  factorized_fp16                    held_out_v4c     0.6359   0.3889 mixed 0/24; seen 36/36; unseen 6/48
+  factorized_int4                    held_out_v4c     0.6175   0.3611 mixed 0/24; seen 36/36; unseen 3/48
+  flant5                             held_out_v4c     0.5714   0.3333 mixed 0/24; seen 36/36; unseen 0/48
+  flat_cpu                           held_out_v4c     0.7143   0.5556 mixed 0/24; seen 36/36; unseen 24/48
+  flat_gpu                           held_out_v4c     0.7143   0.5556 mixed 0/24; seen 36/36; unseen 24/48
+  grpo_base                          held_out_v4c     0.6959   0.5463 mixed 0/24; seen 36/36; unseen 23/48
+  grpo_sft                           held_out_v4c     0.7005   0.4815 mixed 4/24; seen 36/36; unseen 12/48
+  knn_minilm                         held_out_v4c     0.6959   0.6852 mixed 8/24; seen 34/36; unseen 32/48
+  lora_greedy                        held_out_v4c     0.6221   0.3333 mixed 0/24; seen 36/36; unseen 0/48
+  minilm_probe                       held_out_v4c     0.6544   0.6574 mixed 9/24; seen 34/36; unseen 28/48
+  mlpbow                             held_out_v4c     0.6406   0.6667 mixed 9/24; seen 33/36; unseen 30/48
+  pipeline_always_local              held_out_v4c     0.5438   0.2037 mixed 0/24; seen 15/36; unseen 7/48
+  rules_firewalled                   held_out_v4c      0.447   0.3333 mixed 0/24; seen 36/36; unseen 0/48
+  rules_open                         held_out_v4c     0.7235   0.8889 mixed 12/24; seen 36/36; unseen 48/48
+  salsa_full_Qwen2.5-0.5B-Instruct   held_out_v4c     0.0599   0.2778 mixed 1/24; seen 16/36; unseen 13/48
+  salsa_full_Qwen2.5-3B-Instruct     held_out_v4c     0.3502   0.1759 mixed 7/24; seen 1/36; unseen 11/48
+  salsa_full_qwen2.5-0.5b-lora       held_out_v4c     0.0369   0.0093 mixed 0/24; seen 1/36; unseen 0/48
+  salsa_full_qwen2.5-3b-lora         held_out_v4c     0.4055   0.3333 mixed 12/24; seen 3/36; unseen 21/48
+  textcnn                            held_out_v4c     0.6959   0.6759 mixed 1/24; seen 36/36; unseen 36/48
+  tfidf_logreg                       held_out_v4c     0.6221     0.75 mixed 9/24; seen 36/36; unseen 36/48
+  tinybert                           held_out_v4c     0.5806   0.3426 mixed 0/24; seen 36/36; unseen 1/48
+
+------------------------------------------------------------------------------------------------
+  60 (arm, split) rows; 60 with predictions, 0 not run
+  every metric present for every arm; impossible cells carry the reason
+  output: thesis2\out\final\metrics_stage2.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

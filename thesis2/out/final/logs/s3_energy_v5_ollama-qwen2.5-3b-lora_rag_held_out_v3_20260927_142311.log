@@ -1,0 +1,6 @@
+================================================================================================
+s3_energy_v5_ollama-qwen2.5-3b-lora_rag_held_out_v3   started 2026-09-27 14:23:11
+  log: thesis2\out\final\logs\s3_energy_v5_ollama-qwen2.5-3b-lora_rag_held_out_v3_20260927_142311.log
+  python: C:\Users\USER\.conda\envs\thesis\python.exe
+================================================================================================
+  idle baseline: 10.26 W median, 32.6 min old

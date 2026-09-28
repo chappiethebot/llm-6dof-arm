@@ -1,0 +1,19 @@
+================================================================================================
+s3_energy_v5_ollama-qwen2.5-3b-lora_rag_held_out_v3   started 2026-09-27 17:09:03
+  log: thesis2\out\final\logs\s3_energy_v5_ollama-qwen2.5-3b-lora_rag_held_out_v3_20260927_170903.log
+  python: C:\Users\USER\.conda\envs\thesis\python.exe
+================================================================================================
+  idle baseline: 10.42 W median, 0.1 min old
+  exemplars: k=3 from V5's DATASETS['held_out_v3']['exemplars_from'] (0 in the fixed pool); rag retriever: built once, reused
+  warm-up: 3 commands, NOT counted in any figure below
+     217 commands, 357 s elapsed
+  cool-down 60 s ...
+
+------------------------------------------------------------------------------------------------
+  v5:ollama:qwen2.5-3b-lora/rag on held_out_v3: N=217 commands in 356.7 s (>= 120 s required); 3 warm-up excluded
+  latency p50/p95/p99 1654.80 / 1720.86 / 1752.06 ms
+  energy 66.30941 J/command (mean 50.8 W - idle 10.42 W)
+  max GPU temp 67 C; peak VRAM 4028.0 MB; CPU 660.14 ms/command (CPU watts not measured)
+  appended to unified_efficiency.csv; raw samples v5-ollama-qwen2.5-3b-lora_rag_held_out_v3_20260927_171511.csv
+------------------------------------------------------------------------------------------------
+GATE PASS
