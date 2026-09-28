@@ -96,6 +96,14 @@ def main():
             print("  %-34s SKIPPED -- %s" % (name, str(e)[:90]))
             results.append(dict(parser=name, status="skipped: %s" % str(e)[:60]))
             continue
+        except Exception as e:                                          # noqa: BLE001
+            # a parser that cannot even be built (e.g. a module missing in this
+            # env) is recorded as an error; it must not lose every other result
+            err = "%s: %s" % (type(e).__name__, str(e)[:100])
+            print("  %-34s ERROR building the parser -- %s" % (name, err))
+            results.append(dict(parser=name, status="error", note=err,
+                                python=sys.executable))
+            continue
         if name in PARSERS.GPU_PARSERS and torch.cuda.is_available():
             torch.cuda.reset_peak_memory_stats()
         ok_json, agree, lat = 0, 0, []
@@ -134,8 +142,20 @@ def main():
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 
+    for r in results:
+        r.setdefault("python", sys.executable)
     out = C.OUT / "demo_smoke_parsers.json"
-    out.write_text(json.dumps(results, indent=2), encoding="utf-8")
+    if a.parsers and out.exists():
+        # a partial run (--parsers) UPDATES its parsers' entries and keeps the
+        # rest, so a parser that needs another env can be run on its own
+        merged = {r["parser"]: r for r in json.loads(out.read_text(encoding="utf-8"))}
+        merged.update({r["parser"]: r for r in results})
+        order = PARSERS.names()
+        results_out = sorted(merged.values(),
+                             key=lambda r: order.index(r["parser"]) if r["parser"] in order else 999)
+    else:
+        results_out = results
+    out.write_text(json.dumps(results_out, indent=2), encoding="utf-8")
     errored = [r["parser"] for r in results if r.get("status") == "error"]
     C.gate(not bad_json and not errored, [
         "%d parsers attempted; %d produced valid JSON on all %d commands"

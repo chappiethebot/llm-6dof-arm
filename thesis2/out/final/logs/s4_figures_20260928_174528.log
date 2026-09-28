@@ -1,0 +1,21 @@
+================================================================================================
+s4_figures   started 2026-09-28 17:45:28
+  log: thesis2\out\final\logs\s4_figures_20260928_174528.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  60 metric rows, 36 V5 cells
+
+------------------------------------------------------------------------------------------------
+  6 figures in thesis2\figures\final
+    fig1_action_vs_latency.png
+    fig2_action_vs_energy.png
+    fig3_row_by_wordgroup.png
+    fig4_row_confusion.png
+    fig5_a10_breakdown.png
+    fig6_action_vs_vram.png
+  'No artists with labels' warnings: 0 (must be 0)
+  other warnings: 0 []
+  numbered markers + key table; oracle = ceiling line; rules_open = vocabulary-unfair; both excluded from every Pareto frontier
+  no claimable marking: claimability belongs to comparisons
+------------------------------------------------------------------------------------------------
+GATE PASS

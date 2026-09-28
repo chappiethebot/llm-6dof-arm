@@ -18,6 +18,14 @@ CHARACTER at which draft and verifier text differ, not to the token's majority
 region.
 
 Run (conda env thesis2gpu):  python thesis2/scripts/a11_rejection_positions.py
+
+    --split held_out_v4c   (added 2026-09-28) the same analysis on held_out_v4c:
+                           drafts from p45_predictions_held_out_v4c.csv, verifier
+                           text from the final run's
+                           thesis2/out/final/a8_speculative_percommand_held_out_v4c.csv,
+                           output to thesis2/out/final/a11_rejection_positions_held_out_v4c.csv.
+                           The default (held_out_v3) is unchanged and still
+                           reproduces thesis2/out/a11_rejection_positions.csv.
 """
 import csv, json, sys, collections
 
@@ -31,9 +39,14 @@ REQ = {v: sch["verbs"][v]["required"] for v in V}
 from transformers import AutoTokenizer
 tok = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-3B-Instruct")
 IM_END = tok.convert_tokens_to_ids("<|im_end|>")
-ho = [json.loads(l) for l in open(R + r"\data\held_out_v3.jsonl", encoding="utf-8") if l.strip()]
-p45 = rd(OUT + r"\p45_predictions_held_out_v3.csv")
-a8 = rd(OUT + r"\a8_speculative_percommand.csv")
+SPLIT = sys.argv[sys.argv.index("--split") + 1] if "--split" in sys.argv else "held_out_v3"
+assert SPLIT in ("held_out_v3", "held_out_v4c"), SPLIT
+ho = [json.loads(l) for l in open(R + "\\data\\%s.jsonl" % SPLIT, encoding="utf-8") if l.strip()]
+p45 = rd(OUT + "\\p45_predictions_%s.csv" % SPLIT)
+a8 = rd(OUT + r"\a8_speculative_percommand.csv" if SPLIT == "held_out_v3"
+        else OUT + r"\final\a8_speculative_percommand_held_out_v4c.csv")
+CSV_OUT = (OUT + r"\a11_rejection_positions.csv" if SPLIT == "held_out_v3"
+           else OUT + r"\final\a11_rejection_positions_held_out_v4c.csv")
 
 
 def render(v, t, loc):
@@ -129,7 +142,8 @@ for i, (r8, r4) in enumerate(zip(a8, p45)):
     rows.append(r)
 
 print("=" * 96)
-print("A11.1 -- FIRST-REJECTION POSITION BY SCHEMA REGION (n=217, no new inference)")
+print("A11.1 -- FIRST-REJECTION POSITION BY SCHEMA REGION (%s, n=217, no new inference)"
+      % SPLIT)
 print("=" * 96)
 c = collections.Counter(r["region"] for r in rows)
 tot_rej = sum(v for k2, v in c.items() if not k2.startswith("(none"))
@@ -184,8 +198,8 @@ print()
 print("  acceptance fraction at rejection, by region:")
 for k2, v in sorted(acc_by.items(), key=lambda x: -len(x[1])):
     print("    %-16s n=%-4d mean %.4f  median %.4f" % (k2, len(v), sum(v) / len(v), sorted(v)[len(v) // 2]))
-with open(OUT + r"\a11_rejection_positions.csv", "w", newline="", encoding="utf-8") as fh:
+with open(CSV_OUT, "w", newline="", encoding="utf-8") as fh:
     w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
     w.writeheader(); w.writerows(rows)
 print()
-print("wrote thesis2/out/a11_rejection_positions.csv")
+print("wrote %s" % CSV_OUT)

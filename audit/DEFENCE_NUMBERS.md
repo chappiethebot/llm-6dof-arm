@@ -1,3 +1,5 @@
+> Superseded by thesis2/out/final/DEFENCE_NUMBERS_rev3.md (2026-09-28)
+
 # Defence numbers — what can be quoted, with intervals and basis
 
 **Revision 2 — 17 September 2026.** Rewritten, not patched: the V5 re-measurement
@@ -82,18 +84,20 @@ change. ~2 hours. Until then, present §1 as an ordering **to be confirmed**.
 
 **Three-way basis split — use this, not "grid-only"** [Certain]:
 
-| cell | all | grid cells | containers | no-location |
+| cell | all | grid + runtime (108 + 24) | containers | no-location |
 |---|---|---|---|---|
 | gpt-4o-mini / rag | 0.9382 | **0.9848** (132) | 0.9889 (36) | 0.7755 (49) |
 | qwen2.5-3b-lora / zero_shot | 0.9583 | **1.0000** (131) | 1.0000 (36) | 0.8163 (49) |
 | classifier:distilbert | 0.7500 | **0.6947** (131) | 1.0000 (36) | 0.7143 (49) |
 
-`held_out_v3` composition: **132 grid-cell, 36 container, 49 no-location**
+`held_out_v3` composition: **108 grid + 24 runtime, 36 container, 49 no-location**
 (`stop`, `reject`, `fetch`, `hold`, `inspect`). Cloud figures are row-level over
 5 repeats; local figures are command-level at 1 repeat. State which when quoting.
+_(Corrected 2026-09-28: "132 grid" was 108 grid + 24 runtime; verified from
+`data/held_out_v3.jsonl`.)_
 
-**Revision 1's "grid-only (n=181)" basis is retired.** It pooled the 132 grid
-commands with the 49 that contain no location at all, so 27% of a basis labelled
+**Revision 1's "grid-only (n=181)" basis is retired.** It pooled the 108 grid +
+24 runtime commands with the 49 that contain no location at all, so 27% of a basis labelled
 "spatial reasoning" had no spatial content. Not defensible; do not reuse it.
 
 ### The 131/131 result needs its own paragraph, written before submission
@@ -158,7 +162,7 @@ is wrong; the comment is. Fix the comment, not the data. [Certain]
 - **Rows are harder than columns for every model** — gpt-4o-mini 96.3% column vs
   82.1% row; the LoRA pair 86–90% column vs 30–41% row. *V3.*
 - **Container vs grid are different tasks**: the answer symbol appears verbatim
-  in 36/36 container commands and 0/132 grid commands.
+  in 36/36 container commands and 0/132 grid + runtime commands (108 grid + 24 runtime).
 - **The classifier is the control that isolates the V3 LoRA failure.** Same
   training file, same distribution shift, 62.2% row accuracy vs the 0.5B LoRA's
   30.6%. Same data, different architecture, different outcome.

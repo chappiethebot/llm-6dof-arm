@@ -277,7 +277,7 @@ There is a definitional problem underneath the arithmetic. "Grid-only (n=181)"
 pools 132 commands that name a grid cell with **49 that have no location at
 all** (`stop`, `reject`, `fetch`, `hold`, `inspect`). Calling that basis
 "spatial reasoning" is not defensible when 27% of it contains no spatial
-content. The three-way split — 132 grid / 36 container / 49 no-location — is
+content. The three-way split — 108 grid + 24 runtime / 36 container / 49 no-location — is
 the honest decomposition and the data supports it cleanly.
 
 For reference, the V5 three-way split of the headline cells:
@@ -693,10 +693,12 @@ re-runnable. The results are not recoverable.
 | `data/held_out_v4c.jsonl` | 217 | neither-vocabulary probe | `held_out_v3` 145; **0 with train/dev/seen_v2** | never |
 | `data/seen_v2_backup_203.jsonl` | 203 | pre-gate provenance snapshot | `seen_v2` 203 | nothing; read by no code |
 
-Composition of `held_out_v3`: **132 grid-cell, 36 container, 49 no-location.**
-No duplicate command strings in any file. **[R2] Under the warmup-excluded rule
-the 31 local cells see 131 grid commands, because `command_id 0` is a grid
-command.**
+Composition of `held_out_v3`: **108 grid + 24 runtime (12 `max_reach`, 12
+`nearest_free_cell`), 36 container, 49 no-location.** No duplicate command
+strings in any file. **[R2] Under the warmup-excluded rule the 31 local cells see
+131 grid + runtime commands (107 + 24), because `command_id 0` is a grid
+command.** _(Corrected 2026-09-28: previously "132 grid-cell", which counted the
+24 runtime-symbol commands as grid; verified from `data/held_out_v3.jsonl`.)_
 
 Three `seen_v2` commands are in neither `train_v2` nor `dev_v2`
 (`"put the bottle in the far left corner of the table"`,

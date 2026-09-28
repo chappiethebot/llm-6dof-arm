@@ -637,6 +637,107 @@ def log_rerun(label, split, n_rows):
     return log
 
 
+# ------------------------------------------------- efficiency display helpers
+#
+# One definition of how an energy or VRAM figure is SHOWN, used by s2_metrics,
+# s4_metrics_final, s4_figures, s6_report and DEFENCE_NUMBERS (2026-09-28).
+
+J_FLOOR_TEXT = "\u2248 0 (below GPU floor)"
+
+
+def j_display(j):
+    """A measured J/command for tables. <= 0 means the arm's load was inside
+    the GPU's idle noise: shown as '~0 (below GPU floor)', never as a negative
+    number and never dropped. Non-numeric cells pass through unchanged."""
+    try:
+        v = float(j)
+    except (TypeError, ValueError):
+        return j
+    return J_FLOOR_TEXT if v <= 0 else j
+
+
+_IDLE_LOGS = None
+
+
+def idle_logs():
+    """[(start_epoch, file_name, median_power_w, median_mem_used_mb)] for every
+    idle baseline in power_logs/, oldest first. Timestamps are the epoch values
+    inside the files, so no timezone is guessed."""
+    global _IDLE_LOGS
+    if _IDLE_LOGS is None:
+        import statistics
+        out = []
+        for f in sorted(POWER.glob("idle_*.csv")):
+            with f.open(encoding="utf-8", newline="") as fh:
+                rs = list(csv.DictReader(fh))
+            if rs:
+                out.append((float(rs[0]["timestamp"]), f.name,
+                            statistics.median(float(r["power_w"]) for r in rs),
+                            statistics.median(float(r["mem_used_mb"]) for r in rs)))
+        _IDLE_LOGS = sorted(out)
+    return _IDLE_LOGS
+
+
+def idle_for(eff_row):
+    """The idle baseline in force when an efficiency row was measured: the
+    latest idle log that started before the row's utc. Returns (file, median W,
+    median memory.used MB), or None. Its median W must equal the row's recorded
+    idle_median_w, which s2_metrics checks for every row."""
+    import calendar
+    try:
+        t = calendar.timegm(time.strptime(eff_row["utc"], "%Y-%m-%dT%H:%M:%SZ"))
+    except (KeyError, ValueError):
+        return None
+    prior = [l for l in idle_logs() if l[0] <= t]
+    return prior[-1][1:] if prior else None
+
+
+def vram_above_idle(eff_row):
+    """peak_vram_mb minus the median idle memory.used of the baseline in force.
+    The model's own VRAM; a CPU-only arm reads ~0 (small negatives are noise in
+    the desktop's own allocation and are returned as measured)."""
+    idle = idle_for(eff_row)
+    try:
+        return round(float(eff_row["peak_vram_mb"]) - idle[2], 1) if idle else None
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def vram_display(v):
+    """VRAM above idle for tables: a value <= 0 (no model on the GPU; small
+    negatives are the desktop's own allocation moving) is shown as "~0"."""
+    try:
+        return "\u2248 0" if float(v) <= 0 else v
+    except (TypeError, ValueError):
+        return v
+
+
+# ------------------------------------------------- V5 cells: one outcome per command
+
+def v5_cell_outcomes(rows, metric="action"):
+    """{command_id: bool} for ONE V5 cell's rows, collapsed as A9 did:
+    warm-up rows excluded, repeats collapsed by majority vote (sum*2 > n, a tie
+    is False). metric 'row' keeps grid commands only."""
+    by = {}
+    for r in rows:
+        if str(r.get("is_warmup", "")).lower() == "true":
+            continue
+        truth = json.loads(r["truth_json"] or "{}")
+        if metric == "row":
+            tl = truth.get("location")
+            if not rowof(tl):
+                continue
+            try:
+                pred = json.loads(r["pred_json"] or "{}")
+            except ValueError:
+                pred = {}
+            ok = rowof((pred or {}).get("location") if isinstance(pred, dict) else None) == rowof(tl)
+        else:
+            ok = str(r["strict_match"]).lower() == "true"
+        by.setdefault(r["command_id"], []).append(ok)
+    return {c: (v[0] if len(v) == 1 else majority(v)) for c, v in by.items()}
+
+
 def read_preds(arm, split):
     p = pred_path(arm, split)
     if not p.exists():

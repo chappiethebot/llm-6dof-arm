@@ -1,5 +1,11 @@
 # Factorized per-factor precision cascade — final report (revised after Part B review)
 
+> **2026-09-28 — this file is now the historical record.** Thesis tables now come
+> only from `thesis2/out/final/metrics_final.csv` (the final run; see
+> `thesis2/out/final/FINAL_RUN_REPORT.md` and `DEFENCE_NUMBERS_rev3.md`). The
+> source-of-record note below applied to the earlier run and is kept unchanged
+> as history.
+
 > **Source of record for thesis tables: `thesis2/out/metrics_all_v2.csv` is the only file thesis tables may be built from.** It carries every row of `metrics_all.csv` (left untouched) plus `status` (valid / withdrawn / modelled) and `reason` columns; withdrawn rows have their values blanked. 50 rows: 26 valid, 16 modelled (cascade latency/energy columns are constants; accuracy columns measured), 8 withdrawn (A1.7, all SALSA digits). It now carries **56 rows**: the original 50 plus the plain-greedy LoRA baseline, A8, A10 and A12 on `held_out_v3`, and the two `held_out_v4c` cells §3 leads with (added by `a15_metrics_v2_append.py`, re-review S-E). Per-command detail still lives in `a8_speculative_summary.json`, `a10_prefix_cache_summary.json`, `a11_rejection_positions.csv`, `a12_smalllm_drafter_summary.json` and `a13_v4c_*`; the phase summaries carry a SUPERSEDED banner and are not table sources.
 
 Sessions 2026-09-21/22; revision 2026-09-22 after the independent Part B review
@@ -592,7 +598,7 @@ axis** on which A8 differs, not a general comparison.
 | **SpecGR** — *Inductive Generative Recommendation via Retrieval-based Speculation*, arXiv **2410.02939**, AAAI 2026 | a retrieval/inductive model drafts candidate **items**, the generative recommender verifies, which lets the system recommend items never seen in training | **speculation is used to widen coverage, not to cut latency.** Verification changes *what can be produced*; A8's verification changes only *how fast*, and its output set is exactly the verifier's by construction |
 | **C2T** — *A Classifier-Based Tree Construction Method in Speculative Decoding*, arXiv **2502.13652** | a 241-parameter three-feature classifier scores draft tokens to prune the candidate tree before verification, cutting candidate tokens ~25 % against EAGLE-2 | **its classifier selects among tokens a drafter already produced; A8's classifier *is* the drafter.** C2T still needs a draft model underneath |
 | **CDSL** — *Constrained Decoding with Speculative Lookaheads*, arXiv **2412.10418**, NAACL 2025 | a small draft LM proposes lookaheads that a large target LM plus a task-specific reward function verifies, giving 2.2–12.15× over lookahead-heuristic constrained decoding | **the constraint lives in the verifier, as a reward the acceptance test consults.** In A8 the schema constraint lives in the drafter (the classifier can only emit legal symbols) and the acceptance test is plain token equality, so the output stays greedy-exact |
-| **DCCD** | **not identified.** Four web searches (2026-09-22) for the acronym against decoding/speculative-decoding literature returned no matching work; the nearest hits are CoSpec (2605.24793), X-CoSD (2609.09166) and D²SD (2606.04446), none of which is DCCD | **axis cannot be stated.** Listed so it is not silently dropped: the citation must be resolved before submission, and no claim in this report depends on it. [Certain that it was not found; no view on whether it exists] |
+| **DCCD** — *The Hidden Cost of Structured Generation in LLMs: Draft-Conditioned Constrained Decoding*, Reddy, Walker, Ide, Bedi, arXiv **2603.03305** (cs.CL). _Correction 2026-09-28: this row previously read "not identified" after four searches on 2026-09-22; a search on 2026-09-28 found this paper._ | a training-free, two-step procedure for structured output (JSON, API calls): the LM first generates an unconstrained draft, then constrained decoding runs conditioned on that draft, separating semantic planning from structural enforcement | **its draft steers a second, constrained decode that may change the output; A8's draft is only verified.** A8's draft comes from a separate classifier and is accepted or rejected token by token against plain greedy, so its output is byte-identical to greedy by construction. [Likely — matched on acronym and topic; confirm it is the intended source] |
 | **SemanticSpec** — *Beyond Tokens: Semantic-Aware Speculative Decoding … by Probing Internal States*, arXiv **2602.03708** | estimates semantic probability from the target's hidden states so that semantically equivalent but token-different drafts are accepted; up to 2.7× | **it relaxes the acceptance test; A8 does not.** Accepting semantic equivalents makes output non-identical at the token level, which is precisely the guarantee A8 is built to keep (217/217, three times) |
 | **US20250356258A1** — *Selective Speculative Decoding*, Microsoft Technology Licensing, filed 2024-12-02, published 2025-11-20 | per-iteration logic decides which portions of the output to speculate on and which to generate directly with the primary model | **it gates *when* to speculate with the same kind of drafter; A8 changes *what* the drafter is.** The two are orthogonal: A8's one-shot classifier draft could be gated by exactly this logic |
 
@@ -810,12 +816,17 @@ exactly" holds at aggregate level only (M-5).
 
 ## 9. Remaining arms — the vocabulary story
 
-**A1.4 BiLSTM.** Vocabulary from `train_v2` only (142 types). `upper`, `bottom`,
+**A1.4 BiLSTM.** Vocabulary from `train_v2` only (142 word types (144 table entries with <pad>/<unk>)). `upper`, `bottom`,
 `back`, `front` are OOV (`top` is in `train_v2` but unused in `held_out_v3`;
 row B's `middle`/`center` are in-vocabulary — so the disjunction is total for
 rows A and C, not for B, M-7). Predictions are byte-identical on `held_out_v3`
 and `held_out_v4c` (217/217) and it reaches 0.6852 row accuracy without seeing
 the row word (B 36/36, A 22/36, C 16/36) against the factorized head's 0.3333.
+
+> **Correction 2026-09-28.** This paragraph said "142 types". The BiLSTM's
+> vocabulary is 142 word types; its embedding table has 144 entries because
+> `<pad>` and `<unk>` are added (`thesis2/final/RUN_ORDER.md`, the TextCNN/MLP-BoW
+> vs BiLSTM vocabulary section). The count was never wrong, only unqualified.
 
 **Row-word occurrences by split** (whole-word, case-insensitive; *commands
 containing the word / total occurrences*):

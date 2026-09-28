@@ -77,9 +77,15 @@ function Print-Accuracy([string]$split) {
     Log ("SUMMARY action match per arm on " + $split)
     Get-ChildItem (Join-Path $Out ("pred_*_{0}.csv" -f $split)) | Sort-Object Name | ForEach-Object {
         $rows = @(Import-Csv $_.FullName)
-        $ok = @($rows | Where-Object { @("1", "true", "1.0") -contains ([string]$_.correct).ToLower() }).Count
+        # One outcome per command: repeats (R > 1) collapse by majority vote, A9's
+        # rule -- correct iff more than half the repeats are correct; a tie is wrong.
+        $groups = @($rows | Group-Object command_id)
+        $ok = @($groups | Where-Object {
+            $hits = @($_.Group | Where-Object { @("1", "true", "1.0") -contains ([string]$_.correct).ToLower() }).Count
+            ($hits * 2) -gt $_.Count
+        }).Count
         $arm = $_.Name.Replace("pred_", "").Replace(("_{0}.csv" -f $split), "")
-        Log ("   {0,-40} {1:N4}" -f $arm, ($ok / [math]::Max($rows.Count, 1)))
+        Log ("   {0,-40} {1:N4}" -f $arm, ($ok / [math]::Max($groups.Count, 1)))
     }
 }
 

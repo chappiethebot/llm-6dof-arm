@@ -159,6 +159,9 @@ GPU_PARSERS = {
     "lora_greedy", "cascade_local_tauA", "pipeline_always_local",
     "salsa_full_qwen2.5-3b-lora", "salsa_full_Qwen2.5-3B-Instruct",
     "salsa_full_qwen2.5-0.5b-lora", "salsa_full_Qwen2.5-0.5B-Instruct",
+    # registered with gpu=True above but missing here until 2026-09-28, so the
+    # smoke test never measured their VRAM
+    "grpo_base", "grpo_sft",
 }
 
 

@@ -1,0 +1,28 @@
+================================================================================================
+smoke_parsers   started 2026-09-28 17:38:23
+  log: thesis2\out\final\logs\smoke_parsers_20260928_173823.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  provenance OK: 10 commands, all verbatim seen_v2, none held-out
+  cascade_cloud_always               SKIPPED -- cloud parser; --allow-cloud 0 is below the 10 calls it needs
+  cascade_cloud_tauA                 SKIPPED -- cloud parser; --allow-cloud 0 is below the 10 calls it needs
+  cascade_local_tauA                 json 10/10  agrees 10/10  p50     3.93 ms  peak VRAM 6860 MB
+  factorized_fp16                    json 10/10  agrees 10/10  p50     3.63 ms  peak VRAM 277 MB
+  factorized_int4                    json 10/10  agrees 10/10  p50     4.07 ms  peak VRAM 322 MB
+  flat_cpu                           json 10/10  agrees 10/10  p50    11.82 ms  peak VRAM n/a (CPU/cloud)
+  flat_gpu                           json 10/10  agrees 10/10  p50     3.38 ms  peak VRAM 275 MB
+  frozen-checkpoint gate OK for grpo_base (86acbd3da67a78ac, dev 0.8421052631578947)
+  grpo_base                          json 10/10  agrees  9/10  p50   655.97 ms  peak VRAM n/a (CPU/cloud)
+  frozen-checkpoint gate OK for grpo_sft (d3bda156209dea17, dev 0.9824561403508771)
+  grpo_sft                           json 10/10  agrees 10/10  p50   680.74 ms  peak VRAM n/a (CPU/cloud)
+  lora_greedy                        json 10/10  agrees 10/10  p50   680.73 ms  peak VRAM 6593 MB
+  mlpbow                             json 10/10  agrees 10/10  p50     0.47 ms  peak VRAM 9 MB
+  pipeline_always_local              json 10/10  agrees 10/10  p50     3.65 ms  peak VRAM 6860 MB
+  restored baseline_rules_firewall.csv (rewritten by the import; earlier run's file preserved)
+  rules_firewalled                   json 10/10  agrees  9/10  p50     0.01 ms  peak VRAM n/a (CPU/cloud)
+  rules_open                         json 10/10  agrees  9/10  p50     0.01 ms  peak VRAM n/a (CPU/cloud)
+  salsa_full_Qwen2.5-0.5B-Instruct   json 10/10  agrees  2/10  p50    73.89 ms  peak VRAM 1196 MB
+  salsa_full_Qwen2.5-3B-Instruct     json 10/10  agrees  6/10  p50   160.68 ms  peak VRAM 6499 MB
+  salsa_full_qwen2.5-0.5b-lora       json 10/10  agrees  1/10  p50    71.09 ms  peak VRAM 1196 MB
+  salsa_full_qwen2.5-3b-lora         json 10/10  agrees  7/10  p50   160.69 ms  peak VRAM 6593 MB
+  textcnn                            json 10/10  agrees 10/10  p50     1.84 ms  peak VRAM 10 MB

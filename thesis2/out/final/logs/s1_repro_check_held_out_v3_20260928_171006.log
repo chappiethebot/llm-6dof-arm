@@ -1,0 +1,105 @@
+================================================================================================
+s1_repro_check_held_out_v3   started 2026-09-28 17:10:06
+  log: thesis2\out\final\logs\s1_repro_check_held_out_v3_20260928_171006.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  split held_out_v3, 217 commands. Reading CSVs only: no model is loaded.
+  ours  : thesis2/out/final/pred_<arm>_held_out_v3.csv
+  theirs: thesis2/out/ (the earlier run)
+
+============================================================================================================================
+arm                          compared/217  identical  differing command_ids
+============================================================================================================================
+  V5 census: 36 cells, 12152 rows in results_v5_cloud.csv, results_v5_cls.csv, results_v5_deepseek.csv, results_v5_llama.csv, results_v5_qwen05.csv, results_v5_qwen3.csv
+     cloud  R=5  5 cells
+     local  R=1  31 cells
+
+  COMPLETENESS AUDIT -- exactly n x R parsed CSV rows over n distinct command_ids
+  file                                            rows   lines   uniq  expected  verdict
+  --------------------------------------------------------------------------------------------------------------------------
+  pred_a10_speculative_held_out_v3.csv             217     217    217       217  COMPLETE
+  pred_a12_smalllm_held_out_v3.csv                 217     217    217       217  COMPLETE
+  pred_a8_speculative_held_out_v3.csv              217     217    217       217  COMPLETE
+  pred_bilstm_held_out_v3.csv                      217     217    217       217  COMPLETE
+  pred_cascade_cloud_always_held_out_v3.csv       1085    1085    217      1085  COMPLETE
+  pred_cascade_cloud_tauA_held_out_v3.csv         1085    1085    217      1085  COMPLETE
+  pred_cascade_local_tauA_held_out_v3.csv          217     217    217       217  COMPLETE
+  pred_cascade_oracle_held_out_v3.csv              217     217    217       217  COMPLETE
+  pred_ensemble_held_out_v3.csv                    217     217    217       217  COMPLETE
+  pred_factorized_fp16_held_out_v3.csv             217     217    217       217  COMPLETE
+  pred_factorized_int4_held_out_v3.csv             217     217    217       217  COMPLETE
+  pred_flant5_held_out_v3.csv                      217     217    217       217  COMPLETE
+  pred_flat_cpu_held_out_v3.csv                    217     217    217       217  COMPLETE
+  pred_flat_gpu_held_out_v3.csv                    217     217    217       217  COMPLETE
+  pred_grpo_base_held_out_v3.csv                   217     986    217       217  COMPLETE
+  pred_grpo_sft_held_out_v3.csv                    217     217    217       217  COMPLETE
+  pred_knn_minilm_held_out_v3.csv                  217     217    217       217  COMPLETE
+  pred_lora_greedy_held_out_v3.csv                 217     217    217       217  COMPLETE
+  pred_minilm_probe_held_out_v3.csv                217     217    217       217  COMPLETE
+  pred_mlpbow_held_out_v3.csv                      217     217    217       217  COMPLETE
+  pred_pipeline_always_local_held_out_v3.csv       217     217    217       217  COMPLETE
+  pred_rules_firewalled_held_out_v3.csv            217     217    217       217  COMPLETE
+  pred_rules_open_held_out_v3.csv                  217     217    217       217  COMPLETE
+  pred_salsa_full_Qwen2.5-0.5B-Instruct_held_out_v3.csv     217     217    217       217  COMPLETE
+  pred_salsa_full_qwen2.5-0.5b-lora_held_out_v3.csv     217     217    217       217  COMPLETE
+  pred_salsa_full_Qwen2.5-3B-Instruct_held_out_v3.csv     217     217    217       217  COMPLETE
+  pred_salsa_full_qwen2.5-3b-lora_held_out_v3.csv     217     217    217       217  COMPLETE
+  pred_textcnn_held_out_v3.csv                     217     217    217       217  COMPLETE
+  pred_tfidf_logreg_held_out_v3.csv                217     217    217       217  COMPLETE
+  pred_tinybert_held_out_v3.csv                    217     217    217       217  COMPLETE
+  --------------------------------------------------------------------------------------------------------------------------
+  30 file(s) audited; 0 FAIL
+  1 file(s) have more physical LINES than CSV ROWS -- exactly the files the old line-count rule mis-read:
+     pred_grpo_base_held_out_v3.csv               986 lines vs 217 rows
+
+a10_speculative                   217/217        217  all identical
+a12_smalllm                       217/217        217  all identical
+a8_speculative                    217/217        217  all identical
+bilstm                            217/217        217  all identical
+cascade_cloud_always              217/217        217  all identical
+cascade_cloud_tauA                217/217        217  all identical
+cascade_local_tauA                217/217        217  all identical
+cascade_oracle                    217/217        217  all identical
+ensemble                          216/217        215  (differing command_ids ['132']: reported only -- its gpt-4o-mini/rag input is sampled (R = 5, majority vote); per-command outcome identical on 216/216); not in the saved file by design: 0 (V5's warm-up row, dropped by the original loader)
+factorized_fp16                   217/217        217  all identical
+factorized_int4                    totals        yes  totals only: ours 0.6083 vs saved 0.6083 (quantization_gate.csv (Phase 3 aggregate))
+flant5                            217/217        217  all identical
+flat_cpu                          217/217        217  all identical
+flat_gpu                          217/217        217  all identical
+grpo_base                               -          -  NOT COMPARABLE: NEW arm -- first measurement
+grpo_sft                                -          -  NOT COMPARABLE: NEW arm -- first measurement
+knn_minilm                        217/217        217  all identical
+lora_greedy                       217/217        217  all identical
+minilm_probe                      217/217        217  all identical
+mlpbow                                  -          -  NOT COMPARABLE: NEW arm -- first measurement
+pipeline_always_local             217/217        217  all identical
+rules_firewalled                   totals        yes  totals only: ours 0.4470 vs saved 0.4470 (baseline_rules_firewall.csv, held_out_v3 row)
+rules_open                        217/217        217  all identical
+salsa_full_Qwen2.5-0.5B-Instruct            -          -  NOT COMPARABLE: NEW arm -- first measurement
+salsa_full_Qwen2.5-3B-Instruct            -          -  NOT COMPARABLE: NEW arm -- first measurement
+salsa_full_qwen2.5-0.5b-lora            -          -  NOT COMPARABLE: NEW arm -- first measurement
+salsa_full_qwen2.5-3b-lora              -          -  NOT COMPARABLE: NEW arm -- first measurement
+textcnn                                 -          -  NOT COMPARABLE: NEW arm -- first measurement
+tfidf_logreg                      217/217        217  all identical
+tinybert                          217/217        217  all identical
+============================================================================================================================
+
+  NOT COMPARABLE (8 arms) -- each with the reason from the earlier run:
+     grpo_base                    NEW arm -- first measurement
+     grpo_sft                     NEW arm -- first measurement
+     mlpbow                       NEW arm -- first measurement
+     salsa_full_Qwen2.5-0.5B-Instruct NEW arm -- first measurement
+     salsa_full_Qwen2.5-3B-Instruct NEW arm -- first measurement
+     salsa_full_qwen2.5-0.5b-lora NEW arm -- first measurement
+     salsa_full_qwen2.5-3b-lora   NEW arm -- first measurement
+     textcnn                      NEW arm -- first measurement
+  wrote thesis2\out\final\repro_check_held_out_v3.csv (30 arms) -- the report's Section 3 is built from it
+
+------------------------------------------------------------------------------------------------
+  NO MODEL RUNS: prediction CSVs and the earlier run's CSVs were read; the only file written is this check's own repro_check_<split>.csv
+  22 arm(s) compared on held_out_v3; 8 not comparable
+  join key is str(command_id) on both sides; comparing ZERO commands is a FAIL
+  completeness: exactly n x R PARSED CSV rows over n distinct command_ids (never a line count)
+  totals-only arms: factorized_int4 0.6083, rules_firewalled 0.4470
+------------------------------------------------------------------------------------------------
+GATE PASS

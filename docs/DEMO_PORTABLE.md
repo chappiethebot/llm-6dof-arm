@@ -259,8 +259,10 @@ Then:
 the best observed is 0.029. The cause is understood: `PickPlaceController` is a
 grasp state machine being used to hover, and its approach phase carries offsets
 it never removes because it expects to descend and close. Fixing it needs
-RMPflow or direct IK. `pick_place` uses a different path and holds 0.1–0.5 cm,
-which is the figure in the thesis.
+RMPflow or direct IK. `pick_place` uses a different path and holds 0.2–0.4 cm,
+which is the figure in the thesis. _(Corrected 2026-09-28 from "0.1–0.5 cm": the
+verified live figure is 0.2–0.4 cm for `pick_place`, `docs/SESSION_2026-09-07.md:106-108`;
+the same correction as slide 22.)_
 
 **The column half of the grid mapping is a convention, not a fact.** Verified
 physically on 7 September: schema column 3 ("right") maps to the side nearest

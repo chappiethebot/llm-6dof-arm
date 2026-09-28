@@ -16,7 +16,18 @@ arm, the cell says WHY instead of being blank:
 
 Reads thesis2/out/final/pred_*.csv (Stage 1) and results_v5cells_*.csv, plus
 unified_efficiency.csv (Stage 3) when it exists. Writes
-thesis2/out/final/metrics_stage2.csv.
+thesis2/out/final/metrics_stage2.csv and thesis2/out/final/v5cells_both_splits.csv.
+
+Efficiency display (2026-09-28): a J/command <= 0 is shown as
+"~0 (below GPU floor)" with the measured value kept in joules_per_command_raw;
+vram_above_idle_mb = peak VRAM minus the median idle memory.used of the idle
+baseline in force when the arm was measured (common.idle_for).
+
+v5cells_both_splits.csv: all 36 V5 cells (31 local + 5 gpt-4o-mini) on both
+splits, action match and row accuracy side by side, collapsed as A9 did (warm-up
+rows excluded; repeats by majority vote, a tie is False), each with a clustered
+bootstrap 95% CI over command_id -- s4_significance.clustered_bootstrap, seed
+20260827, 2,000 resamples. DESCRIPTIVE ONLY: no hypothesis is tested.
 
 Diagnosis metrics, per arm x split:
   row accuracy split by row word -- seen (middle/center), unseen
@@ -97,12 +108,13 @@ def collapse(rows, determinism):
 def spec_metrics(arm, split):
     """Token acceptance and first-rejection field, from the speculative arms'
     own per-command files."""
-    src = {"a8_speculative": "a8_speculative_percommand.csv",
-           "a10_speculative": "a10_prefix_cache_percommand.csv",
-           "a12_smalllm": "a12_smalllm_drafter_percommand.csv"}.get(arm)
-    if not src or split != "held_out_v3":
+    src = {"a8_speculative": "a8_speculative_percommand%s.csv",
+           "a10_speculative": "a10_prefix_cache_percommand%s.csv",
+           "a12_smalllm": "a12_smalllm_drafter_percommand%s.csv"}.get(arm)
+    if not src:
         return NA_SPEC, NA_SPEC
-    p = C.REPO / "thesis2" / "out" / src
+    # the final run's own per-command files; held_out_v3 has no suffix
+    p = C.OUT / (src % ("" if split == "held_out_v3" else "_" + split))
     if not p.exists():
         return "not run", "not run"
     rows = list(csv.DictReader(p.open(encoding="utf-8", newline="")))
@@ -111,11 +123,85 @@ def spec_metrics(arm, split):
     rate = round(acc / off, 4) if off else "n/a"
     rej = C.REPO / "thesis2" / "out" / "a11_rejection_positions.csv"
     dist = "n/a - a11_rejection_positions.csv not present"
-    if rej.exists() and arm in ("a8_speculative", "a10_speculative"):
+    if split != "held_out_v3":
+        dist = "n/a - the first-rejection analysis (A11) exists for held_out_v3 only"
+    elif rej.exists() and arm in ("a8_speculative", "a10_speculative"):
         c = Counter(r["region"] for r in csv.DictReader(rej.open(encoding="utf-8", newline=""))
                     if not r["region"].startswith("(none"))
         dist = "; ".join("%s=%d" % kv for kv in c.most_common())
     return rate, dist
+
+
+def write_v5_table(eff):
+    """All 36 V5 cells on both splits, with a DESCRIPTIVE bootstrap CI each."""
+    from s4_significance import clustered_bootstrap
+    csv.field_size_limit(2 ** 31 - 1)
+    cells = C.v5_census(verbose=False)
+    by = {}
+    for split in C.SPLITS:
+        p = C.OUT / ("results_v5cells_%s.csv" % split)
+        if not p.exists():
+            continue
+        with p.open(encoding="utf-8", newline="") as fh:
+            for r in csv.DictReader(fh):
+                by.setdefault((split, r["model"], r["strategy"]), []).append(r)
+    out = []
+    for (model, strategy), v in sorted(cells.items(), key=lambda kv: (kv[1]["kind"], kv[0])):
+        rec = dict(model=model, strategy=strategy, kind=v["kind"], repeats=v["repeats"])
+        for split, tag in (("held_out_v3", "v3"), ("held_out_v4c", "v4c")):
+            rows = by.get((split, model, strategy))
+            for metric, col in (("action", "action"), ("row", "row")):
+                if not rows:
+                    rec.update({"%s_n_%s" % (tag, col): "not run",
+                                "%s_%s" % (tag, col): "not run",
+                                "%s_%s_ci_lo" % (tag, col): "",
+                                "%s_%s_ci_hi" % (tag, col): ""})
+                    continue
+                o = C.v5_cell_outcomes(rows, metric)
+                vals = [float(o[c]) for c in sorted(o, key=int)]
+                pt, lo, hi = clustered_bootstrap(vals, [0.0] * len(vals))
+                rec.update({"%s_n_%s" % (tag, col): len(vals),
+                            "%s_%s" % (tag, col): round(pt, 4),
+                            "%s_%s_ci_lo" % (tag, col): round(lo, 4),
+                            "%s_%s_ci_hi" % (tag, col): round(hi, 4)})
+        e = eff.get(("v5:%s/%s" % (model, strategy), "held_out_v3"))
+        if v["kind"] == "cloud":
+            rec.update(v3_latency_p50_ms="Stage-1 only (network)",
+                       v3_joules_per_command=NOT_MEAS + " (cloud)",
+                       v3_joules_per_command_raw=NOT_MEAS + " (cloud)",
+                       v3_vram_above_idle_mb=NOT_MEAS + " (cloud)")
+        elif e:
+            rec.update(v3_latency_p50_ms=e["latency_p50_ms"],
+                       v3_latency_p95_ms=e["latency_p95_ms"],
+                       v3_joules_per_command=C.j_display(e["joules_per_command"]),
+                       v3_joules_per_command_raw=e["joules_per_command"],
+                       v3_vram_above_idle_mb=C.vram_display(C.vram_above_idle(e)),
+                       v3_vram_above_idle_mb_raw=C.vram_above_idle(e))
+        else:
+            rec.update(v3_latency_p50_ms="not measured", v3_joules_per_command="not measured",
+                       v3_joules_per_command_raw="not measured",
+                       v3_vram_above_idle_mb="not measured")
+        rec["collapse"] = ("A9: warm-up rows excluded; %s" %
+                           ("5 repeats by majority vote (sum*2 > n, tie False)"
+                            if v["repeats"] > 1 else "R = 1"))
+        rec["ci"] = ("descriptive 95%% CI: clustered bootstrap over command_id, "
+                     "%d resamples, seed %d; no hypothesis test" % (2000, C.SEED))
+        out.append(rec)
+    cols = ["model", "strategy", "kind", "repeats",
+            "v3_n_action", "v3_action", "v3_action_ci_lo", "v3_action_ci_hi",
+            "v4c_n_action", "v4c_action", "v4c_action_ci_lo", "v4c_action_ci_hi",
+            "v3_n_row", "v3_row", "v3_row_ci_lo", "v3_row_ci_hi",
+            "v4c_n_row", "v4c_row", "v4c_row_ci_lo", "v4c_row_ci_hi",
+            "v3_latency_p50_ms", "v3_latency_p95_ms", "v3_joules_per_command",
+            "v3_joules_per_command_raw", "v3_vram_above_idle_mb",
+            "v3_vram_above_idle_mb_raw", "collapse", "ci"]
+    p = C.OUT / "v5cells_both_splits.csv"
+    with p.open("w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=cols)
+        w.writeheader()
+        for r in out:
+            w.writerow({c: r.get(c, "") for c in cols})
+    return p, len(out)
 
 
 def main():
@@ -212,14 +298,27 @@ def main():
             rec["latency_p99_ms"] = round(pct(lat, .99), 3) if lat else "n/a"
             e = eff.get((name, split))
             if arm.kind == "cloud":
-                rec["joules_per_command"] = NOT_MEAS + " (cloud)"
-                rec["peak_vram_mb"] = NOT_MEAS + " (cloud)"
+                for k in ("joules_per_command", "joules_per_command_raw",
+                          "peak_vram_mb", "vram_above_idle_mb", "vram_above_idle_mb_raw"):
+                    rec[k] = NOT_MEAS + " (cloud)"
+                rec["idle_log"] = ""
             elif e:
-                rec["joules_per_command"] = e.get("joules_per_command", "")
+                rec["joules_per_command_raw"] = e.get("joules_per_command", "")
+                rec["joules_per_command"] = C.j_display(e.get("joules_per_command", ""))
                 rec["peak_vram_mb"] = e.get("peak_vram_mb", "")
+                rec["vram_above_idle_mb_raw"] = C.vram_above_idle(e)
+                rec["vram_above_idle_mb"] = C.vram_display(C.vram_above_idle(e))
+                rec["idle_log"] = (C.idle_for(e) or ("",))[0]
+            elif name == "ensemble":
+                for k in ("joules_per_command", "joules_per_command_raw",
+                          "peak_vram_mb", "vram_above_idle_mb", "vram_above_idle_mb_raw"):
+                    rec[k] = "n/a - offline pairing of measured V5 cells; no inference"
+                rec["idle_log"] = ""
             else:
-                rec["joules_per_command"] = "not measured yet (run s3_energy.py)"
-                rec["peak_vram_mb"] = "not measured yet (run s3_energy.py)"
+                for k in ("joules_per_command", "joules_per_command_raw",
+                          "peak_vram_mb", "vram_above_idle_mb", "vram_above_idle_mb_raw"):
+                    rec[k] = "not measured yet (run s3_energy.py)"
+                rec["idle_log"] = ""
             rec["cpu_ms_per_command"] = (e or {}).get("cpu_ms_per_command",
                                                       "not measured yet")
             rec["size_on_disk_mb"] = (e or {}).get("size_on_disk_mb", "not measured yet")
@@ -236,7 +335,8 @@ def main():
             "n_row", "row_accuracy", "verb_accuracy", "target_accuracy",
             "location_accuracy", "col_accuracy", "schema_validity", "ECE", "ECE_n",
             "latency_p50_ms", "latency_p95_ms", "latency_p99_ms",
-            "joules_per_command", "cpu_ms_per_command", "peak_vram_mb",
+            "joules_per_command", "joules_per_command_raw", "cpu_ms_per_command",
+            "peak_vram_mb", "vram_above_idle_mb", "vram_above_idle_mb_raw", "idle_log",
             "size_on_disk_mb", "token_acceptance", "first_rejection_field",
             "row_by_word_group", "row_confusion", "row_signature", "note"]
     p = C.OUT / "metrics_stage2.csv"
@@ -246,6 +346,18 @@ def main():
         for r in out:
             w.writerow({c: r.get(c, "") for c in cols})
 
+    # ---- every efficiency row must reproduce its idle baseline from the logs
+    idle_bad = []
+    for (arm_name, split_), e in eff.items():
+        m = C.idle_for(e)
+        if not m or abs(round(m[1], 2) - float(e["idle_median_w"])) > 0.005:
+            idle_bad.append("%s/%s: recorded idle %s W, matched log %s"
+                            % (arm_name, split_, e["idle_median_w"], m))
+    print("  idle-log match: %d of %d efficiency rows reproduce their recorded "
+          "idle_median_w from power_logs/idle_*.csv" % (len(eff) - len(idle_bad), len(eff)))
+
+    v5p, v5n = write_v5_table(eff)
+
     ran = [r for r in out if r.get("status") == "valid"]
     print()
     print("  %-34s %-14s %8s %8s %s" % ("arm", "split", "action", "row", "row by word group"))
@@ -253,13 +365,15 @@ def main():
         print("  %-34s %-14s %8s %8s %s"
               % (r["arm"], r["split"], r["action_match"], r["row_accuracy"],
                  r.get("row_by_word_group", "")[:46]))
-    blank = sum(1 for r in out for v in r.values() if v == "")
-    C.gate(True, [
+    C.gate(not idle_bad, [
         "%d (arm, split) rows; %d with predictions, %d not run"
         % (len(out), len(ran), len(out) - len(ran)),
         "every metric present for every arm; impossible cells carry the reason",
+        "idle-log match for VRAM above idle: %d of %d rows (any mismatch is a FAIL)"
+        % (len(eff) - len(idle_bad), len(eff)),
+        "V5 cells both splits: %d cells -> %s" % (v5n, v5p.relative_to(C.REPO)),
         "output: %s" % p.relative_to(C.REPO),
-    ])
+    ] + idle_bad)
 
 
 if __name__ == "__main__":

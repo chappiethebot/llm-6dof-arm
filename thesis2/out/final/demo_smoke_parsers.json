@@ -1,12 +1,113 @@
 [
   {
-    "parser": "rules_open",
+    "parser": "cascade_cloud_always",
+    "status": "skipped: cloud budget",
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "cascade_cloud_tauA",
+    "status": "skipped: cloud budget",
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "cascade_local_tauA",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 10,
+    "n": 10,
+    "latency_p50_ms": 3.6,
+    "peak_vram_mb": 6860.1,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "factorized_fp16",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 10,
+    "n": 10,
+    "latency_p50_ms": 3.7,
+    "peak_vram_mb": 276.8,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "factorized_int4",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 10,
+    "n": 10,
+    "latency_p50_ms": 3.53,
+    "peak_vram_mb": 321.5,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "flat_cpu",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 10,
+    "n": 10,
+    "latency_p50_ms": 12.31,
+    "peak_vram_mb": "n/a",
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "flat_gpu",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 10,
+    "n": 10,
+    "latency_p50_ms": 3.05,
+    "peak_vram_mb": 275.1,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "grpo_base",
     "status": "ok",
     "valid_json": 10,
     "agrees_with_seen_v2": 9,
     "n": 10,
-    "latency_p50_ms": 0.01,
-    "peak_vram_mb": "n/a"
+    "latency_p50_ms": 651.56,
+    "peak_vram_mb": 6593.4,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "grpo_sft",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 10,
+    "n": 10,
+    "latency_p50_ms": 691.96,
+    "peak_vram_mb": 6593.4,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "lora_greedy",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 10,
+    "n": 10,
+    "latency_p50_ms": 707.65,
+    "peak_vram_mb": 6593.4,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "mlpbow",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 10,
+    "n": 10,
+    "latency_p50_ms": 0.45,
+    "peak_vram_mb": 8.7,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "pipeline_always_local",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 10,
+    "n": 10,
+    "latency_p50_ms": 4.08,
+    "peak_vram_mb": 6859.6,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
   },
   {
     "parser": "rules_firewalled",
@@ -15,6 +116,77 @@
     "agrees_with_seen_v2": 9,
     "n": 10,
     "latency_p50_ms": 0.01,
-    "peak_vram_mb": "n/a"
+    "peak_vram_mb": "n/a",
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "rules_open",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 9,
+    "n": 10,
+    "latency_p50_ms": 0.01,
+    "peak_vram_mb": "n/a",
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "salsa_full_Qwen2.5-0.5B-Instruct",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 2,
+    "n": 10,
+    "latency_p50_ms": 76.42,
+    "peak_vram_mb": 1195.7,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "salsa_full_Qwen2.5-3B-Instruct",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 6,
+    "n": 10,
+    "latency_p50_ms": 173.68,
+    "peak_vram_mb": 6499.0,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "salsa_full_qwen2.5-0.5b-lora",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 1,
+    "n": 10,
+    "latency_p50_ms": 100.83,
+    "peak_vram_mb": 1195.7,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "salsa_full_qwen2.5-3b-lora",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 7,
+    "n": 10,
+    "latency_p50_ms": 162.38,
+    "peak_vram_mb": 6593.4,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "textcnn",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 10,
+    "n": 10,
+    "latency_p50_ms": 0.78,
+    "peak_vram_mb": 9.8,
+    "python": "D:\\condaenvs\\thesis2gpu\\python.exe"
+  },
+  {
+    "parser": "v5_ollama",
+    "status": "ok",
+    "valid_json": 10,
+    "agrees_with_seen_v2": 9,
+    "n": 10,
+    "latency_p50_ms": 1715.4,
+    "peak_vram_mb": "n/a",
+    "python": "C:\\Users\\USER\\.conda\\envs\\thesis\\python.exe"
   }
 ]

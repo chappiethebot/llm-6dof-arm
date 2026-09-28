@@ -20,6 +20,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import common as C                                                      # noqa: E402
 import arms as A                                                        # noqa: E402
 
+# What each row IS, so no table or figure presents a ceiling or a
+# vocabulary-unfair baseline as a competing system (2026-09-28).
+SYSTEM_CLASS = {
+    "cascade_oracle": "ceiling, not a system -- consumes the true row; excluded "
+                      "from efficiency tables and every Pareto frontier",
+    "rules_open": "vocabulary-unfair -- its grammar was written with the held-out "
+                  "row words; excluded from every Pareto frontier",
+}
+
 WITHDRAWN_NOTE = ("withdrawn upstream (FINAL_REPORT B-3/B-4): A1.7 field-level "
                   "FLMD and every SALSA digits mapping are not registered")
 
@@ -64,12 +73,14 @@ def main():
             measured_latency_p50_ms=e.get("latency_p50_ms", "not measured (Stage 3 not run)"),
             measured_latency_p95_ms=e.get("latency_p95_ms", "not measured (Stage 3 not run)"),
             measured_latency_p99_ms=e.get("latency_p99_ms", "not measured (Stage 3 not run)"),
-            joules_per_command=e.get("joules_per_command",
-                                     m.get("joules_per_command", "not measured")),
+            # Stage 2 already applied the display rule (<= 0 -> below GPU floor)
+            # and kept the measured value in joules_per_command_raw.
+            joules_per_command=m.get("joules_per_command", "not measured"),
             mean_power_w=e.get("mean_power_w", "not measured"),
             idle_median_w=e.get("idle_median_w", "not measured"),
             max_gpu_temp_c=e.get("max_gpu_temp_c", "not measured"),
-            peak_vram_mb=e.get("peak_vram_mb", m.get("peak_vram_mb", "not measured")),
+            peak_vram_mb=m.get("peak_vram_mb", "not measured"),
+            system_class=SYSTEM_CLASS.get(arm_name, "system"),
             cpu_ms_per_command=e.get("cpu_ms_per_command", "not measured"),
             energy_n_commands=e.get("n_commands", "not measured"),
             energy_wall_s=e.get("wall_s", "not measured"),

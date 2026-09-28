@@ -1,5 +1,14 @@
-"""V4 condition figures, same style as audit/figures_v3.py. Read-only."""
-import csv, collections, os, random
+"""V4 condition figures, same style as audit/figures_v3.py. Read-only.
+
+    python audit/figures_v4.py            # all figures, original names
+    python audit/figures_v4.py --rev3     # ONLY fig5 and fig7, as *_rev3.png/.pdf
+
+--rev3 (2026-09-28) writes corrected copies and never overwrites an original:
+fig5's caption said "21 of 27 ... the six that move"; audit/v4_cells.csv has 27
+V4a cells, 20 noise and 7 real. fig7's value labels collided with the band
+labels and the legend.
+"""
+import csv, collections, os, random, sys
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -60,7 +69,16 @@ for c, rows in D.items():
         S[(c,) + k] = ci(rs)
 
 
+REV3 = "--rev3" in sys.argv
+REV3_ONLY = {"fig5_v3_vs_v4a", "fig7_v4c_row_vs_column"}
+
+
 def save(fig, name, cap):
+    if REV3:
+        if name not in REV3_ONLY:
+            plt.close(fig)          # computed, not written: originals are untouched
+            return
+        name = name + "_rev3"
     os.makedirs(OUT, exist_ok=True)
     words, lines, cur = cap.split(), [], ""
     for w in words:
@@ -105,7 +123,7 @@ ax.legend(handles=[Line2D([], [], marker=COND_STYLE[c][0], color=COND_STYLE[c][1
           loc="lower right", fontsize=9)
 save(fig, "fig5_v3_vs_v4a",
      "Every model and method run under both legends. Takeaway: the revised legend changes "
-     "almost nothing overall - 21 of 27 cells are inside the error bars - but the six that "
+     "almost nothing overall - 20 of 27 cells are inside the error bars - but the seven that "
      "move do so in both directions, and the largest model regresses alongside the smallest.")
 
 # ---- fig 6: llama3.2 failure-mode decomposition ----
@@ -182,17 +200,36 @@ ax.bar([i - .2 for i in x], rows_, .4, label="row correct", color="#C44E52")
 ax.bar([i + .2 for i in x], cols_, .4, label="column correct", color="#4C72B0")
 ax.axhspan(30, 45, color="grey", alpha=.15)
 ax.axhline(70, color="k", ls="--", lw=1)
-ax.text(len(labels) - .5, 71, "pre-registered: learned a concept", fontsize=8, ha="right")
-ax.text(len(labels) - .5, 37, "pre-registered: memorised strings", fontsize=8, ha="right")
 ax.axhline(33.3, color="grey", ls=":", lw=1)
-for i, (r_, c_) in enumerate(zip(rows_, cols_)):
-    ax.text(i - .2, r_ + 1, f"{r_:.0f}", ha="center", fontsize=8)
-    ax.text(i + .2, c_ + 1, f"{c_:.0f}", ha="center", fontsize=8)
+if REV3:
+    # band labels OUTSIDE the plot on the right, value labels inside the bars,
+    # legend above the axes: nothing can sit on a bar's number any more
+    trans = ax.get_yaxis_transform()
+    ax.text(1.01, 70, "pre-registered:\nlearned a concept", transform=trans,
+            fontsize=8, ha="left", va="center")
+    ax.text(1.01, 37.5, "pre-registered:\nmemorised strings", transform=trans,
+            fontsize=8, ha="left", va="center")
+    for i, (r_, c_) in enumerate(zip(rows_, cols_)):
+        ax.text(i - .2, r_ - 2, f"{r_:.0f}", ha="center", va="top", fontsize=8,
+                color="white", fontweight="bold")
+        ax.text(i + .2, c_ - 2, f"{c_:.0f}", ha="center", va="top", fontsize=8,
+                color="white", fontweight="bold")
+else:
+    ax.text(len(labels) - .5, 71, "pre-registered: learned a concept", fontsize=8, ha="right")
+    ax.text(len(labels) - .5, 37, "pre-registered: memorised strings", fontsize=8, ha="right")
+    for i, (r_, c_) in enumerate(zip(rows_, cols_)):
+        ax.text(i - .2, r_ + 1, f"{r_:.0f}", ha="center", fontsize=8)
+        ax.text(i + .2, c_ + 1, f"{c_:.0f}", ha="center", fontsize=8)
 ax.set_xticks(list(x), labels, fontsize=8)
 ax.set_ylabel("% correct on that axis"); ax.set_ylim(0, 105)
-ax.grid(axis="y", alpha=.3); ax.legend(fontsize=9, loc="upper left")
+ax.grid(axis="y", alpha=.3)
+if REV3:
+    ax.legend(fontsize=9, loc="lower center", bbox_to_anchor=(0.5, 1.005), ncol=2,
+              frameon=False)
+else:
+    ax.legend(fontsize=9, loc="upper left")
 ax.set_title("Fine-tuned models on row vocabulary they were never trained on\n"
-             "dotted line = chance on one axis", fontsize=11)
+             "dotted line = chance on one axis", fontsize=11, pad=34 if REV3 else 6)
 save(fig, "fig7_v4c_row_vs_column",
      "The two fine-tuned models tested on front/back, wording present in neither their training "
      "data nor the original evaluation set. Takeaway: columns stay near ceiling while rows sit at "

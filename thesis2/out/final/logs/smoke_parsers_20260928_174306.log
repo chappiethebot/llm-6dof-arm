@@ -1,0 +1,21 @@
+================================================================================================
+smoke_parsers   started 2026-09-28 17:43:06
+  log: thesis2\out\final\logs\smoke_parsers_20260928_174306.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  provenance OK: 10 commands, all verbatim seen_v2, none held-out
+  frozen-checkpoint gate OK for grpo_base (86acbd3da67a78ac, dev 0.8421052631578947)
+  grpo_base                          json 10/10  agrees  9/10  p50   651.56 ms  peak VRAM 6593 MB
+  frozen-checkpoint gate OK for grpo_sft (d3bda156209dea17, dev 0.9824561403508771)
+  grpo_sft                           json 10/10  agrees 10/10  p50   691.96 ms  peak VRAM 6593 MB
+
+------------------------------------------------------------------------------------------------
+  2 parsers attempted; 2 produced valid JSON on all 10 commands
+  invalid JSON from: none
+  ERRORED (gate failure): none
+  skipped (cloud budget / not trained): none
+  cloud calls made: 0 (budget 0)
+  agreement with seen_v2 is DEMO evidence, not a measurement
+  output: thesis2\out\final\demo_smoke_parsers.json
+------------------------------------------------------------------------------------------------
+GATE PASS

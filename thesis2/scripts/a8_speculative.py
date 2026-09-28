@@ -172,7 +172,7 @@ rows = [json.loads(l) for l in DATA.read_text(encoding="utf-8").splitlines() if 
 if args.limit:
     rows = rows[:args.limit]
     print("  SMOKE: first %d commands of %s" % (len(rows), SPLIT))
-print("  held_out_v3: %d commands" % len(rows))
+print("  %s: %d commands" % (SPLIT, len(rows)))
 
 # ---------------------------------------------------------------- model
 print()
@@ -447,18 +447,30 @@ print("    speedup at p50: %.2fx     at p95: %.2fx"
          / pct(lat["speculative (incl. drafter)"], .95)))
 
 # ---------------------------------------------------------------- 4. v5 diagnostic
+# The SAME split's V5 cell (2026-09-28): this used to read V5's held_out_v3 rows
+# on every split, so a v4c run compared v4c outputs with v3 outputs.
 v5 = {}
-for r in csv.DictReader(open(REPO / "bench" / "results_v5_qwen3.csv", encoding="utf-8")):
-    if r["model"] == "ollama:qwen2.5-3b-lora" and r["strategy"] == "zero_shot":
-        v5[r["command_id"]] = r["raw"].strip()
-agree = sum(1 for r in m if v5.get(r["command_id"], None) == r["greedy_text"].strip())
+_v5f = REPO / "thesis2" / "out" / "final" / ("results_v5cells_%s.csv" % SPLIT)
+if _v5f.exists():
+    csv.field_size_limit(2 ** 31 - 1)
+    for r in csv.DictReader(open(_v5f, encoding="utf-8", newline="")):
+        if r["model"] == "ollama:qwen2.5-3b-lora" and r["strategy"] == "zero_shot":
+            v5[r["command_id"]] = r["raw"].strip()
 print()
 print("=" * 88)
 print("4. QUANTISATION DIAGNOSTIC -- transformers fp16 vs the recorded ollama Q4_K_M rows")
 print("=" * 88)
-print("    identical output: %d / %d = %.4f" % (agree, len(m), agree / len(m)))
-print("    This is NOT the correctness test. Different runtime, different")
-print("    quantisation; a gap here is expected and says nothing about A8.")
+if v5:
+    agree = sum(1 for r in m if v5.get(r["command_id"], None) == r["greedy_text"].strip())
+    agree_frac = round(agree / len(m), 4)
+    print("    source: %s (qwen2.5-3b-lora / zero_shot)" % _v5f.name)
+    print("    identical output: %d / %d = %.4f" % (agree, len(m), agree / len(m)))
+    print("    This is NOT the correctness test. Different runtime, different")
+    print("    quantisation; a gap here is expected and says nothing about A8.")
+else:
+    agree_frac = "n/a on this split"
+    print("    n/a on this split: no V5 qwen2.5-3b-lora / zero_shot cell in %s"
+          % _v5f.name)
 
 # ---------------------------------------------------------------- 5. energy
 energy_rows = []
@@ -487,7 +499,7 @@ else:
 
     summary = dict(
         greedy_confirmed=True, base=BASE, adapter=str(ADAPTER.relative_to(REPO)),
-        runtime="transformers fp16, LoRA merged", dataset="held_out_v3",
+        runtime="transformers fp16, LoRA merged", dataset=SPLIT,
         n_commands=len(m), warmup_prerun_not_excluded=N_WARMUP,
         byte_identical_text=n_id_txt, byte_identical_ids=n_id_ids,
         draft_tokens_offered=tot_d, draft_tokens_accepted=tot_a,
@@ -499,7 +511,7 @@ else:
         latency_ms={k2: dict(p50=round(pct(v, .50), 2), p95=round(pct(v, .95), 2),
                              p99=round(pct(v, .99), 2), mean=round(statistics.mean(v), 2))
                     for k2, v in lat.items()},
-        agreement_with_v5_ollama_q4=round(agree / len(m), 4),
+        agreement_with_v5_ollama_q4=agree_frac,
         energy=energy_rows,
         accuracy_note="NOT re-scored: greedy-exact by construction, identical to the "
                       "plain-greedy arm by the byte-identity check above.")

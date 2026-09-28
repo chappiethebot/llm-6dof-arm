@@ -10,6 +10,85 @@ Anything tagged [Certain] was timed or run on this machine.
 and every split is written out, because a shortcut is where an arm gets silently
 dropped.
 
+## Status — 2026-09-28
+
+| stage | status | completed | evidence |
+|---|---|---|---|
+| 0 — new arms, train/dev | **COMPLETE** | 2026-09-26 | commit `a9ab2e1`; `frozen_checkpoints.csv` (14 arms) |
+| 1 — accuracy, held_out_v3 | **COMPLETE** | 2026-09-27 | commit `a0f90a7`; `repro_check_held_out_v3.csv` |
+| 1 — accuracy, held_out_v4c | **COMPLETE** | 2026-09-28 | commit `b104ffa`; `repro_check_held_out_v4c.csv` |
+| 2 — metrics | **COMPLETE** | 2026-09-28 | `metrics_stage2.csv`, `v5cells_both_splits.csv` |
+| 3 — latency and energy | **COMPLETE** | 2026-09-28 | `unified_efficiency.csv` (85 rows); speculative arms commit `9d60087` |
+| 4 — significance, table, figures | **COMPLETE** | 2026-09-28 | `final_significance.csv` (6/8 primary claimable), `metrics_final.csv`, `thesis2/figures/final/` |
+| 5 — Isaac demo | not complete | — | parser smoke test only (`demo_smoke_parsers.json`) |
+| 6 — report | **COMPLETE** | 2026-09-28 | `FINAL_RUN_REPORT.md`, `DEFENCE_NUMBERS_rev3.md`, `METHODS_NOTES.md` |
+
+[Certain on the commits and files; dates are the commit dates]
+
+### Decisions recorded at the end of the run
+
+* **V5-cell energy was measured on held_out_v3 only** — the 31 local cells; the 5
+  gpt-4o-mini cells are not measurable. Every `v5:` row in
+  `unified_efficiency.csv` is held_out_v3. [Certain]
+* **Efficiency scope.** The main efficiency table is held_out_v3. held_out_v4c
+  efficiency is a supplement for the speculative arms (A8, A10, A12) and their
+  verifier `lora_greedy` only, although most local arms were also measured on v4c.
+  (`DEFENCE_NUMBERS_rev3.md` §3-4.) [Certain]
+* **Speculative energy through the shared protocol.** A8/A10/A12 now measure inside
+  their own scripts with `s3_energy.measure_loop`, after the byte-identity gate.
+  A10 on held_out_v3 moved from **9.45 to 9.54 J/command**: the old in-script path
+  subtracted a hard-coded 12.12 W idle, had no warm-up or cool-down and timed
+  decoding on pre-tokenised inputs, excluding the drafter and tokenisation —
+  (91.4 − 12.12) × 129.2 / 1085 = 9.44 vs (84.72 − 10.61) × 139.7 / 1085 = 9.54.
+  Net +1%: lower idle and lower mean power, 8% more wall time per command.
+  (`thesis2/out/FINAL_REPORT.md:523`, `unified_efficiency.csv`.) [Certain on the arithmetic]
+* **HF offline mode for the energy stage**: `autorun.ps1:17` sets
+  `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1` before S3-1/S3-2. [Certain]
+* **--replace-cells and retry history**: 2026-09-26 10:37Z, 12 void local cells on
+  held_out_v3 (exemplar-loader bug) re-run with `--replace-cells`; 16:53Z, 4
+  gpt-4o-mini cells on held_out_v3 re-run after connection drops. The retry layer
+  (6 attempts, 2-4-8-16-32 s, SDK retries off) was added the same day (commit
+  `bababbd`), so the v3 cloud rows carry no retry counts; the v4c cloud rows do
+  (5,425 rows, 0 retries, 0 `model_error`). `--retry-errors` was never needed.
+  (`force_rerun_log.csv`, `results_v5cells_held_out_v4c.csv`.) [Certain]
+* Everything else about method is in `thesis2/out/final/METHODS_NOTES.md`.
+
+### Decisions recorded 2026-09-28 (final fix pass)
+
+* **The energy frontier is GPU-only.** Fig 2's Pareto frontier uses arms with a
+  positive J/command **and** a model on the GPU (VRAM above idle > 0). Floor-band
+  (J ≤ 0) and CPU-only arms stay plotted but are excluded: their CPU energy is not
+  measured. Same rule on both splits. [Certain]
+* **Fig 5 uses the Stage-3 source**, like the efficiency table: A10's p50 total is
+  `latency_p50_ms` in `unified_efficiency.csv`, and the drafter p50 is the value
+  printed by the same Stage-3 run (`s3_energy_a10_speculative_<split>_*.log`,
+  "classifier draft floor"). Its first-rejection panel adds held_out_v4c, computed
+  by `thesis2/scripts/a11_rejection_positions.py --split held_out_v4c` (tokenizer
+  only; the v3 default still reproduces `a11_rejection_positions.csv` byte for
+  byte). [Certain]
+* **VRAM above idle ≤ 0 is shown as "≈ 0" and plotted at 0**, in every table and in
+  fig 6; the measured value stays in `vram_above_idle_mb_raw`. [Certain]
+* **`autorun.ps1` Print-Accuracy** collapses repeats per command by majority vote
+  (A9's rule), so its summary matches the official numbers
+  (`cascade_cloud_always` on held_out_v3: 0.7926). [Certain]
+* **Stage 5 S5-1 parser smoke test** ran for all 18 local parsers on the 10 seen
+  demo commands (no Isaac, no cloud): 18/18 valid JSON on 10/10. `v5_ollama` needs
+  the `ollama` package, which only the `thesis` env has, so it runs there on its
+  own (`smoke_parsers.py --parsers v5_ollama`); a partial run now merges into
+  `demo_smoke_parsers.json`. [Certain]
+
+### `thesis2/final/net_check.py` — network diagnostic, kept
+
+Not part of any measurement. It makes **30 tiny gpt-4o-mini calls** ("Reply OK",
+`max_tokens=2`, 0.5 s apart) and prints how many succeeded plus the first five error
+types with their causes. It was written at 16:52Z on 2026-09-26, one minute before
+the 4 connection-failure cloud cells were re-run, and committed with the retry
+layer (`bababbd`), so it was very likely the check behind that diagnosis [Likely].
+It uses the SDK's default client, with no retry layer, so it shows the raw failure
+rate. Running it costs 30 billed calls; run it only to
+diagnose connectivity, never as part of a measurement:
+`conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\net_check.py`
+
 ## Envs
 
 | env | path | used for |
@@ -39,6 +118,7 @@ torch 2.14.0+cu126 — identical to `thesis2gpu` for all three. `thesis2gpu` and
   is untestable at R = 1; the cross-run comparison against saved predictions is
   the determinism evidence for local arms. [Certain]
 - **H6 stays in the primary family.** If GRPO is not trained, H6 reports NOT RUN.
+  _(Status 2026-09-28: GRPO was trained, and H6 has a verdict: CLAIMABLE.)_
   A declared hypothesis is never removed after the fact.
 - **SALSA-full location labels were relabelled D..Q** on 2026-09-25 (below). No
   other SALSA change; the question text is otherwise untouched.
@@ -79,7 +159,7 @@ further prompt change was made.
 
 ---
 
-## STAGE 0 — new arms, train/dev only
+## STAGE 0 — new arms, train/dev only  [COMPLETE 2026-09-26]
 
 ### S0-1 SALSA letter-token and greedy check
 * env `thesis2gpu`
@@ -212,7 +292,7 @@ reachable. [Certain]
 
 ---
 
-## STAGE 1 — accuracy on both held-out splits
+## STAGE 1 — accuracy on both held-out splits  [COMPLETE: v3 2026-09-27, v4c 2026-09-28]
 
 Every arm runs **once per split**. A complete prediction file is never
 overwritten without `--force-rerun-after-crash`, and each use is appended to
@@ -300,14 +380,21 @@ FAILs on:
 * **local cells**, held_out_v3: raw agreement with V5 below **210/216**;
 * **cloud cells** (gpt-4o-mini, R = 5): any `model_error` row, on either split;
   and on held_out_v3, action match more than **3 points** (0.03) from V5's for
-  the same cell, both on non-warmup rows.
+  the same cell, both on non-warmup rows **and both per-row** (every repeat
+  scored separately, as V5 reported its cells).
 
 Raw agreement is **reported for cloud cells but never gated on**, as the brief
 specified: a sampled API at R = 5 does not repeat its raw text byte for byte.
 On the current file `cot` agrees on 10/217 raw strings yet matches V5's
-action match to four decimals (0.7177 vs 0.7177); all five cloud cells are
-within 3 points (largest gap +0.0083, `few_shot`), 0 `model_error` rows, GATE
-PASS. [Certain — run 2026-09-26]
+**per-row** action match to four decimals (0.7177 vs 0.7177); all five cloud
+cells are within 3 points per-row (largest gap +0.0083, `few_shot`), 0
+`model_error` rows, GATE PASS. [Certain — run 2026-09-26]
+
+> **Per-row vs majority vote.** The audit's figures above are per-row averages, the
+> basis V5 reported. Every cloud number used in the thesis tables is the
+> **majority vote over the 5 repeats** (A9's rule): `cot` is 0.7327 by majority
+> vote against 0.7177 per-row (`v5cells_both_splits.csv`). The two bases are not
+> directly comparable. [Certain]
 
 To audit an existing file on its own:
 `conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\s1_check_v5cells.py --split held_out_v3`
@@ -539,7 +626,7 @@ with the reason — expected for a first measurement, not a failure.
 
 ---
 
-## STAGE 3 — measured latency and energy (before Stage 2, which reads it)
+## STAGE 3 — measured latency and energy (before Stage 2, which reads it)  [COMPLETE 2026-09-28]
 
 ### S3-1 Idle baseline
 `conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\s3_energy.py --idle`
@@ -595,7 +682,7 @@ Cascades are measured per command for real here; the modelled constants in
 
 ---
 
-## STAGE 2 — every metric, every arm, both splits
+## STAGE 2 — every metric, every arm, both splits  [COMPLETE 2026-09-28]
 
 `conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\s2_metrics.py`
 ~1 min [Guessing]. Output `metrics_stage2.csv`.
@@ -606,7 +693,7 @@ token acceptance; cloud rows read `not measurable (cloud)` for J/command.
 
 ---
 
-## STAGE 4 — significance, final table, figures
+## STAGE 4 — significance, final table, figures  [COMPLETE 2026-09-28]
 
 ### S4-1 Significance
 `conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\s4_significance.py`
@@ -638,7 +725,7 @@ built from. check: zero empty cells.
 
 ---
 
-## STAGE 5 — Isaac demo, seen commands only
+## STAGE 5 — Isaac demo, seen commands only  [NOT COMPLETE]
 
 ### S5-1 Parser smoke test, no Isaac
 `conda activate D:\condaenvs\thesis2gpu ; python thesis2\demo\smoke_parsers.py`
@@ -664,7 +751,7 @@ chosen by correctness. [Certain]
 
 ---
 
-## STAGE 6 — the report
+## STAGE 6 — the report  [COMPLETE 2026-09-28]
 
 `conda activate D:\condaenvs\thesis2gpu ; python thesis2\final\s6_report.py`
 → `FINAL_RUN_REPORT.md`, 7 sections, assembled from the output files only.

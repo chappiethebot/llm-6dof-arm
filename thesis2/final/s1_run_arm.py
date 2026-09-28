@@ -82,8 +82,15 @@ NO_SAVED = {
     "knn_minilm": "baseline_knn_minilm.csv exists for v3 only",
     "tfidf_logreg": "baseline_tfidf_logreg.csv exists for v3 only",
     "rules_open": "baseline_rules.csv exists for v3 only",
-    "ensemble": "a1_ensemble_held_out_v3.csv exists for v3 only; the three V5 "
-                "cells it pairs do not exist on v4c until s1_run_v5_cells.py runs",
+    "ensemble": "a1_ensemble_held_out_v3.csv exists for v3 only; the earlier run "
+                "built no held_out_v4c ensemble",
+    # Only consulted where no saved file exists, i.e. on held_out_v4c for these.
+    "a8_speculative": "the earlier run made no held_out_v4c speculative run; its "
+                      "per-command files are held_out_v3 only",
+    "a10_speculative": "the earlier run made no held_out_v4c speculative run; its "
+                       "per-command files are held_out_v3 only",
+    "a12_smalllm": "the earlier run made no held_out_v4c speculative run; its "
+                   "per-command files are held_out_v3 only",
 }
 for _k in ("qwen2.5-3b-lora", "Qwen2.5-3B-Instruct",
            "qwen2.5-0.5b-lora", "Qwen2.5-0.5B-Instruct"):

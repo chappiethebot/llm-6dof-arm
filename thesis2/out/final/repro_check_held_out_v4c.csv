@@ -1,0 +1,31 @@
+arm,split,compared,n_commands,identical,status,result
+a10_speculative,held_out_v4c,,217,,not comparable,the earlier run made no held_out_v4c speculative run; its per-command files are held_out_v3 only
+a12_smalllm,held_out_v4c,,217,,not comparable,the earlier run made no held_out_v4c speculative run; its per-command files are held_out_v3 only
+a8_speculative,held_out_v4c,,217,,not comparable,the earlier run made no held_out_v4c speculative run; its per-command files are held_out_v3 only
+bilstm,held_out_v4c,217,217,217,PASS,all identical
+cascade_cloud_always,held_out_v4c,217,217,217,PASS,all identical
+cascade_cloud_tauA,held_out_v4c,217,217,217,PASS,all identical
+cascade_local_tauA,held_out_v4c,217,217,217,PASS,all identical
+cascade_oracle,held_out_v4c,217,217,217,PASS,all identical
+ensemble,held_out_v4c,,217,,not comparable,a1_ensemble_held_out_v3.csv exists for v3 only; the earlier run built no held_out_v4c ensemble
+factorized_fp16,held_out_v4c,217,217,217,PASS,all identical
+factorized_int4,held_out_v4c,,217,,not comparable,the earlier run saved no held_out_v4c aggregate for INT4 (quantization_gate.csv is held_out_v3 only)
+flant5,held_out_v4c,217,217,217,PASS,all identical
+flat_cpu,held_out_v4c,217,217,217,PASS,all identical
+flat_gpu,held_out_v4c,217,217,217,PASS,all identical
+grpo_base,held_out_v4c,,217,,not comparable,NEW arm -- first measurement
+grpo_sft,held_out_v4c,,217,,not comparable,NEW arm -- first measurement
+knn_minilm,held_out_v4c,,217,,not comparable,baseline_knn_minilm.csv exists for v3 only
+lora_greedy,held_out_v4c,217,217,217,PASS,all identical
+minilm_probe,held_out_v4c,217,217,217,PASS,all identical
+mlpbow,held_out_v4c,,217,,not comparable,NEW arm -- first measurement
+pipeline_always_local,held_out_v4c,217,217,217,PASS,all identical
+rules_firewalled,held_out_v4c,totals,217,,PASS,"totals only: ours 0.4470 vs saved 0.4470 (baseline_rules_firewall.csv, held_out_v4c row)"
+rules_open,held_out_v4c,,217,,not comparable,baseline_rules.csv exists for v3 only
+salsa_full_Qwen2.5-0.5B-Instruct,held_out_v4c,,217,,not comparable,NEW arm -- first measurement
+salsa_full_Qwen2.5-3B-Instruct,held_out_v4c,,217,,not comparable,NEW arm -- first measurement
+salsa_full_qwen2.5-0.5b-lora,held_out_v4c,,217,,not comparable,NEW arm -- first measurement
+salsa_full_qwen2.5-3b-lora,held_out_v4c,,217,,not comparable,NEW arm -- first measurement
+textcnn,held_out_v4c,,217,,not comparable,NEW arm -- first measurement
+tfidf_logreg,held_out_v4c,,217,,not comparable,baseline_tfidf_logreg.csv exists for v3 only
+tinybert,held_out_v4c,217,217,217,PASS,all identical

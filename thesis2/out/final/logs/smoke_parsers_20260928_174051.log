@@ -1,0 +1,40 @@
+================================================================================================
+smoke_parsers   started 2026-09-28 17:40:51
+  log: thesis2\out\final\logs\smoke_parsers_20260928_174051.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  provenance OK: 10 commands, all verbatim seen_v2, none held-out
+  cascade_cloud_always               SKIPPED -- cloud parser; --allow-cloud 0 is below the 10 calls it needs
+  cascade_cloud_tauA                 SKIPPED -- cloud parser; --allow-cloud 0 is below the 10 calls it needs
+  cascade_local_tauA                 json 10/10  agrees 10/10  p50     3.60 ms  peak VRAM 6860 MB
+  factorized_fp16                    json 10/10  agrees 10/10  p50     3.70 ms  peak VRAM 277 MB
+  factorized_int4                    json 10/10  agrees 10/10  p50     3.53 ms  peak VRAM 322 MB
+  flat_cpu                           json 10/10  agrees 10/10  p50    12.31 ms  peak VRAM n/a (CPU/cloud)
+  flat_gpu                           json 10/10  agrees 10/10  p50     3.05 ms  peak VRAM 275 MB
+  frozen-checkpoint gate OK for grpo_base (86acbd3da67a78ac, dev 0.8421052631578947)
+  grpo_base                          json 10/10  agrees  9/10  p50   703.97 ms  peak VRAM n/a (CPU/cloud)
+  frozen-checkpoint gate OK for grpo_sft (d3bda156209dea17, dev 0.9824561403508771)
+  grpo_sft                           json 10/10  agrees 10/10  p50   678.52 ms  peak VRAM n/a (CPU/cloud)
+  lora_greedy                        json 10/10  agrees 10/10  p50   707.65 ms  peak VRAM 6593 MB
+  mlpbow                             json 10/10  agrees 10/10  p50     0.45 ms  peak VRAM 9 MB
+  pipeline_always_local              json 10/10  agrees 10/10  p50     4.08 ms  peak VRAM 6860 MB
+  restored baseline_rules_firewall.csv (rewritten by the import; earlier run's file preserved)
+  rules_firewalled                   json 10/10  agrees  9/10  p50     0.01 ms  peak VRAM n/a (CPU/cloud)
+  rules_open                         json 10/10  agrees  9/10  p50     0.01 ms  peak VRAM n/a (CPU/cloud)
+  salsa_full_Qwen2.5-0.5B-Instruct   json 10/10  agrees  2/10  p50    76.42 ms  peak VRAM 1196 MB
+  salsa_full_Qwen2.5-3B-Instruct     json 10/10  agrees  6/10  p50   173.68 ms  peak VRAM 6499 MB
+  salsa_full_qwen2.5-0.5b-lora       json 10/10  agrees  1/10  p50   100.83 ms  peak VRAM 1196 MB
+  salsa_full_qwen2.5-3b-lora         json 10/10  agrees  7/10  p50   162.38 ms  peak VRAM 6593 MB
+  textcnn                            json 10/10  agrees 10/10  p50     0.78 ms  peak VRAM 10 MB
+  v5_ollama                          ERROR building the parser -- ModuleNotFoundError: No module named 'ollama'
+
+------------------------------------------------------------------------------------------------
+  20 parsers attempted; 17 produced valid JSON on all 10 commands
+  invalid JSON from: none
+  ERRORED (gate failure): ['v5_ollama']
+  skipped (cloud budget / not trained): ['cascade_cloud_always', 'cascade_cloud_tauA']
+  cloud calls made: 0 (budget 0)
+  agreement with seen_v2 is DEMO evidence, not a measurement
+  output: thesis2\out\final\demo_smoke_parsers.json
+------------------------------------------------------------------------------------------------
+GATE FAIL

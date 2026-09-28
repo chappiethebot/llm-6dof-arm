@@ -55,9 +55,20 @@ import s1_run_arm as R                                                  # noqa: 
 csv.field_size_limit(2 ** 31 - 1)
 
 # Arms whose earlier run persisted only an aggregate. arm -> (accuracy, source).
-TOTALS_ONLY = {
-    "factorized_int4": (0.6083, "quantization_gate.csv (Phase 3 aggregate)"),
-    "rules_firewalled": (0.4470, "p5_rules_firewalled.py summary row"),
+# Arms whose earlier run persisted only an aggregate, PER SPLIT (2026-09-28: the
+# v3 totals were previously applied to v4c as well). arm -> (accuracy, source).
+TOTALS_BY_SPLIT = {
+    "held_out_v3": {
+        "factorized_int4": (0.6083, "quantization_gate.csv (Phase 3 aggregate)"),
+        "rules_firewalled": (0.4470, "baseline_rules_firewall.csv, held_out_v3 row"),
+    },
+    "held_out_v4c": {
+        "rules_firewalled": (0.4470, "baseline_rules_firewall.csv, held_out_v4c row"),
+    },
+}
+NO_TOTAL = {
+    ("factorized_int4", "held_out_v4c"): "the earlier run saved no held_out_v4c "
+    "aggregate for INT4 (quantization_gate.csv is held_out_v3 only)",
 }
 TOL = 5e-5          # 4 decimals, as the earlier run reported them
 
@@ -137,9 +148,9 @@ def main():
     C.start_log("s1_repro_check_%s" % a.split)
 
     n_cmd = len(C.load_split(a.split))
-    names = [a.arm] if a.arm else sorted(
-        set(list(R.SAVED_V3 if a.split == "held_out_v3" else R.SAVED_V4C)
-            + list(R.CASCADE_REBUILD) + list(TOTALS_ONLY)))
+    TOTALS_ONLY = TOTALS_BY_SPLIT[a.split]
+    # every registry arm gets a line; one without saved predictions says why
+    names = [a.arm] if a.arm else sorted(R.A.REGISTRY)
 
     print("  split %s, %d commands. Reading CSVs only: no model is loaded."
           % (a.split, n_cmd))
@@ -152,6 +163,7 @@ def main():
     print("=" * 124)
 
     fails, skipped, done = [], [], 0
+    records = []          # one per named arm -> repro_check_<split>.csv
     if not a.no_census and not a.arm:
         fails += census(a.split, n_cmd)
         print()
@@ -162,9 +174,19 @@ def main():
             skipped.append((name, "no prediction file %s -- run s1_run_arm.py first"
                             % p.name))
             print("%-28s %12s %10s  %s" % (name, "-", "-", "NOT RUN YET (%s)" % p.name))
+            records.append(dict(arm=name, split=a.split, compared="", n_commands=n_cmd,
+                                identical="", status="not run",
+                                result="no prediction file %s" % p.name))
             continue
 
         # ---- totals-only arms
+        if (name, a.split) in NO_TOTAL:
+            why = NO_TOTAL[(name, a.split)]
+            skipped.append((name, why))
+            records.append(dict(arm=name, split=a.split, compared="", n_commands=n_cmd,
+                                identical="", status="not comparable", result=why))
+            print("%-28s %12s %10s  NOT COMPARABLE: %s" % (name, "-", "-", why[:58]))
+            continue
         if name in TOTALS_ONLY:
             want, src = TOTALS_ONLY[name]
             delta = abs(acc - want)
@@ -176,6 +198,11 @@ def main():
                 fails.append("%s: aggregate %.4f != the earlier run's %.4f (%s); "
                              "no per-command file exists for this arm"
                              % (name, acc, want, src))
+            records.append(dict(arm=name, split=a.split, compared="totals",
+                                n_commands=n_cmd, identical="",
+                                status="PASS" if okk else "FAIL",
+                                result="totals only: ours %.4f vs saved %.4f (%s)"
+                                % (acc, want, src)))
             done += 1
             continue
 
@@ -184,6 +211,8 @@ def main():
             why = R.NO_SAVED.get(name, "no saved per-command file for this arm x split")
             skipped.append((name, why))
             print("%-28s %12s %10s  NOT COMPARABLE: %s" % (name, "-", "-", why[:58]))
+            records.append(dict(arm=name, split=a.split, compared="", n_commands=n_cmd,
+                                identical="", status="not comparable", result=why))
             continue
         # the SAME rule as s1_run_arm.py gate 5 -- one function, two callers
         truths = {str(i): C.truth_of(rw) for i, rw in enumerate(C.load_split(a.split))}
@@ -194,6 +223,9 @@ def main():
             fails.append("%s: %s" % (name, line))
         print("%-28s %12s %10d  %s"
               % (name, "%d/%d" % (n_sh, n_cmd), same, tag or "all identical"))
+        records.append(dict(arm=name, split=a.split, compared=n_sh, n_commands=n_cmd,
+                            identical=same, status="PASS" if okc else "FAIL",
+                            result=tag or "all identical"))
         done += 1
 
     print("=" * 124)
@@ -204,9 +236,18 @@ def main():
         for name, why in skipped:
             print("     %-28s %s" % (name, why))
 
+    if not a.arm:
+        rp = C.OUT / ("repro_check_%s.csv" % a.split)
+        with rp.open("w", newline="", encoding="utf-8") as fh:
+            w = csv.DictWriter(fh, fieldnames=["arm", "split", "compared", "n_commands",
+                                               "identical", "status", "result"])
+            w.writeheader()
+            w.writerows(records)
+        print("  wrote %s (%d arms) -- the report's Section 3 is built from it"
+              % (rp.relative_to(C.REPO), len(records)))
     C.gate(not fails, ([
-        "NO MODEL RUNS: prediction CSVs and the earlier run's CSVs were read, "
-        "nothing was written",
+        "NO MODEL RUNS: prediction CSVs and the earlier run's CSVs were read; the "
+        "only file written is this check's own repro_check_<split>.csv",
         "%d arm(s) compared on %s; %d not comparable" % (done, a.split, len(skipped)),
         "join key is str(command_id) on both sides; comparing ZERO commands is a FAIL",
         ("completeness: exactly n x R PARSED CSV rows over n distinct command_ids "

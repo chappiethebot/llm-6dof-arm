@@ -1,0 +1,12 @@
+================================================================================================
+s6_report   started 2026-09-28 17:55:22
+  log: thesis2\out\final\logs\s6_report_20260928_175522.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+
+------------------------------------------------------------------------------------------------
+  sections written from: metrics(60) significance(1740) efficiency(85) frozen(14)
+  absent inputs are stated as absent, not filled in
+  output: thesis2\out\final\FINAL_RUN_REPORT.md
+------------------------------------------------------------------------------------------------
+GATE PASS

@@ -118,8 +118,9 @@ the cloud cells land. Real movements (outside the CI):
 | llama3.2:3b | 3B | rag | **-0.156** |
 | qwen2.5:0.5b | 0.5B | few_shot | **-0.055** |
 
-The largest model in the study regresses alongside the smallest. **21 of 27
-cells are noise.** What predicts the sign is not size but *which model was
+The largest model in the study regresses alongside the smallest. **20 of 27
+cells are noise** (7 real moves; `audit/v4_cells.csv`, V4a rows: 20 noise, 7 real;
+corrected 2026-09-28, previously "21 of 27"). What predicts the sign is not size but *which model was
 already failing on the row axis*: deepseek's V3 zero_shot was 0.065, so almost
 any change helps; gpt-4o-mini's was 0.842, so there is only downside.
 
