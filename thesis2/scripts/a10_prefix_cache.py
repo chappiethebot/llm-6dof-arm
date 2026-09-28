@@ -57,7 +57,10 @@ LOAD_S = 120
 N_WARMUP = 3
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--energy", action="store_true")
+ap.add_argument("--energy", action="store_true",
+                help="PROTOCOL energy run (called by s3_energy.py --arm): decode "
+                     "the split once for the byte-identity gate, then measure "
+                     "with s3_energy.measure_loop. Writes NO prediction file.")
 # --- added 2026-09-25 -------------------------------------------------------
 # --split lets this arm run on either held-out family (and on train_v2 for a
 # smoke test). --limit truncates the command list for a smoke run. --outdir
@@ -93,6 +96,9 @@ sys.path.insert(0, str(REPO / "thesis2" / "final"))
 import common as C                                                # noqa: E402
 PRED_ARM, PRED_TEXT, PRED_MS = "a10_speculative", "prefix_spec_text", "prefix_spec_ms"
 PERCOMMAND = OUT / ("a10_prefix_cache_percommand%s.csv" % TAG)
+if args.energy and (args.limit or args.emit_preds_only):
+    C.gate(False, ["--energy measures the FULL split by the s3 protocol; it takes "
+                   "neither --limit nor --emit-preds-only"])
 if args.emit_preds_only:
     if not PERCOMMAND.exists():
         C.gate(False, ["%s does not exist -- nothing to convert; run this script "
@@ -163,9 +169,10 @@ def render(o):
     return json.dumps(d)
 
 
-items = []
-for i, r in enumerate(rows):
-    cmd = r["command"]
+def prep(cmd):
+    """One command's inputs -> (prompt_ids, draft_ids, draft_ms). Used by the
+    measured pass below AND by the --energy predictor, so both run exactly the
+    same pipeline."""
     ptxt = chat_wrap(P.build_prompt(cmd, "zero_shot", schema))
     t0 = time.perf_counter()
     raw = clf.complete(cmd)
@@ -181,6 +188,13 @@ for i, r in enumerate(rows):
                 else tok(dtxt, add_special_tokens=False)["input_ids"]) + [IM_END]
     else:
         dids = []
+    return pids, dids, dms
+
+
+items = []
+for i, r in enumerate(rows):
+    cmd = r["command"]
+    pids, dids, dms = prep(cmd)
     items.append(dict(command_id=str(i), command=cmd, prompt_ids=pids,
                       draft_ids=dids, draft_ms=dms))
 
@@ -438,97 +452,50 @@ print("    classifier draft floor: p50 %.2f ms of the A10 p50 %.2f ms (%.0f%%)"
 
 # ---------------------------------------------------------------- 4. energy
 energy_rows = []
+# --energy is measured AFTER the byte-identity gate at the end of this script,
+# by s3_energy.measure_loop -- the protocol every arm uses (current idle
+# baseline, 3 warm-up commands, >= 120 s, 60 s cool-down, drafter included).
+# The old in-script loop (idle 12.12 W hard-coded, no warm-up or cool-down,
+# drafter and tokenisation excluded) was removed 2026-09-28.
+
 if args.energy:
-    class PowerLogger(threading.Thread):
-        def __init__(self):
-            super().__init__(daemon=True)
-            self.samples = []
-            self._halt = threading.Event()
-
-        def run(self):
-            while not self._halt.is_set():
-                try:
-                    o = subprocess.run(
-                        ["nvidia-smi", "--query-gpu=power.draw,utilization.gpu",
-                         "--format=csv,noheader,nounits"],
-                        capture_output=True, text=True, timeout=5).stdout.strip()
-                    p_, u_ = [y.strip() for y in o.split(",")[:2]]
-                    self.samples.append((time.time(), float(p_), float(u_)))
-                except Exception:
-                    pass
-                time.sleep(1.0)
-
-        def stop(self):
-            self._halt.set(); self.join(timeout=5)
-
-    def measure(name, fn, n_items):
-        lg = PowerLogger(); lg.start(); time.sleep(3)
-        t0 = time.time(); n = 0
-        while time.time() - t0 < LOAD_S:
-            fn(); n += n_items
-        wall = time.time() - t0
-        time.sleep(2); lg.stop()
-        live = [p_ for t_, p_, u_ in lg.samples if t_ >= t0]
-        mw = statistics.mean(live) if live else float("nan")
-        d = mw - IDLE_W
-        j = d * wall / n if n else float("nan")
-        print("    %-34s N=%-6d wall %6.1fs  meanP %6.1f W  delta %6.1f W  %8.4f J/cmd"
-              % (name, n, wall, mw, d, j))
-        return dict(arm=name, n_commands=n, wall_s=round(wall, 1),
-                    mean_power_w=round(mw, 2), idle_power_w=IDLE_W,
-                    delta_power_w=round(d, 2), joules_per_command=round(j, 5),
-                    power_samples=len(live))
-
+    # PROTOCOL energy run: this decode pass feeds the byte-identity gate
+    # only. No prediction, per-command or summary file is written, so an
+    # energy run can never overwrite a result (the v4c run-once rule).
     print()
-    print("=" * 96)
-    print("4. ENERGY (GPU only, idle %.2f W, same protocol as energy.csv)" % IDLE_W)
-    print("=" * 96)
-    energy_rows.append(measure("a10_speculative_A8_no_prefix_cache",
-                               lambda: [spec_plain(x["prompt_ids"], x["draft_ids"])
-                                        for x in items], len(items)))
-    energy_rows.append(measure("a10_prefix_cached_speculative",
-                               lambda: [spec_prefix(x["prompt_ids"], x["draft_ids"])
-                                        for x in items], len(items)))
-    e = {r["arm"]: r["joules_per_command"] for r in energy_rows}
-    print()
-    print("    energy reduction vs A8 speculative: %.4f  (%.2fx)"
-          % (1 - e["a10_prefix_cached_speculative"] / e["a10_speculative_A8_no_prefix_cache"],
-             e["a10_speculative_A8_no_prefix_cache"] / e["a10_prefix_cached_speculative"]))
+    print("  --energy: no prediction, per-command or summary file written")
 else:
+    # ---------------------------------------------------------------- write
+    p = OUT / ("a10_prefix_cache_percommand%s.csv" % TAG)
+    with open(p, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=list(recs[0].keys()))
+        w.writeheader(); w.writerows(recs)
+    _pp, _pn = C.preds_from_percommand(PRED_ARM, SPLIT, recs, PRED_TEXT, PRED_MS,
+                                       outdir=OUT)
+    print("wrote %s (%d rows, standard pred format, latency from %s)"
+          % (_pp, _pn, PRED_MS))
+    (OUT / ("a10_prefix_cache_summary%s.json" % TAG)).write_text(json.dumps(dict(
+        prefix_tokens=k, n_commands=len(m), warmup_prerun_not_excluded=N_WARMUP,
+        byte_identical={lbl: sum(r[key] for r in m) for lbl, key in checks},
+        all_identity_checks_pass=bool(allpass),
+        token_acceptance_rate=round(tot_a / tot_d, 4),
+        forward_passes=dict(plain=sum(r["greedy_forward_passes"] for r in m),
+                            spec=sum(r["spec_forward_passes"] for r in m),
+                            prefix_spec=sum(r["prefix_spec_forward_passes"] for r in m)),
+        latency_ms={kk2: dict(p50=round(pct(v, .50), 2), p95=round(pct(v, .95), 2),
+                              p99=round(pct(v, .99), 2), mean=round(statistics.mean(v), 2))
+                    for kk2, v in lat.items()},
+        energy=energy_rows), indent=2), encoding="utf-8")
+    if energy_rows:
+        pe = OUT / ("a10_energy%s.csv" % TAG)
+        with open(pe, "w", newline="", encoding="utf-8") as fh:
+            w = csv.DictWriter(fh, fieldnames=list(energy_rows[0].keys()))
+            w.writeheader(); w.writerows(energy_rows)
+        print("wrote %s" % pe.relative_to(REPO))
     print()
-    print("  energy NOT measured this run (pass --energy)")
-
-# ---------------------------------------------------------------- write
-p = OUT / ("a10_prefix_cache_percommand%s.csv" % TAG)
-with open(p, "w", newline="", encoding="utf-8") as fh:
-    w = csv.DictWriter(fh, fieldnames=list(recs[0].keys()))
-    w.writeheader(); w.writerows(recs)
-_pp, _pn = C.preds_from_percommand(PRED_ARM, SPLIT, recs, PRED_TEXT, PRED_MS,
-                                   outdir=OUT)
-print("wrote %s (%d rows, standard pred format, latency from %s)"
-      % (_pp, _pn, PRED_MS))
-(OUT / ("a10_prefix_cache_summary%s.json" % TAG)).write_text(json.dumps(dict(
-    prefix_tokens=k, n_commands=len(m), warmup_prerun_not_excluded=N_WARMUP,
-    byte_identical={lbl: sum(r[key] for r in m) for lbl, key in checks},
-    all_identity_checks_pass=bool(allpass),
-    token_acceptance_rate=round(tot_a / tot_d, 4),
-    forward_passes=dict(plain=sum(r["greedy_forward_passes"] for r in m),
-                        spec=sum(r["spec_forward_passes"] for r in m),
-                        prefix_spec=sum(r["prefix_spec_forward_passes"] for r in m)),
-    latency_ms={kk2: dict(p50=round(pct(v, .50), 2), p95=round(pct(v, .95), 2),
-                          p99=round(pct(v, .99), 2), mean=round(statistics.mean(v), 2))
-                for kk2, v in lat.items()},
-    energy=energy_rows), indent=2), encoding="utf-8")
-if energy_rows:
-    pe = OUT / ("a10_energy%s.csv" % TAG)
-    with open(pe, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=list(energy_rows[0].keys()))
-        w.writeheader(); w.writerows(energy_rows)
-    print("wrote %s" % pe.relative_to(REPO))
-print()
-print("wrote %s" % p.relative_to(REPO))
-print("wrote %s" % (OUT / ("a10_prefix_cache_summary%s.json" % TAG)))
-print("=" * 96)
+    print("wrote %s" % p.relative_to(REPO))
+    print("wrote %s" % (OUT / ("a10_prefix_cache_summary%s.json" % TAG)))
+    print("=" * 96)
 
 # ---------------------------------------------------------------- byte-identity
 # GATE: on any split, this arm must reproduce lora_greedy's saved output exactly.
@@ -564,7 +531,37 @@ if _lg.exists():
         sys.exit(1)
     print("    %d / %d identical -- PASS" % (len(_base), len(_base)))
 else:
+    if args.energy:
+        # the energy run is gated on byte identity; no identity, no number
+        print()
+        print("GATE FAIL: --energy requires the byte-identity gate, and %s is "
+              "absent. Run s1_run_arm.py --arm lora_greedy --split %s first."
+              % (_lg.name, SPLIT))
+        sys.exit(1)
     print()
     print("  byte-identity vs lora_greedy NOT CHECKED: %s absent. Run "
           "s1_run_arm.py --arm lora_greedy --split %s first; on held_out_v4c this "
           "check is a required gate." % (_lg.name, SPLIT))
+
+# ---------------------------------------------------------------- protocol energy
+# Reached only when the byte-identity gate above PASSED (it exits otherwise).
+if args.energy:
+    import s3_energy as E                                          # noqa: E402
+
+    def predict_cmd(cmd):
+        """One command end to end, as a user pays for it: prompt build, DistilBERT draft, tokenisation, prefix-cached speculative decode, detokenisation."""
+        pids, dids, _ms = prep(cmd)
+        return tok.decode(spec_prefix(pids, dids)[0], skip_special_tokens=True)
+
+    _idle = E.require_idle()          # re-checked here: the decode pass takes minutes
+    # The decode pass has just loaded the GPU for minutes; every other arm starts
+    # its measurement from a cooled GPU, so this one does too.
+    print()
+    print("  pre-measurement cool-down %d s (thermal parity with the other arms)"
+          % E.COOLDOWN_S)
+    time.sleep(E.COOLDOWN_S)
+    C.gate(True, E.measure_loop(
+        PRED_ARM, SPLIT, predict_cmd, _idle, kind="local",
+        note="speculative arm measured in its own script, end to end per command "
+             "(prompt build, DistilBERT draft, tokenisation, prefix-cached speculative decode, detokenisation); byte-identity to lora_greedy PASSED in the same process; "
+             "GPU watts only, CPU watts NOT measured"))

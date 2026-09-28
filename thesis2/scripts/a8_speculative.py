@@ -66,7 +66,10 @@ N_WARMUP = 3            # PRE-RUN to warm the GPU; all 217 commands are then mea
                         # and INCLUDED in every figure (Part B S-5). Not excluded.
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--energy", action="store_true")
+ap.add_argument("--energy", action="store_true",
+                help="PROTOCOL energy run (called by s3_energy.py --arm): decode "
+                     "the split once for the byte-identity gate, then measure "
+                     "with s3_energy.measure_loop. Writes NO prediction file.")
 # --- added 2026-09-25 -------------------------------------------------------
 # --split lets this arm run on either held-out family (and on train_v2 for a
 # smoke test). --limit truncates the command list for a smoke run. --outdir
@@ -102,6 +105,9 @@ sys.path.insert(0, str(REPO / "thesis2" / "final"))
 import common as C                                                # noqa: E402
 PRED_ARM, PRED_TEXT, PRED_MS = "a8_speculative", "spec_text", "spec_ms"
 PERCOMMAND = OUT / ("a8_speculative_percommand%s.csv" % TAG)
+if args.energy and (args.limit or args.emit_preds_only):
+    C.gate(False, ["--energy measures the FULL split by the s3 protocol; it takes "
+                   "neither --limit nor --emit-preds-only"])
 if args.emit_preds_only:
     if not PERCOMMAND.exists():
         C.gate(False, ["%s does not exist -- nothing to convert; run this script "
@@ -292,22 +298,32 @@ def salsa_pass(prompt_ids):
 # ---------------------------------------------------------------- build inputs
 print()
 print("  tokenising and checking the prompt/draft boundary is BPE-clean")
-items, dirty = [], 0
-for i, r in enumerate(rows):
-    cmd = r["command"]
+def prep(cmd):
+    """One command's inputs -> (prompt_ids, draft_ids, draft_text, draft_ms,
+    bpe_clean). Used by the measured pass below AND by the --energy predictor,
+    so both run exactly the same pipeline."""
     ptxt = chat_wrap(P.build_prompt(cmd, "zero_shot", schema))
     dtxt, _, dms = draft_for(cmd)
     pids = tok(ptxt, add_special_tokens=False)["input_ids"]
+    clean = True
     if dtxt:
         fids = tok(ptxt + dtxt, add_special_tokens=False)["input_ids"]
         if fids[:len(pids)] != pids:
-            dirty += 1
+            clean = False
             dids = tok(dtxt, add_special_tokens=False)["input_ids"]
         else:
             dids = fids[len(pids):]
         dids = dids + [IM_END]        # drafting the stop token is what buys the 1-pass case
     else:
         dids = []
+    return pids, dids, dtxt, dms, clean
+
+
+items, dirty = [], 0
+for i, r in enumerate(rows):
+    cmd = r["command"]
+    pids, dids, dtxt, dms, clean = prep(cmd)
+    dirty += 0 if clean else 1
     items.append(dict(command_id=str(i), command=cmd, prompt_ids=pids,
                       draft_ids=dids, draft_text=dtxt, draft_ms=dms,
                       truth=r))
@@ -446,113 +462,59 @@ print("    quantisation; a gap here is expected and says nothing about A8.")
 
 # ---------------------------------------------------------------- 5. energy
 energy_rows = []
+# --energy is measured AFTER the byte-identity gate at the end of this script,
+# by s3_energy.measure_loop -- the protocol every arm uses (current idle
+# baseline, 3 warm-up commands, >= 120 s, 60 s cool-down, drafter included).
+# The old in-script loop (idle 12.12 W hard-coded, no warm-up or cool-down,
+# drafter and tokenisation excluded) was removed 2026-09-28.
+
 if args.energy:
-    class PowerLogger(threading.Thread):
-        def __init__(self):
-            super().__init__(daemon=True)
-            self.samples = []
-            self._halt = threading.Event()
-
-        def run(self):
-            while not self._halt.is_set():
-                try:
-                    o = subprocess.run(
-                        ["nvidia-smi", "--query-gpu=power.draw,utilization.gpu",
-                         "--format=csv,noheader,nounits"],
-                        capture_output=True, text=True, timeout=5).stdout.strip()
-                    p_, u_ = [x.strip() for x in o.split(",")[:2]]
-                    self.samples.append((time.time(), float(p_), float(u_)))
-                except Exception:
-                    pass
-                time.sleep(1.0)
-
-        def stop(self):
-            self._halt.set()
-            self.join(timeout=5)
-
-    def measure(name, step_fn, n_items):
-        lg = PowerLogger(); lg.start(); time.sleep(3)
-        t0 = time.time(); n = 0
-        while time.time() - t0 < LOAD_S:
-            step_fn(); n += n_items
-        wall = time.time() - t0
-        time.sleep(2); lg.stop()
-        live = [p_ for t_, p_, u_ in lg.samples if t_ >= t0]
-        mean_w = statistics.mean(live) if live else float("nan")
-        d = mean_w - IDLE_W
-        j = d * wall / n if n else float("nan")
-        print("    %-30s N=%-6d wall %6.1fs  meanP %6.1f W  delta %6.1f W  %8.4f J/cmd"
-              % (name, n, wall, mean_w, d, j))
-        return dict(arm=name, n_commands=n, wall_s=round(wall, 1),
-                    mean_power_w=round(mean_w, 2), idle_power_w=IDLE_W,
-                    delta_power_w=round(d, 2), joules_per_command=round(j, 5),
-                    power_samples=len(live))
-
+    # PROTOCOL energy run: this decode pass feeds the byte-identity gate
+    # only. No prediction, per-command or summary file is written, so an
+    # energy run can never overwrite a result (the v4c run-once rule).
     print()
-    print("=" * 88)
-    print("5. ENERGY  (GPU only, idle baseline %.2f W reused from power_idle.csv)" % IDLE_W)
-    print("=" * 88)
-
-    def step_plain():
-        for x in items:
-            greedy_manual(x["prompt_ids"])
-
-    def step_spec():
-        for x in items:
-            speculative(x["prompt_ids"], x["draft_ids"])
-
-    energy_rows.append(measure("a8_plain_greedy_qwen3blora", step_plain, len(items)))
-    energy_rows.append(measure("a8_speculative_qwen3blora", step_spec, len(items)))
-    e = {r["arm"]: r["joules_per_command"] for r in energy_rows}
-    print()
-    print("    energy reduction: %.4f"
-          % (1 - e["a8_speculative_qwen3blora"] / e["a8_plain_greedy_qwen3blora"]))
-    print("    (SALSA on this model measured 4.08092 J/cmd in the Phase-6 energy run;")
-    print("     same idle baseline, same runtime, one forward pass.)")
+    print("  --energy: no prediction, per-command or summary file written")
 else:
+    # ---------------------------------------------------------------- write
+    p = OUT / ("a8_speculative_percommand%s.csv" % TAG)
+    with open(p, "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=list(recs[0].keys()))
+        w.writeheader(); w.writerows(recs)
+    _pp, _pn = C.preds_from_percommand(PRED_ARM, SPLIT, recs, PRED_TEXT, PRED_MS,
+                                       outdir=OUT)
+    print("wrote %s (%d rows, standard pred format, latency from %s)"
+          % (_pp, _pn, PRED_MS))
+
+    summary = dict(
+        greedy_confirmed=True, base=BASE, adapter=str(ADAPTER.relative_to(REPO)),
+        runtime="transformers fp16, LoRA merged", dataset="held_out_v3",
+        n_commands=len(m), warmup_prerun_not_excluded=N_WARMUP,
+        byte_identical_text=n_id_txt, byte_identical_ids=n_id_ids,
+        draft_tokens_offered=tot_d, draft_tokens_accepted=tot_a,
+        token_acceptance_rate=round(tot_a / tot_d, 4),
+        full_draft_accepted=full, full_draft_rate=round(full / len(m), 4),
+        one_forward_pass_commands=one_pass,
+        forward_passes_plain=sum(r["greedy_forward_passes"] for r in m),
+        forward_passes_speculative=sum(r["spec_forward_passes"] for r in m),
+        latency_ms={k2: dict(p50=round(pct(v, .50), 2), p95=round(pct(v, .95), 2),
+                             p99=round(pct(v, .99), 2), mean=round(statistics.mean(v), 2))
+                    for k2, v in lat.items()},
+        agreement_with_v5_ollama_q4=round(agree / len(m), 4),
+        energy=energy_rows,
+        accuracy_note="NOT re-scored: greedy-exact by construction, identical to the "
+                      "plain-greedy arm by the byte-identity check above.")
+    (OUT / ("a8_speculative_summary%s.json" % TAG)).write_text(json.dumps(summary, indent=2),
+                                                     encoding="utf-8")
+    if energy_rows:
+        pe = OUT / ("a8_energy%s.csv" % TAG)
+        with open(pe, "w", newline="", encoding="utf-8") as fh:
+            w = csv.DictWriter(fh, fieldnames=list(energy_rows[0].keys()))
+            w.writeheader(); w.writerows(energy_rows)
+        print("wrote %s" % pe.relative_to(REPO))
     print()
-    print("  energy NOT measured this run (pass --energy)")
-
-# ---------------------------------------------------------------- write
-p = OUT / ("a8_speculative_percommand%s.csv" % TAG)
-with open(p, "w", newline="", encoding="utf-8") as fh:
-    w = csv.DictWriter(fh, fieldnames=list(recs[0].keys()))
-    w.writeheader(); w.writerows(recs)
-_pp, _pn = C.preds_from_percommand(PRED_ARM, SPLIT, recs, PRED_TEXT, PRED_MS,
-                                   outdir=OUT)
-print("wrote %s (%d rows, standard pred format, latency from %s)"
-      % (_pp, _pn, PRED_MS))
-
-summary = dict(
-    greedy_confirmed=True, base=BASE, adapter=str(ADAPTER.relative_to(REPO)),
-    runtime="transformers fp16, LoRA merged", dataset="held_out_v3",
-    n_commands=len(m), warmup_prerun_not_excluded=N_WARMUP,
-    byte_identical_text=n_id_txt, byte_identical_ids=n_id_ids,
-    draft_tokens_offered=tot_d, draft_tokens_accepted=tot_a,
-    token_acceptance_rate=round(tot_a / tot_d, 4),
-    full_draft_accepted=full, full_draft_rate=round(full / len(m), 4),
-    one_forward_pass_commands=one_pass,
-    forward_passes_plain=sum(r["greedy_forward_passes"] for r in m),
-    forward_passes_speculative=sum(r["spec_forward_passes"] for r in m),
-    latency_ms={k2: dict(p50=round(pct(v, .50), 2), p95=round(pct(v, .95), 2),
-                         p99=round(pct(v, .99), 2), mean=round(statistics.mean(v), 2))
-                for k2, v in lat.items()},
-    agreement_with_v5_ollama_q4=round(agree / len(m), 4),
-    energy=energy_rows,
-    accuracy_note="NOT re-scored: greedy-exact by construction, identical to the "
-                  "plain-greedy arm by the byte-identity check above.")
-(OUT / ("a8_speculative_summary%s.json" % TAG)).write_text(json.dumps(summary, indent=2),
-                                                 encoding="utf-8")
-if energy_rows:
-    pe = OUT / ("a8_energy%s.csv" % TAG)
-    with open(pe, "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=list(energy_rows[0].keys()))
-        w.writeheader(); w.writerows(energy_rows)
-    print("wrote %s" % pe.relative_to(REPO))
-print()
-print("wrote %s" % p.relative_to(REPO))
-print("wrote %s" % (OUT / ("a8_speculative_summary%s.json" % TAG)))
-print("=" * 88)
+    print("wrote %s" % p.relative_to(REPO))
+    print("wrote %s" % (OUT / ("a8_speculative_summary%s.json" % TAG)))
+    print("=" * 88)
 
 # ---------------------------------------------------------------- byte-identity
 # GATE: on any split, this arm must reproduce lora_greedy's saved output exactly.
@@ -588,7 +550,37 @@ if _lg.exists():
         sys.exit(1)
     print("    %d / %d identical -- PASS" % (len(_base), len(_base)))
 else:
+    if args.energy:
+        # the energy run is gated on byte identity; no identity, no number
+        print()
+        print("GATE FAIL: --energy requires the byte-identity gate, and %s is "
+              "absent. Run s1_run_arm.py --arm lora_greedy --split %s first."
+              % (_lg.name, SPLIT))
+        sys.exit(1)
     print()
     print("  byte-identity vs lora_greedy NOT CHECKED: %s absent. Run "
           "s1_run_arm.py --arm lora_greedy --split %s first; on held_out_v4c this "
           "check is a required gate." % (_lg.name, SPLIT))
+
+# ---------------------------------------------------------------- protocol energy
+# Reached only when the byte-identity gate above PASSED (it exits otherwise).
+if args.energy:
+    import s3_energy as E                                          # noqa: E402
+
+    def predict_cmd(cmd):
+        """One command end to end, as a user pays for it: prompt build, DistilBERT draft, tokenisation, speculative decode, detokenisation."""
+        pids, dids, _t, _ms, _c = prep(cmd)
+        return tok.decode(speculative(pids, dids)[0], skip_special_tokens=True)
+
+    _idle = E.require_idle()          # re-checked here: the decode pass takes minutes
+    # The decode pass has just loaded the GPU for minutes; every other arm starts
+    # its measurement from a cooled GPU, so this one does too.
+    print()
+    print("  pre-measurement cool-down %d s (thermal parity with the other arms)"
+          % E.COOLDOWN_S)
+    time.sleep(E.COOLDOWN_S)
+    C.gate(True, E.measure_loop(
+        PRED_ARM, SPLIT, predict_cmd, _idle, kind="local",
+        note="speculative arm measured in its own script, end to end per command "
+             "(prompt build, DistilBERT draft, tokenisation, speculative decode, detokenisation); byte-identity to lora_greedy PASSED in the same process; "
+             "GPU watts only, CPU watts NOT measured"))

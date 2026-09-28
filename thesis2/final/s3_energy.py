@@ -24,6 +24,11 @@
     Ollama arms: OLLAMA_MODELS=D:\\LLM and V5's num_ctx; the Ollama version and
     model digest are recorded and other models are unloaded first.
 
+    SPECULATIVE ARMS (a8_speculative, a10_speculative, a12_smalllm) run their
+    own script with --energy, which calls measure_loop below in-process after
+    its byte-identity gate against lora_greedy passes. Same protocol, same
+    columns, one row per arm and split.
+
     CASCADES ARE MEASURED PER COMMAND FOR REAL. The modelled constants in
     p45_cascade_full.csv are not read by this script and are used nowhere.
 
@@ -32,6 +37,7 @@ Appends to thesis2/out/final/unified_efficiency.csv.
 import argparse
 import csv
 import json
+import os
 import statistics
 import subprocess
 import sys
@@ -238,7 +244,9 @@ def measure_loop(name, split, predict, idle, kind="local", note="", ollama_note=
 
     print("  cool-down %d s ..." % COOLDOWN_S)
     time.sleep(COOLDOWN_S)
-    C.gate(True, [
+    # The caller gates on these lines. measure_loop no longer exits, so the
+    # speculative scripts can call it in-process and still end on their own gate.
+    return [
         "%s on %s: N=%d commands in %.1f s (>= %d s required); %d warm-up excluded"
         % (name, split, n, wall, LOAD_MIN_S, WARMUP),
         "latency p50/p95/p99 %.2f / %.2f / %.2f ms" % (q(.50), q(.95), q(.99)),
@@ -248,15 +256,66 @@ def measure_loop(name, split, predict, idle, kind="local", note="", ollama_note=
         "max GPU temp %.0f C; peak VRAM %s MB; CPU %.2f ms/command "
         "(CPU watts not measured)" % (max_t, peak_vram, cpu_ms),
         "appended to %s; raw samples %s" % (EFF.name, raw.name),
+    ]
+
+
+# The speculative arms have no in-process predictor: each is its own verified
+# script (arms._spec). Their energy is measured INSIDE that script, by
+# measure_loop above -- the same protocol as every other arm -- after the
+# script's byte-identity gate against lora_greedy has passed.
+SPEC_SCRIPTS = {"a8_speculative": "a8_speculative.py",
+                "a10_speculative": "a10_prefix_cache.py",
+                "a12_smalllm": "a12_smalllm_drafter.py"}
+
+
+def _eff_rows(name, split):
+    if not EFF.exists():
+        return 0
+    with EFF.open(encoding="utf-8", newline="") as fh:
+        return sum(1 for r in csv.DictReader(fh)
+                   if r.get("arm") == name and r.get("split") == split)
+
+
+def mode_speculative(name, split):
+    """Run <script> --split <split> --energy and require exactly one new row.
+
+    The script decodes the split once, runs the byte-identity gate against
+    pred_lora_greedy_<split>.csv (a hard FAIL if that file is absent), then --
+    only on PASS -- calls measure_loop with an end-to-end predict(command):
+    prompt, tokenisation, drafter, verifier, detokenisation. It writes no
+    prediction or per-command file, so it can never overwrite a v4c result.
+    """
+    require_idle()            # fail fast; the script re-checks just before measuring
+    script = C.REPO / "thesis2" / "scripts" / SPEC_SCRIPTS[name]
+    before = _eff_rows(name, split)
+    cmd = [sys.executable, "-u", str(script), "--split", split, "--energy"]
+    print("  running: %s" % " ".join(cmd))
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                            text=True, encoding="utf-8", errors="replace",
+                            cwd=str(C.REPO), env=env)
+    for line in proc.stdout:              # into this script's log as well
+        print("  | " + line.rstrip("\n"))
+    rc = proc.wait()
+    after = _eff_rows(name, split)
+    C.gate(rc == 0 and after == before + 1, [
+        "%s --split %s --energy exit code %d%s"
+        % (script.name, split, rc, "" if rc == 0 else
+           " -- the byte-identity or protocol gate FAILED; no energy row may be quoted"),
+        "rows for (%s, %s) in %s: %d -> %d (exactly one must be appended)"
+        % (name, split, EFF.name, before, after),
     ])
 
 
 def mode_arm(name, split):
     arm = A.get(name)
+    if name in SPEC_SCRIPTS:
+        return mode_speculative(name, split)
     idle = require_idle()
     C.require_frozen(name)
     predict = arm.build()
-    measure_loop(name, split, predict, idle, kind=arm.kind, ollama_note=arm.note)
+    C.gate(True, measure_loop(name, split, predict, idle, kind=arm.kind,
+                              ollama_note=arm.note))
 
 
 def v5_cell_predictor(model, strategy, split):
@@ -312,9 +371,9 @@ def mode_v5_cell(cell, split):
                        "machine. Its latency comes from Stage 1." % cell])
     idle = require_idle()
     predict = v5_cell_predictor(model, strategy, split)
-    measure_loop("v5:%s" % cell, split, predict, idle, kind="local",
+    C.gate(True, measure_loop("v5:%s" % cell, split, predict, idle, kind="local",
                  note="V5 Ollama cell measured through llm/pipeline.py run_once; "
-                      "GPU watts only, CPU watts NOT measured")
+                      "GPU watts only, CPU watts NOT measured"))
 
 
 def main():

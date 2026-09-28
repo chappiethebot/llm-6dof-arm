@@ -14,7 +14,7 @@ $GPU  = "D:\condaenvs\thesis2gpu\python.exe"
 $OLL  = "C:\Users\USER\.conda\envs\thesis\python.exe"
 $Out  = Join-Path $Repo "thesis2\out\final"
 $env:OLLAMA_MODELS = "D:\LLM"
-$env:PYTHONIOENCODING = "utf-8"
+$env:PYTHONIOENCODING = "utf-8"; $env:HF_HUB_OFFLINE = "1"; $env:TRANSFORMERS_OFFLINE = "1"
 Set-Location $Repo
 
 $stamp = Get-Date -Format "yyyyMMdd_HHmmss"
@@ -61,7 +61,7 @@ function Check-RowCount([string]$split) {
 function Has-Energy([string]$name, [string]$split) {
     $f = Join-Path $Out "unified_efficiency.csv"
     if (-not (Test-Path $f)) { return $false }
-    $rows = @(Import-Csv $f | Where-Object { $_.arm -eq $name -and $_.split -eq $split })
+    $rows = @(Import-Csv $f | Where-Object { ($_.arm -eq $name -or $_.arm -eq ("v5:" + $name)) -and $_.split -eq $split })
     return ($rows.Count -gt 0)
 }
 
@@ -106,7 +106,7 @@ $V5Cells = @("ollama:qwen2.5-3b-lora/few_shot","ollama:qwen2.5-3b-lora/cot","oll
     "ollama:deepseek-r1:7b/few_shot","ollama:deepseek-r1:7b/cot","ollama:deepseek-r1:7b/role_based",
     "ollama:deepseek-r1:7b/rag","classifier:distilbert/classifier")
 
-$EnergyArms = $LocalArms[0..13] + @("lora_greedy","a8_speculative","a10_speculative","a12_smalllm") + $LocalArms[15..23]
+$EnergyArms = $LocalArms[0..13] + @("lora_greedy") + $LocalArms[15..23]
 
 if ($Phase -eq "A") {
     if (-not $RerunVerified) { Stop-Run "Phase A needs -RerunVerified: the 12-cell re-run must have passed and been shown to the advisor." }
@@ -145,7 +145,7 @@ if ($Phase -eq "B") {
     }
     Print-Accuracy "held_out_v4c"
 
-    foreach ($sp in @("held_out_v3","held_out_v4c")) {
+    foreach ($sp in @("held_out_v3")) {
         foreach ($c in @("ollama:qwen2.5-3b-lora/zero_shot") + $V5Cells) {
             if (Has-Energy $c $sp) { Log ("SKIP   energy {0} {1}" -f $c, $sp); continue }
             Ensure-Idle
@@ -175,3 +175,4 @@ if ($Phase -eq "B") {
     Log ("step log: " + $StepLog)
     exit 0
 }
+
