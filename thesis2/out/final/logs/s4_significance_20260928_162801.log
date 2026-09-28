@@ -1,0 +1,56 @@
+================================================================================================
+s4_significance   started 2026-09-28 16:28:01
+  log: thesis2\out\final\logs\s4_significance_20260928_162801.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  protocol: clustered bootstrap over command_id, 2000 resamples, seed 20260827;
+            exact McNemar; claimable iff CI excludes 0 AND p_holm < 0.05
+  primary family DECLARED 2026-09-22, before this run; 8 hypotheses, hard-coded.
+
+  PRIMARY FAMILY (Holm within 8 tested of 8 declared)
+  id   split          comparison                   metric        n         A         B             95% CI     p_holm verdict
+  H1   held_out_v4c   flat_gpu vs lora_greedy      action      217    0.7143    0.6221      [4.15, 14.75] 0.00477296 CLAIMABLE
+  H2   held_out_v4c   flat_gpu vs lora_greedy      row         108    0.5556    0.3333     [13.89, 30.56] 7.15254e-07 CLAIMABLE
+  H3   held_out_v3    lora_greedy vs flat_gpu      action      217    0.9539    0.7465     [14.75, 26.73] 4.93779e-10 CLAIMABLE
+  H4   held_out_v3    factorized_fp16 vs flat_gpu  action      217    0.6083    0.7465    [-19.35, -9.21] 3.01927e-06 CLAIMABLE
+  H5   held_out_v4c   cascade_cloud_tauA vs flat_g action      217    0.7696    0.7143      [0.92, 10.14]  0.0713962 nominal (does not survive family-wise correction)
+  H6   held_out_v4c   grpo_base vs lora_greedy     action      217    0.6959    0.6221      [2.76, 12.44]  0.0156686 CLAIMABLE
+  H7   held_out_v3    salsa_full_qwen2.5-3b-lora v action      217    0.5023    0.9539   [-52.07, -38.25] 1.47962e-25 CLAIMABLE
+  H8   held_out_v4c   textcnn vs flat_gpu          action      217    0.6959    0.7143      [-8.29, 5.07]   0.683489 NOT CLAIMABLE
+
+  TRANSPARENCY NOTE
+    H1, H2, H4 and H5 were measured ONCE before this family was declared
+    (2026-09-22). They are not new measurements. The 26-hypothesis Holm values
+    from that earlier family are reported alongside:
+      H1  old family: flat classifier vs qwen2.5-3b-lora V5 zero-shot          p_raw 1.193e-03  p_holm 0.021474   -> CLAIMABLE
+      H2  old family: flat classifier vs qwen2.5-3b-lora V5 zero-shot          p_raw 1.192e-07  p_holm 2.8608e-06 -> CLAIMABLE
+      H4  old family: factorized vs flat DistilBERT                            p_raw 1e-06      p_holm 2.3e-05    -> CLAIMABLE
+      H5  old family: cascade row->gpt-4o-mini (tau_A=0.50, pre-registered) vs p_raw 0.0357     p_holm 0.45604    -> NOT CLAIMABLE
+
+  EXPLORATORY FAMILY -- every other pair with predictions on the same split
+    1732 exploratory comparisons, Holm across all of them
+    1006 survive correction; reported, never headlined
+      held_out_v3    a10_speculative vs bilstm (action)       25.35 pts, p_holm 4.43246e-11
+      held_out_v3    a10_speculative vs bilstm (row)          31.48 pts, p_holm 1.30036e-07
+      held_out_v3    a10_speculative vs cascade_cloud_always (action) 16.13 pts, p_holm 7.48446e-05
+      held_out_v3    a10_speculative vs cascade_cloud_always (row) 29.63 pts, p_holm 5.05708e-07
+      held_out_v3    a10_speculative vs cascade_cloud_tauA (action) 22.12 pts, p_holm 4.06291e-08
+      held_out_v3    a10_speculative vs cascade_cloud_tauA (row) 41.67 pts, p_holm 7.61133e-11
+      held_out_v3    a10_speculative vs cascade_local_tauA (action) 22.12 pts, p_holm 4.06291e-08
+      held_out_v3    a10_speculative vs cascade_local_tauA (row) 41.67 pts, p_holm 7.61133e-11
+      held_out_v3    a10_speculative vs factorized_fp16 (action) 34.56 pts, p_holm 2.62378e-15
+      held_out_v3    a10_speculative vs factorized_fp16 (row) 66.67 pts, p_holm 6.61108e-19
+      held_out_v3    a10_speculative vs factorized_int4 (action) 34.56 pts, p_holm 2.62378e-15
+      held_out_v3    a10_speculative vs factorized_int4 (row) 65.74 pts, p_holm 1.29596e-18
+      held_out_v3    a10_speculative vs flant5 (action)       33.64 pts, p_holm 9.17038e-15
+      held_out_v3    a10_speculative vs flant5 (row)          57.41 pts, p_holm 6.42282e-16
+      held_out_v3    a10_speculative vs flat_cpu (action)     20.74 pts, p_holm 7.92867e-08
+
+------------------------------------------------------------------------------------------------
+  primary: 8 of 8 hypotheses tested, 6 CLAIMABLE after Holm within the family
+  primary hypotheses NOT RUN (missing arms): none
+  exploratory: 1732 comparisons, 1006 claimable, reported never headlined
+  H1/H2/H4/H5 pre-date the family declaration; old Holm values printed above
+  output: thesis2\out\final\final_significance.csv
+------------------------------------------------------------------------------------------------
+GATE PASS

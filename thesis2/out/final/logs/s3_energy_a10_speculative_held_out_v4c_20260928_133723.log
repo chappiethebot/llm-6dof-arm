@@ -1,0 +1,128 @@
+================================================================================================
+s3_energy_a10_speculative_held_out_v4c   started 2026-09-28 13:37:23
+  log: thesis2\out\final\logs\s3_energy_a10_speculative_held_out_v4c_20260928_133723.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  idle baseline: 10.61 W median, 40.8 min old
+  running: D:\condaenvs\thesis2gpu\python.exe -u C:\Users\USER\llm-6dof-arm\thesis2\scripts\a10_prefix_cache.py --split held_out_v4c --energy
+  |   split=held_out_v4c  data=held_out_v4c.jsonl  outdir=C:\Users\USER\llm-6dof-arm\thesis2\out\final
+  | ================================================================================================
+  | A10 -- PREFIX KV CACHING FOR A8
+  | ================================================================================================
+  |   loading Qwen/Qwen2.5-3B-Instruct + checkpoint-87 (fp16, merged)
+  | W0928 13:37:27.626000 189336 site-packages\torch\utils\flop_counter.py:113] triton not found; flop counting will not work for triton kernels
+  | Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  | 
+  | Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]
+  | Loading weights:   5%|▍         | 21/434 [00:00<00:02, 194.44it/s]
+  | Loading weights:   9%|▉         | 41/434 [00:00<00:02, 150.46it/s]
+  | Loading weights:  14%|█▎        | 59/434 [00:00<00:02, 138.68it/s]
+  | Loading weights:  18%|█▊        | 77/434 [00:00<00:02, 149.95it/s]
+  | Loading weights:  22%|██▏       | 95/434 [00:00<00:02, 141.68it/s]
+  | Loading weights:  27%|██▋       | 119/434 [00:00<00:01, 159.13it/s]
+  | Loading weights:  32%|███▏      | 139/434 [00:00<00:01, 161.49it/s]
+  | Loading weights:  36%|███▌      | 156/434 [00:01<00:01, 153.00it/s]
+  | Loading weights:  40%|███▉      | 172/434 [00:01<00:01, 153.84it/s]
+  | Loading weights:  44%|████▎     | 189/434 [00:01<00:01, 153.42it/s]
+  | Loading weights:  47%|████▋     | 205/434 [00:01<00:01, 144.87it/s]
+  | Loading weights:  51%|█████▏    | 223/434 [00:01<00:01, 153.06it/s]
+  | Loading weights:  55%|█████▌    | 239/434 [00:01<00:01, 135.06it/s]
+  | Loading weights:  60%|██████    | 262/434 [00:01<00:01, 153.24it/s]
+  | Loading weights:  64%|██████▍   | 278/434 [00:01<00:01, 145.19it/s]
+  | Loading weights:  69%|██████▊   | 298/434 [00:01<00:00, 152.44it/s]
+  | Loading weights:  72%|███████▏  | 314/434 [00:02<00:00, 136.45it/s]
+  | Loading weights:  76%|███████▌  | 329/434 [00:02<00:00, 131.80it/s]
+  | Loading weights:  79%|███████▉  | 343/434 [00:02<00:00, 133.01it/s]
+  | Loading weights:  82%|████████▏ | 357/434 [00:02<00:00, 125.78it/s]
+  | Loading weights:  85%|████████▌ | 370/434 [00:02<00:00, 117.16it/s]
+  | Loading weights:  88%|████████▊ | 383/434 [00:02<00:00, 111.89it/s]
+  | Loading weights:  91%|█████████ | 395/434 [00:02<00:00, 112.37it/s]
+  | Loading weights:  95%|█████████▍| 411/434 [00:02<00:00, 120.44it/s]
+  | Loading weights:  98%|█████████▊| 424/434 [00:03<00:00, 122.98it/s]
+  | Loading weights: 100%|██████████| 434/434 [00:03<00:00, 141.70it/s]
+  | 
+  | Loading weights:   0%|          | 0/100 [00:00<?, ?it/s]
+  | Loading weights: 100%|██████████| 100/100 [00:00<00:00, 1183.40it/s]
+  | [transformers] [1mDistilBertModel LOAD REPORT[0m from: distilbert-base-uncased
+  | Key                     | Status     |  | 
+  | ------------------------+------------+--+-
+  | vocab_layer_norm.bias   | UNEXPECTED |  | 
+  | vocab_projector.bias    | UNEXPECTED |  | 
+  | vocab_transform.bias    | UNEXPECTED |  | 
+  | vocab_transform.weight  | UNEXPECTED |  | 
+  | vocab_layer_norm.weight | UNEXPECTED |  | 
+  | 
+  | Notes:
+  | - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+  | 
+  |   longest common token prefix: 449 tokens of 460-474  (96.1% of the median prompt)
+  |   per-command suffix: min 11  median 18  max 25 tokens
+  |   prefix ends: ..."'s required fields. No explanation, no markdown, no code fences.\n\nC
+  | 
+  |   warming up (3 commands pre-run; all 217 are measured below)
+  |   decoding all 217 commands four ways
+  |      50 / 217  (98s)
+  |     100 / 217  (197s)
+  |     150 / 217  (291s)
+  |     200 / 217  (359s)
+  |     217 / 217  DONE (388s)
+  | 
+  | ================================================================================================
+  | 1. BYTE-IDENTICAL OUTPUT vs PLAIN GREEDY  (must be 217/217 before any speed claim)
+  | ================================================================================================
+  |     speculative, no prefix cache (A8)      217 / 217   PASS
+  |     prefix-cached plain greedy             217 / 217   PASS
+  |     PREFIX-CACHED SPECULATIVE (A10)        217 / 217   PASS
+  | 
+  | ================================================================================================
+  | 2. ACCEPTANCE (unchanged by caching, as it must be)
+  | ================================================================================================
+  |     token acceptance rate        0.8661  (4554 / 5258)
+  |     full draft accepted          144 / 217 = 0.6636
+  |     same accepted count as A8    217 / 217
+  |     forward passes  plain 5288   spec 878   prefix-spec 878
+  | 
+  | ================================================================================================
+  | 3. LATENCY  (n=217, all commands included; 3 were pre-run as GPU warm-up)
+  | ================================================================================================
+  |     arm                                        p50       p95       p99      mean
+  |     ----------------------------------------------------------------------------
+  |     plain greedy                           874.94   906.20   907.41   770.48
+  |     prefix-cached plain greedy             820.85   852.13   853.96   716.40
+  |     speculative (A8)                       107.85   349.03   776.03   195.75
+  |     PREFIX-CACHED SPECULATIVE (A10)         54.58   296.58   724.19   142.30
+  | 
+  |     A10 vs A8   p50 1.98x   p95 1.18x   p99 1.07x   mean 1.38x
+  |     A10 vs plain greedy  p50 16.03x
+  |     classifier draft floor: p50 17.35 ms of the A10 p50 54.58 ms (32%)
+  | 
+  |   --energy: no prediction, per-command or summary file written
+  | 
+  | ========================================================================================
+  | BYTE-IDENTITY vs lora_greedy on held_out_v4c
+  | ========================================================================================
+  |     217 / 217 identical -- PASS
+  |   idle baseline: 10.61 W median, 47.7 min old
+  | 
+  |   pre-measurement cool-down 60 s (thermal parity with the other arms)
+  |   warm-up: 3 commands, NOT counted in any figure below
+  |      217 commands, 31 s elapsed
+  |      434 commands, 62 s elapsed
+  |      651 commands, 93 s elapsed
+  |      868 commands, 125 s elapsed
+  |   cool-down 60 s ...
+  | 
+  | ------------------------------------------------------------------------------------------------
+  |   a10_speculative on held_out_v4c: N=868 commands in 124.7 s (>= 120 s required); 3 warm-up excluded
+  |   latency p50/p95/p99 56.06 / 295.02 / 723.45 ms
+  |   energy 10.91288 J/command (mean 86.6 W - idle 10.61 W)
+  |   max GPU temp 60 C; peak VRAM 8819.0 MB; CPU 142.50 ms/command (CPU watts not measured)
+  |   appended to unified_efficiency.csv; raw samples a10_speculative_held_out_v4c_20260928_134727.csv
+  | ------------------------------------------------------------------------------------------------
+  | GATE PASS
+
+------------------------------------------------------------------------------------------------
+  a10_prefix_cache.py --split held_out_v4c --energy exit code 0
+  rows for (a10_speculative, held_out_v4c) in unified_efficiency.csv: 0 -> 1 (exactly one must be appended)
+------------------------------------------------------------------------------------------------
+GATE PASS

@@ -1,0 +1,117 @@
+================================================================================================
+s3_energy_a12_smalllm_held_out_v3   started 2026-09-28 13:17:19
+  log: thesis2\out\final\logs\s3_energy_a12_smalllm_held_out_v3_20260928_131719.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  idle baseline: 10.61 W median, 20.7 min old
+  running: D:\condaenvs\thesis2gpu\python.exe -u C:\Users\USER\llm-6dof-arm\thesis2\scripts\a12_smalllm_drafter.py --split held_out_v3 --energy
+  |   split=held_out_v3  data=held_out_v3.jsonl  outdir=C:\Users\USER\llm-6dof-arm\thesis2\out\final
+  | ================================================================================================
+  | A12 -- CONVENTIONAL SMALL-LM DRAFTER (qwen2.5-0.5b) FOR THE SAME VERIFIER
+  | ================================================================================================
+  | W0928 13:17:23.264000 184328 site-packages\torch\utils\flop_counter.py:113] triton not found; flop counting will not work for triton kernels
+  | Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  |   tokenizer shared by verifier and drafter: True (vocab 151665 / 151665)
+  |   loading verifier Qwen/Qwen2.5-3B-Instruct + checkpoint-87 (fp16, merged)
+  | 
+  | Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]
+  | Loading weights:   5%|▌         | 23/434 [00:00<00:02, 200.87it/s]
+  | Loading weights:  10%|█         | 44/434 [00:00<00:02, 165.13it/s]
+  | Loading weights:  14%|█▍        | 61/434 [00:00<00:02, 135.01it/s]
+  | Loading weights:  17%|█▋        | 75/434 [00:00<00:02, 134.27it/s]
+  | Loading weights:  21%|██▏       | 93/434 [00:00<00:02, 126.96it/s]
+  | Loading weights:  27%|██▋       | 118/434 [00:00<00:02, 153.02it/s]
+  | Loading weights:  31%|███       | 134/434 [00:00<00:02, 135.68it/s]
+  | Loading weights:  36%|███▌      | 155/434 [00:01<00:01, 147.01it/s]
+  | Loading weights:  39%|███▉      | 171/434 [00:01<00:01, 140.46it/s]
+  | Loading weights:  44%|████▎     | 189/434 [00:01<00:01, 131.31it/s]
+  | Loading weights:  48%|████▊     | 207/434 [00:01<00:01, 139.99it/s]
+  | Loading weights:  52%|█████▏    | 225/434 [00:01<00:01, 148.57it/s]
+  | Loading weights:  56%|█████▌    | 241/434 [00:01<00:01, 130.93it/s]
+  | Loading weights:  59%|█████▉    | 255/434 [00:01<00:01, 128.13it/s]
+  | Loading weights:  62%|██████▏   | 269/434 [00:01<00:01, 122.20it/s]
+  | Loading weights:  65%|██████▍   | 282/434 [00:02<00:01, 121.86it/s]
+  | Loading weights:  68%|██████▊   | 295/434 [00:02<00:01, 122.70it/s]
+  | Loading weights:  71%|███████   | 308/434 [00:02<00:01, 122.51it/s]
+  | Loading weights:  74%|███████▍  | 321/434 [00:02<00:00, 121.73it/s]
+  | Loading weights:  77%|███████▋  | 334/434 [00:02<00:01, 98.19it/s] 
+  | Loading weights:  80%|███████▉  | 347/434 [00:02<00:00, 102.24it/s]
+  | Loading weights:  83%|████████▎ | 361/434 [00:02<00:00, 110.23it/s]
+  | Loading weights:  86%|████████▌ | 373/434 [00:02<00:00, 112.17it/s]
+  | Loading weights:  89%|████████▊ | 385/434 [00:03<00:00, 109.84it/s]
+  | Loading weights:  92%|█████████▏| 399/434 [00:03<00:00, 117.81it/s]
+  | Loading weights:  96%|█████████▌| 417/434 [00:03<00:00, 127.80it/s]
+  | Loading weights: 100%|██████████| 434/434 [00:03<00:00, 130.36it/s]
+  |   loading drafter  Qwen/Qwen2.5-0.5B-Instruct (fp16, off-the-shelf, NOT fine-tuned)
+  | 
+  | Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]
+  | Loading weights:  21%|██        | 61/290 [00:00<00:00, 589.28it/s]
+  | Loading weights:  41%|████▏     | 120/290 [00:00<00:00, 484.34it/s]
+  | Loading weights:  77%|███████▋  | 224/290 [00:00<00:00, 702.17it/s]
+  | Loading weights: 100%|██████████| 290/290 [00:00<00:00, 684.67it/s]
+  |   gamma = 4 draft tokens per iteration (fixed in advance, not swept)
+  |   common token prefix: 449 tokens of 460-474
+  | 
+  |   warming up (3 commands pre-run; all 217 are measured below)
+  | [transformers] Calling `crop` with a positive value is deprecated and will be removed in version 5.18. Please use a negative integer to remove that number of tokens from the cache instead.
+  |   decoding all 217 commands two ways
+  |      50 / 217  (87s)
+  |     100 / 217  (179s)
+  |     150 / 217  (259s)
+  |     200 / 217  (323s)
+  |     217 / 217  DONE (351s)
+  | 
+  | ================================================================================================
+  | 1. BYTE-IDENTICAL OUTPUT vs PLAIN GREEDY (must be 217/217 before any speed claim)
+  | ================================================================================================
+  |     0.5b-drafted speculative == plain greedy : 217 / 217   PASS
+  |     this run's plain greedy == A10's saved greedy : 217 / 217
+  | 
+  | ================================================================================================
+  | 2. ACCEPTANCE
+  | ================================================================================================
+  |     draft tokens offered / accepted   7340 / 3971
+  |     TOKEN ACCEPTANCE RATE             0.5410
+  |     verifier forward passes           1835
+  |     drafter  forward passes           7340
+  |     plain-greedy forward passes       5288
+  |     commands finished in ONE verifier pass 0 / 217
+  |     per-command acceptance p50 0.5357  p95 0.6562  min 0.3333  max 0.7188
+  |     verifier passes per command: [(5, 14), (6, 7), (7, 35), (8, 42), (9, 62), (10, 43), (11, 14)]
+  | 
+  | ================================================================================================
+  | 3. LATENCY (n=217, all commands included; 3 were pre-run as GPU warm-up)
+  | ================================================================================================
+  |     arm                                      p50       p95       p99      mean
+  |     --------------------------------------------------------------------------
+  |     prefix-cached plain greedy           825.49   857.76   861.45   720.47
+  |     0.5b-drafted speculative (A12)       943.89  1153.74  1177.11   895.00
+  |        of which the drafter              640.39   781.66   805.60   608.93
+  | 
+  |   --energy: no prediction, per-command or summary file written
+  | 
+  | ========================================================================================
+  | BYTE-IDENTITY vs lora_greedy on held_out_v3
+  | ========================================================================================
+  |     217 / 217 identical -- PASS
+  |   idle baseline: 10.61 W median, 26.9 min old
+  | 
+  |   pre-measurement cool-down 60 s (thermal parity with the other arms)
+  |   warm-up: 3 commands, NOT counted in any figure below
+  |      217 commands, 193 s elapsed
+  |   cool-down 60 s ...
+  | 
+  | ------------------------------------------------------------------------------------------------
+  |   a12_smalllm on held_out_v3: N=217 commands in 192.6 s (>= 120 s required); 3 warm-up excluded
+  |   latency p50/p95/p99 938.22 / 1148.56 / 1161.51 ms
+  |   energy 45.6599 J/command (mean 62.1 W - idle 10.61 W)
+  |   max GPU temp 58 C; peak VRAM 9173.0 MB; CPU 883.78 ms/command (CPU watts not measured)
+  |   appended to unified_efficiency.csv; raw samples a12_smalllm_held_out_v3_20260928_132750.csv
+  | ------------------------------------------------------------------------------------------------
+  | GATE PASS
+
+------------------------------------------------------------------------------------------------
+  a12_smalllm_drafter.py --split held_out_v3 --energy exit code 0
+  rows for (a12_smalllm, held_out_v3) in unified_efficiency.csv: 0 -> 1 (exactly one must be appended)
+------------------------------------------------------------------------------------------------
+GATE PASS

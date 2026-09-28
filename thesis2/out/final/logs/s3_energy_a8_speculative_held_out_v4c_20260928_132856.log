@@ -1,0 +1,153 @@
+================================================================================================
+s3_energy_a8_speculative_held_out_v4c   started 2026-09-28 13:28:56
+  log: thesis2\out\final\logs\s3_energy_a8_speculative_held_out_v4c_20260928_132856.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+  idle baseline: 10.61 W median, 32.3 min old
+  running: D:\condaenvs\thesis2gpu\python.exe -u C:\Users\USER\llm-6dof-arm\thesis2\scripts\a8_speculative.py --split held_out_v4c --energy
+  |   split=held_out_v4c  data=held_out_v4c.jsonl  outdir=C:\Users\USER\llm-6dof-arm\thesis2\out\final
+  | ========================================================================================
+  | A8 -- CLASSIFIER-DRAFTED SPECULATIVE DECODING
+  | ========================================================================================
+  | 
+  |   GATE -- was qwen2.5-3b-lora decoded greedily?
+  |     recorded temperature values in the V5 lora rows : ['0.0']
+  |     Modelfile                                       : ['PARAMETER temperature 0']
+  |     -> GREEDY CONFIRMED. proceeding.
+  | 
+  |   legend in force: v5 (demo legend; passes all four vocab checks)
+  |   held_out_v3: 217 commands
+  | 
+  |   loading Qwen/Qwen2.5-3B-Instruct + checkpoint-87 (fp16, merged -- same recipe as salsa_row.py)
+  | W0928 13:29:00.661000 190116 site-packages\torch\utils\flop_counter.py:113] triton not found; flop counting will not work for triton kernels
+  | Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  | 
+  | Loading weights:   0%|          | 0/434 [00:00<?, ?it/s]
+  | Loading weights:   5%|▌         | 23/434 [00:00<00:02, 154.88it/s]
+  | Loading weights:   9%|▉         | 40/434 [00:00<00:02, 159.55it/s]
+  | Loading weights:  13%|█▎        | 57/434 [00:00<00:02, 133.35it/s]
+  | Loading weights:  18%|█▊        | 76/434 [00:00<00:02, 150.60it/s]
+  | Loading weights:  22%|██▏       | 95/434 [00:00<00:02, 151.10it/s]
+  | Loading weights:  26%|██▌       | 111/434 [00:00<00:02, 148.48it/s]
+  | Loading weights:  29%|██▉       | 127/434 [00:00<00:02, 149.22it/s]
+  | Loading weights:  33%|███▎      | 143/434 [00:00<00:02, 143.43it/s]
+  | Loading weights:  36%|███▋      | 158/434 [00:01<00:01, 144.26it/s]
+  | Loading weights:  40%|███▉      | 173/434 [00:01<00:01, 145.47it/s]
+  | Loading weights:  44%|████▍     | 191/434 [00:01<00:01, 138.82it/s]
+  | Loading weights:  48%|████▊     | 209/434 [00:01<00:01, 148.68it/s]
+  | Loading weights:  52%|█████▏    | 225/434 [00:01<00:01, 140.56it/s]
+  | Loading weights:  56%|█████▌    | 241/434 [00:01<00:01, 141.04it/s]
+  | Loading weights:  59%|█████▉    | 256/434 [00:01<00:01, 139.14it/s]
+  | Loading weights:  62%|██████▏   | 271/434 [00:01<00:01, 141.90it/s]
+  | Loading weights:  66%|██████▌   | 286/434 [00:02<00:01, 116.34it/s]
+  | Loading weights:  69%|██████▉   | 300/434 [00:02<00:01, 120.63it/s]
+  | Loading weights:  72%|███████▏  | 313/434 [00:02<00:00, 122.25it/s]
+  | Loading weights:  75%|███████▌  | 326/434 [00:02<00:00, 118.62it/s]
+  | Loading weights:  79%|███████▊  | 341/434 [00:02<00:00, 124.66it/s]
+  | Loading weights:  82%|████████▏ | 354/434 [00:02<00:00, 125.25it/s]
+  | Loading weights:  85%|████████▍ | 367/434 [00:02<00:00, 125.18it/s]
+  | Loading weights:  88%|████████▊ | 380/434 [00:02<00:00, 124.77it/s]
+  | Loading weights:  91%|█████████ | 393/434 [00:02<00:00, 116.64it/s]
+  | Loading weights:  93%|█████████▎| 405/434 [00:03<00:00, 105.59it/s]
+  | Loading weights:  97%|█████████▋| 419/434 [00:03<00:00, 108.46it/s]
+  | Loading weights: 100%|██████████| 434/434 [00:03<00:00, 134.79it/s]
+  |     im_end id 151645   stop ids [151645]
+  | 
+  |   loading the flat DistilBERT classifier as the DRAFTER
+  | 
+  | Loading weights:   0%|          | 0/100 [00:00<?, ?it/s]
+  | Loading weights: 100%|██████████| 100/100 [00:00<00:00, 1204.76it/s]
+  | [transformers] [1mDistilBertModel LOAD REPORT[0m from: distilbert-base-uncased
+  | Key                     | Status     |  | 
+  | ------------------------+------------+--+-
+  | vocab_layer_norm.weight | UNEXPECTED |  | 
+  | vocab_projector.bias    | UNEXPECTED |  | 
+  | vocab_transform.bias    | UNEXPECTED |  | 
+  | vocab_layer_norm.bias   | UNEXPECTED |  | 
+  | vocab_transform.weight  | UNEXPECTED |  | 
+  | 
+  | Notes:
+  | - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+  |     classifier:distilbert ready
+  | 
+  |   tokenising and checking the prompt/draft boundary is BPE-clean
+  |     prompt token length: min 460  median 467  max 474
+  |     draft token length : min 12  median 28  max 29
+  |     BPE boundary unclean on 0 / 217 commands
+  |     classifier draft latency p50 17.38 ms  p95 22.81 ms
+  | 
+  |   warming up (3 commands pre-run; all 217 are measured below)
+  | 
+  |   decoding all 217 commands three ways
+  |      50 / 217  (56s)
+  |     100 / 217  (113s)
+  |     150 / 217  (167s)
+  |     200 / 217  (208s)
+  |     217 / 217  DONE (225s)
+  | 
+  | ========================================================================================
+  | 1. BYTE-IDENTICAL AGREEMENT WITH PLAIN GREEDY  (must be 217/217)
+  | ========================================================================================
+  |     decoded text identical : 217 / 217   PASS
+  |     token ids identical    : 217 / 217   PASS
+  | 
+  | ========================================================================================
+  | 2. DRAFT ACCEPTANCE
+  | ========================================================================================
+  |     draft tokens offered            5258
+  |     draft tokens accepted           4554
+  |     TOKEN ACCEPTANCE RATE           0.8661
+  |     commands with FULL draft taken  144 / 217  = 0.6636
+  |     commands finished in ONE pass   144 / 217  = 0.6636
+  |     forward passes, plain greedy    5288
+  |     forward passes, speculative     878
+  |     forward-pass reduction          0.8340
+  | 
+  | ========================================================================================
+  | 3. LATENCY  (n=217, all commands included; 3 were pre-run as GPU warm-up)
+  | ========================================================================================
+  |     arm                                      p50       p95       p99      mean
+  |     --------------------------------------------------------------------------
+  |     plain greedy (transformers fp16)     876.01ms   907.25ms   930.76ms   772.31ms
+  |     speculative (incl. drafter)          107.59ms   351.17ms   775.24ms   195.84ms
+  |     speculative (GPU only)                88.66ms   324.91ms   759.85ms   177.80ms
+  |     SALSA (1 forward pass)                87.55ms    88.17ms    88.64ms    87.68ms
+  | 
+  |     speedup at p50: 8.14x     at p95: 2.58x
+  | 
+  | ========================================================================================
+  | 4. QUANTISATION DIAGNOSTIC -- transformers fp16 vs the recorded ollama Q4_K_M rows
+  | ========================================================================================
+  |     identical output: 141 / 217 = 0.6498
+  |     This is NOT the correctness test. Different runtime, different
+  |     quantisation; a gap here is expected and says nothing about A8.
+  | 
+  |   --energy: no prediction, per-command or summary file written
+  | 
+  | ========================================================================================
+  | BYTE-IDENTITY vs lora_greedy on held_out_v4c
+  | ========================================================================================
+  |     217 / 217 identical -- PASS
+  |   idle baseline: 10.61 W median, 36.4 min old
+  | 
+  |   pre-measurement cool-down 60 s (thermal parity with the other arms)
+  |   warm-up: 3 commands, NOT counted in any figure below
+  |      217 commands, 43 s elapsed
+  |      434 commands, 86 s elapsed
+  |      651 commands, 129 s elapsed
+  |   cool-down 60 s ...
+  | 
+  | ------------------------------------------------------------------------------------------------
+  |   a8_speculative on held_out_v4c: N=651 commands in 128.6 s (>= 120 s required); 3 warm-up excluded
+  |   latency p50/p95/p99 109.51 / 358.51 / 777.29 ms
+  |   energy 21.23815 J/command (mean 118.1 W - idle 10.61 W)
+  |   max GPU temp 71 C; peak VRAM 8687.0 MB; CPU 184.64 ms/command (CPU watts not measured)
+  |   appended to unified_efficiency.csv; raw samples a8_speculative_held_out_v4c_20260928_133617.csv
+  | ------------------------------------------------------------------------------------------------
+  | GATE PASS
+
+------------------------------------------------------------------------------------------------
+  a8_speculative.py --split held_out_v4c --energy exit code 0
+  rows for (a8_speculative, held_out_v4c) in unified_efficiency.csv: 0 -> 1 (exactly one must be appended)
+------------------------------------------------------------------------------------------------
+GATE PASS

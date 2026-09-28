@@ -1,6 +1,6 @@
 # Final run report
 
-Assembled 2026-09-28 04:43 by `thesis2/final/s6_report.py` from the output files in `thesis2/out/final/`. Nothing here is recomputed and nothing is tagged novel.
+Assembled 2026-09-28 16:28 by `thesis2/final/s6_report.py` from the output files in `thesis2/out/final/`. Nothing here is recomputed and nothing is tagged novel.
 
 Effective n is **217 commands per split**. The V5 cell grid is 12,152 rows over those 217 commands; repeats collapse to one outcome per command by majority vote, as A9 did. This run is never 12,000 commands.
 
@@ -304,6 +304,12 @@ Effective n is **217 commands per split**. The V5 cell grid is 12,152 rows over 
 | cascade_local_tauA | held_out_v4c | 14322 | 120.6 | 3.495 | 38.735 | 39.363 | 0.80298 | 105.71 | 8476.0 | 8.386 | 65.0 |
 | pipeline_always_local | held_out_v4c | 5859 | 122.8 | 38.182 | 39.263 | 39.896 | 2.27149 | 118.75 | 8476.0 | 21.172 | 65.0 |
 | cascade_oracle | held_out_v4c | 34286 | 120.3 | 3.436 | 3.943 | 4.283 | 0.23747 | 78.01 | 1892.0 | 3.488 | 59.0 |
+| a8_speculative | held_out_v3 | 868 | 159.6 | 111.343 | 384.395 | 788.819 | 19.98257 | 119.3 | 8861.0 | 170.543 | 71.0 |
+| a10_speculative | held_out_v3 | 1085 | 139.7 | 56.908 | 330.785 | 727.945 | 9.54235 | 84.72 | 8852.0 | 127.002 | 60.0 |
+| a12_smalllm | held_out_v3 | 217 | 192.6 | 938.225 | 1148.562 | 1161.51 | 45.6599 | 62.06 | 9173.0 | 883.785 | 58.0 |
+| a8_speculative | held_out_v4c | 651 | 128.6 | 109.506 | 358.505 | 777.291 | 21.23815 | 118.14 | 8687.0 | 184.644 | 71.0 |
+| a10_speculative | held_out_v4c | 868 | 124.7 | 56.062 | 295.025 | 723.45 | 10.91288 | 86.58 | 8819.0 | 142.497 | 60.0 |
+| a12_smalllm | held_out_v4c | 217 | 199.8 | 951.604 | 1167.336 | 1258.647 | 47.2076 | 61.87 | 9173.0 | 910.426 | 58.0 |
 
 
 **The V5 LoRA's first measured latency and energy.** V5 recorded neither for its Ollama cells; the rows above are the first. Rows present: v5:ollama:deepseek-r1:7b/cot, v5:ollama:deepseek-r1:7b/few_shot, v5:ollama:deepseek-r1:7b/rag, v5:ollama:deepseek-r1:7b/role_based, v5:ollama:deepseek-r1:7b/zero_shot, v5:ollama:llama3.2:3b/cot, v5:ollama:llama3.2:3b/few_shot, v5:ollama:llama3.2:3b/rag, v5:ollama:llama3.2:3b/role_based, v5:ollama:llama3.2:3b/zero_shot, v5:ollama:qwen2.5-0.5b-lora/cot, v5:ollama:qwen2.5-0.5b-lora/few_shot, v5:ollama:qwen2.5-0.5b-lora/rag, v5:ollama:qwen2.5-0.5b-lora/role_based, v5:ollama:qwen2.5-0.5b-lora/zero_shot, v5:ollama:qwen2.5-3b-lora/cot, v5:ollama:qwen2.5-3b-lora/few_shot, v5:ollama:qwen2.5-3b-lora/rag, v5:ollama:qwen2.5-3b-lora/role_based, v5:ollama:qwen2.5-3b-lora/zero_shot, v5:ollama:qwen2.5:0.5b/cot, v5:ollama:qwen2.5:0.5b/few_shot, v5:ollama:qwen2.5:0.5b/rag, v5:ollama:qwen2.5:0.5b/role_based, v5:ollama:qwen2.5:0.5b/zero_shot, v5:ollama:qwen2.5:3b/cot, v5:ollama:qwen2.5:3b/few_shot, v5:ollama:qwen2.5:3b/rag, v5:ollama:qwen2.5:3b/role_based, v5:ollama:qwen2.5:3b/zero_shot.
