@@ -1,0 +1,3 @@
+split,n,draft,verifier,acc_draft,acc_verifier,acc_diff,G,H,both_right,both_wrong,G_minus_H_over_n,check_equal,G_draft_wrong_verb,G_draft_wrong_target,G_draft_wrong_row,G_draft_wrong_column,G_draft_wrong_location_nongrid,G_draft_wrong_other,H_verifier_wrong_verb,H_verifier_wrong_target,H_verifier_wrong_row,H_verifier_wrong_column,H_verifier_wrong_location_nongrid,H_verifier_wrong_other
+held_out_v3,217,flat_gpu,lora_greedy,0.7465,0.9539,0.2074,49,4,158,6,0.2074,True,8,4,41,6,0,0,3,0,0,0,1,0
+held_out_v4c,217,flat_gpu,lora_greedy,0.7143,0.6221,-0.0922,8,28,127,54,-0.0922,True,8,4,0,0,0,0,3,0,24,0,1,0

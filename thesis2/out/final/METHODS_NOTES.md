@@ -246,13 +246,28 @@ word is unseen (back/front), from `metrics_final.csv` (`row_by_word_group`,
 | grpo_base | 23/48 | 24 | 25 |
 | flat_gpu | 24/48 | 24 | 24 |
 
-`lora_greedy` answers row B for almost every grid command whose row it cannot
-read: a systematic error. After RL, `grpo_base` chooses a far/near row instead,
-and is right about as often as it mirrors -- the rate of picking A or C at random.
-RL converted a systematic default-to-B error into a chance-level A/C error: bias
-removal, not an understanding of back/front. Neither `grpo_base` nor `flat_gpu`
-maps back/front; `flat_gpu` shows the same chance-level pattern. [Certain on the
-counts; the interpretation is Likely]
+Per word (`row_confusion_by_word.csv`, item 21): flat_gpu defaults to row C
+(43/48 on back/front; also on v3 upper/bottom); lora_greedy defaults to B;
+grpo_base splits A/C independently of the word; only cascade_cloud_always maps
+back/front (46/48). [Certain on the counts]
+
+**H6 (verdict unchanged: CLAIMABLE).** RL removed lora_greedy's default to B, and
+grpo_base now answers A or C, but its split does not follow the word (back
+11 A / 12 C, front 12 A / 12 C). The gain is bias removal, not an understanding of
+back/front. [Likely]
+
+**H1 and H2 (verdicts unchanged: CLAIMABLE).** The classifier beats lora_greedy on
+v4c rows because of its C default, not because it reads back/front. Its default
+coincides with `front`: 22 of lora_greedy's 24 row losses to the classifier are
+front commands (`draft_verifier_gh.csv`, item 22). On v4c rows, H1 and H2 compare
+a C default with a B default, not two ways of reading the word. [Likely]
+
+Neither grpo_base nor flat_gpu maps back/front. Word-dependent predictions on v4c
+cannot be attributed to the row word at all (item 23). [Likely]
+
+_Correction 2026-09-29:_ this item first called `flat_gpu`'s 24/48 a
+"chance-level pattern". The per-word table shows a systematic default to C.
+[Certain]
 
 ## 18. Cloud aggregation: majority vote, not V5's per-row averages
 
@@ -303,3 +318,84 @@ Retrieval-Augmented Generation", arXiv:2607.00570. The earlier report
 2603.03305 is the work the thesis means before citing it** -- the match is on
 acronym and topic only. [Certain that the paper exists as described; Likely that
 it is the intended DCCD]
+
+## 21. Descriptive: row confusion by row word
+
+`thesis2/out/final/row_confusion_by_word.csv`, from `thesis2/final/s5_extra_analysis.py`
+(reads the final run's `pred_*` files; no model run, no significance test). Grid
+commands only (108 per split). Of the eight row words, far and near occur in no
+held-out grid command. Each split has 24 pure commands per unseen word, 24
+`center`, 12 `middle`, and 24 "mixed" commands: `middle` plus the unseen word, whose
+truth is the unseen word's row. cascade_cloud_always's 5 repeats are collapsed
+to the modal predicted row. [Certain]
+
+Pure back/front commands on held_out_v4c (truth: back = A, front = C), predicted row:
+
+| arm | back -> A / B / C | front -> A / B / C | reading |
+|---|---|---|---|
+| flat_gpu | 2 / 1 / 21 | 2 / 0 / 22 | default to C |
+| lora_greedy | 0 / 20 / 4 | 0 / 24 / 0 | default to B |
+| grpo_base | 11 / 1 / 12 | 12 / 0 / 12 | even A/C split within each word |
+| grpo_sft | 12 / 10 / 2 | 0 / 24 / 0 | back half right; front default to B |
+| textcnn | 24 / 0 / 0 | 12 / 0 / 12 | back always A; front split |
+| cascade_cloud_always | 24 / 0 / 0 | 2 / 0 / 22 | maps both (gpt-4o-mini row) |
+
+Other patterns in the table [Certain on the counts; the readings are Likely]:
+- **Only the cloud cascade maps back/front** (46/48). `textcnn`'s back 24/24 comes
+  with front split 12/12, so it answers A for back and half of front: not a mapping.
+- **Mixed commands defeat almost every arm on v4c**: all six predict B for nearly
+  all 24 (`middle` wins); only grpo_sft (4) and textcnn (1) are right on any.
+- **On held_out_v3, `flat_gpu` shows the same default-to-C**: upper -> C 22, bottom
+  -> C 21. lora_greedy and grpo_sft are 24/24 on both v3 words (the V5 legend defines
+  them), so the v3 -> v4c row drop is word-specific.
+- **cascade_cloud_always sends 9 of 24 pure `center` commands to row C** on both
+  splits. Unexplained; not investigated.
+
+## 22. Descriptive: draft (flat_gpu) vs verifier output (lora_greedy), gain / harm
+
+`thesis2/out/final/draft_verifier_gh.csv`, same script. Draft = the classifier
+that drafts for A8/A10; verifier output = lora_greedy (A8/A10's output is
+byte-identical to it). Per command: G = draft wrong -> verifier right, H = draft
+right -> verifier wrong. Counts only, no significance test. [Certain]
+
+| split | draft acc | verifier acc | G | H | both right | both wrong | (G - H) / 217 |
+|---|---|---|---|---|---|---|---|
+| held_out_v3 | 0.7465 | 0.9539 | 49 | 4 | 158 | 6 | +0.2074 = the accuracy difference |
+| held_out_v4c | 0.7143 | 0.6221 | 8 | 28 | 127 | 54 | -0.0922 = the accuracy difference |
+
+Fields wrong. G counts the draft's errors, H the verifier's; a command can count
+in more than one field.
+
+| split | G: verb / target / row / column / non-grid loc | H: verb / target / row / column / non-grid loc |
+|---|---|---|
+| held_out_v3 | 8 / 4 / 41 / 6 / 0 | 3 / 0 / 0 / 0 / 1 |
+| held_out_v4c | 8 / 4 / 0 / 0 / 0 | 3 / 0 / 24 / 0 / 1 |
+
+Reading [Likely]: on v3 the verifier's gain is mostly the row (41 of 49), where
+the legend defines the word. On v4c every gain is a verb or target fix. The row
+reverses: 24 of the 28 harms are rows the classifier had right and the verifier
+moved to B -- 22 of them `front` commands the classifier's default-to-C got right
+(item 21).
+
+## 23. Limitation: carrier phrasing differs between back and front commands
+
+In held_out_v4c the carrier phrasing is not balanced across the two unseen row
+words. Of the 24 pure `back` grid commands, 12 read "the back <left|right> corner"
+and 12 "the back <left|right> side corner". All 24 pure `front` commands read
+"the front <left|right> side corner". [Certain -- from `data/held_out_v4c.jsonl`]
+
+TextCNN shows the consequence. Its vocabulary contains neither `back` nor `front`:
+the vocabulary stored in `thesis2/models/final/textcnn.pt` (`vocab`, 144 entries,
+built from train_v2 only) has no key `back` or `front`, so both map to `<unk>`
+(checked 2026-09-29; `middle`, `center`, `far`, `near`, `top` are present). Yet
+TextCNN predicts back -> A on 24/24 and front -> A 12 / C 12
+(`row_confusion_by_word.csv`). With the row word identical (`<unk>`) in both,
+that difference comes from the rest of the command. [Certain]
+
+Consequence: **word-dependent predictions on v4c cannot be attributed to the row
+word.** An arm that answers differently for back and front commands may be reacting
+to the carrier phrasing. This limits every per-word reading in items 17, 21 and 22
+to what an arm does with each *group* of commands, not with the word itself.
+Arms whose predictions do not depend on the word (flat_gpu's C default,
+lora_greedy's B default) are unaffected, and so are the counts and all verdicts.
+[Certain on the phrasing and the vocabulary; the scope of the consequence is Likely]

@@ -189,12 +189,16 @@ adapter in transformers FP16 -- a runtime difference, not a method difference.
   0/48 on the unseen words and 66 defaults to B
   (`metrics_final.csv`, `row_by_word_group`, `row_signature`). [Certain on the
   numbers; that the legend is the cause is Likely -- `METHODS_NOTES.md` item 1]
-- **H6 is bias removal, not understanding.** On v4c's unseen row words:
-  lora_greedy 0/48 with 66 default-to-B; grpo_base 23/48 with 24 A<->C mirrors and
-  25 default-to-B; flat_gpu 24/48 with 24 mirrors. RL turned a systematic
-  default-to-B error into a chance-level A/C error; neither grpo_base nor flat_gpu
-  maps back/front. (`METHODS_NOTES.md` item 17.) [Certain on the counts; the
-  interpretation is Likely]
+- **No local arm maps back/front; H1/H2 and H6 are defaults, not understanding.**
+  flat_gpu defaults to row C (43/48 on back/front; also on v3 upper/bottom);
+  lora_greedy defaults to B; grpo_base splits A/C independently of the word; only
+  cascade_cloud_always maps back/front (46/48). The classifier's v4c row advantage
+  is mostly its C default coinciding with 'front' (22 of lora_greedy's 24 row
+  losses are front commands). GRPO's H6 gain is the removal of the B default, not
+  a mapping. Word-dependent predictions on v4c cannot be attributed to the row
+  word, because back and front commands use different carrier phrasings.
+  (`row_confusion_by_word.csv`, `draft_verifier_gh.csv`; `METHODS_NOTES.md` items
+  17, 21-23.) [Certain on the counts; the interpretation is Likely]
 - **Speculative decoding is lossless and fast.** A8, A10 and A12 are byte-identical
   to lora_greedy on 217/217 on both splits (the gate in each script). A10 vs
   lora_greedy on held_out_v3: **15.44x** faster at p50 (878.506 / 56.908 ms) and

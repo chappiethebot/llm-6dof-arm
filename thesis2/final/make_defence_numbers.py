@@ -200,15 +200,15 @@ for a in ("flat_gpu", "lora_greedy", "grpo_base"):
            cite("m", a, "v4c", "row_signature")]))
 W("")
 W("Reading: all three are perfect on the seen word and score 0 on the mixed "
-  "commands. On the unseen words the LoRA answers row B for every grid command "
-  "whose row it cannot read (default-to-B dominates its signature). The classifier "
-  "does choose a far/near row, but its hits and its A<->C mirrors are equal in "
-  "number: that is the rate of picking between A and C at random, not evidence it "
-  "reads back/front. GRPO shows the same chance-level A/C pattern: RL converted the "
-  "LoRA's systematic default-to-B error into a chance-level A/C error -- bias "
-  "removal, not an understanding of back/front (H6; `METHODS_NOTES.md` item 17). "
-  "Signature counts cover all 108 grid commands. [Certain on the counts; the "
-  "reading is Likely]")
+  "commands. flat_gpu defaults to row C (43/48 on back/front; also on v3 "
+  "upper/bottom); lora_greedy defaults to B; grpo_base splits A/C independently of "
+  "the word; only cascade_cloud_always maps back/front (46/48). The classifier's "
+  "v4c row advantage is mostly its C default coinciding with 'front' (22 of "
+  "lora_greedy's 24 row losses are front commands). Sources: "
+  "`thesis2/out/final/row_confusion_by_word.csv` (per-word predicted rows) and "
+  "`thesis2/out/final/draft_verifier_gh.csv` (gain/harm by field); "
+  "`METHODS_NOTES.md` items 17, 21-23. Signature counts cover all 108 grid "
+  "commands. [Certain on the counts; the reading is Likely]")
 W("")
 
 out = C.OUT / "DEFENCE_NUMBERS_rev3.md"

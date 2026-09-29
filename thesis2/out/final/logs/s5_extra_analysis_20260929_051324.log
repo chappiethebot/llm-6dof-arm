@@ -1,0 +1,110 @@
+================================================================================================
+s5_extra_analysis   started 2026-09-29 05:13:24
+  log: thesis2\out\final\logs\s5_extra_analysis_20260929_051324.log
+  python: D:\condaenvs\thesis2gpu\python.exe
+================================================================================================
+
+ROW CONFUSION BY WORD -- grid commands; counts of predicted row
+  arm                    split         kind   row word          n true         A    B    C  none correct
+  flat_gpu               held_out_v3   mixed  middle+bottom    12 C:12         4    5    3     0 3
+  flat_gpu               held_out_v3   mixed  middle+upper     12 A:12         5    1    6     0 5
+  flat_gpu               held_out_v3   pure   bottom           24 C:24         2    1   21     0 21
+  flat_gpu               held_out_v3   pure   center           24 B:24         0   24    0     0 24
+  flat_gpu               held_out_v3   pure   middle           12 B:12         0   12    0     0 12
+  flat_gpu               held_out_v3   pure   upper            24 A:24         2    0   22     0 2
+  lora_greedy            held_out_v3   mixed  middle+bottom    12 C:12         0    0   12     0 12
+  lora_greedy            held_out_v3   mixed  middle+upper     12 A:12        12    0    0     0 12
+  lora_greedy            held_out_v3   pure   bottom           24 C:24         0    0   24     0 24
+  lora_greedy            held_out_v3   pure   center           24 B:24         0   24    0     0 24
+  lora_greedy            held_out_v3   pure   middle           12 B:12         0   12    0     0 12
+  lora_greedy            held_out_v3   pure   upper            24 A:24        24    0    0     0 24
+  grpo_base              held_out_v3   mixed  middle+bottom    12 C:12         0    5    7     0 7
+  grpo_base              held_out_v3   mixed  middle+upper     12 A:12         0   12    0     0 0
+  grpo_base              held_out_v3   pure   bottom           24 C:24         1    0   23     0 23
+  grpo_base              held_out_v3   pure   center           24 B:24         0   24    0     0 24
+  grpo_base              held_out_v3   pure   middle           12 B:12         0   12    0     0 12
+  grpo_base              held_out_v3   pure   upper            24 A:24        12    0   12     0 12
+  grpo_sft               held_out_v3   mixed  middle+bottom    12 C:12         0    0   12     0 12
+  grpo_sft               held_out_v3   mixed  middle+upper     12 A:12        12    0    0     0 12
+  grpo_sft               held_out_v3   pure   bottom           24 C:24         0    0   24     0 24
+  grpo_sft               held_out_v3   pure   center           24 B:24         0   24    0     0 24
+  grpo_sft               held_out_v3   pure   middle           12 B:12         0   12    0     0 12
+  grpo_sft               held_out_v3   pure   upper            24 A:24        24    0    0     0 24
+  textcnn                held_out_v3   mixed  middle+bottom    12 C:12         1   11    0     0 0
+  textcnn                held_out_v3   mixed  middle+upper     12 A:12         1   11    0     0 1
+  textcnn                held_out_v3   pure   bottom           24 C:24        12    0   12     0 12
+  textcnn                held_out_v3   pure   center           24 B:24         0   24    0     0 24
+  textcnn                held_out_v3   pure   middle           12 B:12         0   12    0     0 12
+  textcnn                held_out_v3   pure   upper            24 A:24        24    0    0     0 24
+  cascade_cloud_always   held_out_v3   mixed  middle+bottom    12 C:12         0   11    1     0 1
+  cascade_cloud_always   held_out_v3   mixed  middle+upper     12 A:12         0   12    0     0 0
+  cascade_cloud_always   held_out_v3   pure   bottom           24 C:24         0    0   24     0 24
+  cascade_cloud_always   held_out_v3   pure   center           24 B:24         0   15    9     0 15
+  cascade_cloud_always   held_out_v3   pure   middle           12 B:12         0   12    0     0 12
+  cascade_cloud_always   held_out_v3   pure   upper            24 A:24        24    0    0     0 24
+  flat_gpu               held_out_v4c  mixed  middle+back      12 A:12         0   12    0     0 0
+  flat_gpu               held_out_v4c  mixed  middle+front     12 C:12         1   11    0     0 0
+  flat_gpu               held_out_v4c  pure   back             24 A:24         2    1   21     0 2
+  flat_gpu               held_out_v4c  pure   center           24 B:24         0   24    0     0 24
+  flat_gpu               held_out_v4c  pure   front            24 C:24         2    0   22     0 22
+  flat_gpu               held_out_v4c  pure   middle           12 B:12         0   12    0     0 12
+  lora_greedy            held_out_v4c  mixed  middle+back      12 A:12         0   10    2     0 0
+  lora_greedy            held_out_v4c  mixed  middle+front     12 C:12         0   12    0     0 0
+  lora_greedy            held_out_v4c  pure   back             24 A:24         0   20    4     0 0
+  lora_greedy            held_out_v4c  pure   center           24 B:24         0   24    0     0 24
+  lora_greedy            held_out_v4c  pure   front            24 C:24         0   24    0     0 0
+  lora_greedy            held_out_v4c  pure   middle           12 B:12         0   12    0     0 12
+  grpo_base              held_out_v4c  mixed  middle+back      12 A:12         0   12    0     0 0
+  grpo_base              held_out_v4c  mixed  middle+front     12 C:12         0   12    0     0 0
+  grpo_base              held_out_v4c  pure   back             24 A:24        11    1   12     0 11
+  grpo_base              held_out_v4c  pure   center           24 B:24         0   24    0     0 24
+  grpo_base              held_out_v4c  pure   front            24 C:24        12    0   12     0 12
+  grpo_base              held_out_v4c  pure   middle           12 B:12         0   12    0     0 12
+  grpo_sft               held_out_v4c  mixed  middle+back      12 A:12         4    8    0     0 4
+  grpo_sft               held_out_v4c  mixed  middle+front     12 C:12         0   12    0     0 0
+  grpo_sft               held_out_v4c  pure   back             24 A:24        12   10    2     0 12
+  grpo_sft               held_out_v4c  pure   center           24 B:24         0   24    0     0 24
+  grpo_sft               held_out_v4c  pure   front            24 C:24         0   24    0     0 0
+  grpo_sft               held_out_v4c  pure   middle           12 B:12         0   12    0     0 12
+  textcnn                held_out_v4c  mixed  middle+back      12 A:12         1   11    0     0 1
+  textcnn                held_out_v4c  mixed  middle+front     12 C:12         1   11    0     0 0
+  textcnn                held_out_v4c  pure   back             24 A:24        24    0    0     0 24
+  textcnn                held_out_v4c  pure   center           24 B:24         0   24    0     0 24
+  textcnn                held_out_v4c  pure   front            24 C:24        12    0   12     0 12
+  textcnn                held_out_v4c  pure   middle           12 B:12         0   12    0     0 12
+  cascade_cloud_always   held_out_v4c  mixed  middle+back      12 A:12         0   12    0     0 0
+  cascade_cloud_always   held_out_v4c  mixed  middle+front     12 C:12         0   12    0     0 0
+  cascade_cloud_always   held_out_v4c  pure   back             24 A:24        24    0    0     0 24
+  cascade_cloud_always   held_out_v4c  pure   center           24 B:24         0   15    9     0 15
+  cascade_cloud_always   held_out_v4c  pure   front            24 C:24         2    0   22     0 22
+  cascade_cloud_always   held_out_v4c  pure   middle           12 B:12         0   12    0     0 12
+
+BACK / FRONT (held_out_v4c, pure commands) -- all six arms
+  flat_gpu               back   n=24 true A:24 -> A 2  B 1  C 21  none 0
+  flat_gpu               front  n=24 true C:24 -> A 2  B 0  C 22  none 0
+  lora_greedy            back   n=24 true A:24 -> A 0  B 20  C 4  none 0
+  lora_greedy            front  n=24 true C:24 -> A 0  B 24  C 0  none 0
+  grpo_base              back   n=24 true A:24 -> A 11  B 1  C 12  none 0
+  grpo_base              front  n=24 true C:24 -> A 12  B 0  C 12  none 0
+  grpo_sft               back   n=24 true A:24 -> A 12  B 10  C 2  none 0
+  grpo_sft               front  n=24 true C:24 -> A 0  B 24  C 0  none 0
+  textcnn                back   n=24 true A:24 -> A 24  B 0  C 0  none 0
+  textcnn                front  n=24 true C:24 -> A 12  B 0  C 12  none 0
+  cascade_cloud_always   back   n=24 true A:24 -> A 24  B 0  C 0  none 0
+  cascade_cloud_always   front  n=24 true C:24 -> A 2  B 0  C 22  none 0
+
+DRAFT (flat_gpu) vs VERIFIER (lora_greedy) -- gain / harm
+  held_out_v3  n=217  acc draft 0.7465  verifier 0.9539  diff +0.2074 | G 49  H 4  both right 158  both wrong 6 | (G-H)/n +0.2074  equal: True
+     G by field the DRAFT got wrong:    {'verb': 8, 'target': 4, 'row': 41, 'column': 6, 'location_nongrid': 0, 'other': 0}
+     H by field the VERIFIER got wrong: {'verb': 3, 'target': 0, 'row': 0, 'column': 0, 'location_nongrid': 1, 'other': 0}
+  held_out_v4c  n=217  acc draft 0.7143  verifier 0.6221  diff -0.0922 | G 8  H 28  both right 127  both wrong 54 | (G-H)/n -0.0922  equal: True
+     G by field the DRAFT got wrong:    {'verb': 8, 'target': 4, 'row': 0, 'column': 0, 'location_nongrid': 0, 'other': 0}
+     H by field the VERIFIER got wrong: {'verb': 3, 'target': 0, 'row': 24, 'column': 0, 'location_nongrid': 1, 'other': 0}
+
+------------------------------------------------------------------------------------------------
+  NO MODEL RUNS: read pred_<arm>_<split>.csv and the split files only
+  wrote row_confusion_by_word.csv (72 rows) and draft_verifier_gh.csv (2 rows)
+  (G - H) / n equals the accuracy difference on both splits: True
+  descriptive counts only; no significance test
+------------------------------------------------------------------------------------------------
+GATE PASS

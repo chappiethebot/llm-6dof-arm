@@ -1,6 +1,6 @@
 # Defence numbers -- revision 3
 
-Written 2026-09-28 by `thesis2/final/make_defence_numbers.py`. Supersedes `audit/DEFENCE_NUMBERS.md` (revision 2). **Every number below is copied verbatim from one cell of one of four files and carries that cell's address** in double brackets -- file letter; row key; split; column -- with the files abbreviated:
+Written 2026-09-29 by `thesis2/final/make_defence_numbers.py`. Supersedes `audit/DEFENCE_NUMBERS.md` (revision 2). **Every number below is copied verbatim from one cell of one of four files and carries that cell's address** in double brackets -- file letter; row key; split; column -- with the files abbreviated:
 
 - `m` = `thesis2/out/final/metrics_final.csv` (key = arm)
 - `s` = `thesis2/out/final/final_significance.csv` (key = hypothesis id)
@@ -20,21 +20,21 @@ Action match = verb, target and location all correct (`llm/score.py`). Row = row
 | cascade_cloud_always | `0.7926`⟦m;cascade_cloud_always;v3;action_match⟧ | `0.7788`⟦m;cascade_cloud_always;v4c;action_match⟧ | `0.7037`⟦m;cascade_cloud_always;v3;row_accuracy⟧ | `0.6759`⟦m;cascade_cloud_always;v4c;row_accuracy⟧ | system |
 | cascade_cloud_tauA | `0.7327`⟦m;cascade_cloud_tauA;v3;action_match⟧ | `0.7696`⟦m;cascade_cloud_tauA;v4c;action_match⟧ | `0.5833`⟦m;cascade_cloud_tauA;v3;row_accuracy⟧ | `0.6574`⟦m;cascade_cloud_tauA;v4c;row_accuracy⟧ | system |
 | rules_open | `0.7235`⟦m;rules_open;v3;action_match⟧ | `0.7235`⟦m;rules_open;v4c;action_match⟧ | `0.8889`⟦m;rules_open;v3;row_accuracy⟧ | `0.8889`⟦m;rules_open;v4c;row_accuracy⟧ | vocabulary-unfair |
-| flat_cpu | `0.7465`⟦m;flat_cpu;v3;action_match⟧ | `0.7143`⟦m;flat_cpu;v4c;action_match⟧ | `0.6204`⟦m;flat_cpu;v3;row_accuracy⟧ | `0.5556`⟦m;flat_cpu;v4c;row_accuracy⟧ | system |
 | flat_gpu | `0.7465`⟦m;flat_gpu;v3;action_match⟧ | `0.7143`⟦m;flat_gpu;v4c;action_match⟧ | `0.6204`⟦m;flat_gpu;v3;row_accuracy⟧ | `0.5556`⟦m;flat_gpu;v4c;row_accuracy⟧ | system |
-| bilstm | `0.7005`⟦m;bilstm;v3;action_match⟧ | `0.7005`⟦m;bilstm;v4c;action_match⟧ | `0.6852`⟦m;bilstm;v3;row_accuracy⟧ | `0.6852`⟦m;bilstm;v4c;row_accuracy⟧ | system |
+| flat_cpu | `0.7465`⟦m;flat_cpu;v3;action_match⟧ | `0.7143`⟦m;flat_cpu;v4c;action_match⟧ | `0.6204`⟦m;flat_cpu;v3;row_accuracy⟧ | `0.5556`⟦m;flat_cpu;v4c;row_accuracy⟧ | system |
 | grpo_sft | `0.9585`⟦m;grpo_sft;v3;action_match⟧ | `0.7005`⟦m;grpo_sft;v4c;action_match⟧ | `1.0`⟦m;grpo_sft;v3;row_accuracy⟧ | `0.4815`⟦m;grpo_sft;v4c;row_accuracy⟧ | system |
+| bilstm | `0.7005`⟦m;bilstm;v3;action_match⟧ | `0.7005`⟦m;bilstm;v4c;action_match⟧ | `0.6852`⟦m;bilstm;v3;row_accuracy⟧ | `0.6852`⟦m;bilstm;v4c;row_accuracy⟧ | system |
+| textcnn | `0.6959`⟦m;textcnn;v3;action_match⟧ | `0.6959`⟦m;textcnn;v4c;action_match⟧ | `0.6759`⟦m;textcnn;v3;row_accuracy⟧ | `0.6759`⟦m;textcnn;v4c;row_accuracy⟧ | system |
 | knn_minilm | `0.6452`⟦m;knn_minilm;v3;action_match⟧ | `0.6959`⟦m;knn_minilm;v4c;action_match⟧ | `0.5648`⟦m;knn_minilm;v3;row_accuracy⟧ | `0.6852`⟦m;knn_minilm;v4c;row_accuracy⟧ | system |
 | grpo_base | `0.7926`⟦m;grpo_base;v3;action_match⟧ | `0.6959`⟦m;grpo_base;v4c;action_match⟧ | `0.7222`⟦m;grpo_base;v3;row_accuracy⟧ | `0.5463`⟦m;grpo_base;v4c;row_accuracy⟧ | system |
-| textcnn | `0.6959`⟦m;textcnn;v3;action_match⟧ | `0.6959`⟦m;textcnn;v4c;action_match⟧ | `0.6759`⟦m;textcnn;v3;row_accuracy⟧ | `0.6759`⟦m;textcnn;v4c;row_accuracy⟧ | system |
 | minilm_probe | `0.6498`⟦m;minilm_probe;v3;action_match⟧ | `0.6544`⟦m;minilm_probe;v4c;action_match⟧ | `0.6204`⟦m;minilm_probe;v3;row_accuracy⟧ | `0.6574`⟦m;minilm_probe;v4c;row_accuracy⟧ | system |
 | cascade_local_tauA | `0.7327`⟦m;cascade_local_tauA;v3;action_match⟧ | `0.6452`⟦m;cascade_local_tauA;v4c;action_match⟧ | `0.5833`⟦m;cascade_local_tauA;v3;row_accuracy⟧ | `0.4074`⟦m;cascade_local_tauA;v4c;row_accuracy⟧ | system |
 | mlpbow | `0.6406`⟦m;mlpbow;v3;action_match⟧ | `0.6406`⟦m;mlpbow;v4c;action_match⟧ | `0.6667`⟦m;mlpbow;v3;row_accuracy⟧ | `0.6667`⟦m;mlpbow;v4c;row_accuracy⟧ | system |
 | factorized_fp16 | `0.6083`⟦m;factorized_fp16;v3;action_match⟧ | `0.6359`⟦m;factorized_fp16;v4c;action_match⟧ | `0.3333`⟦m;factorized_fp16;v3;row_accuracy⟧ | `0.3889`⟦m;factorized_fp16;v4c;row_accuracy⟧ | system |
 | lora_greedy | `0.9539`⟦m;lora_greedy;v3;action_match⟧ | `0.6221`⟦m;lora_greedy;v4c;action_match⟧ | `1.0`⟦m;lora_greedy;v3;row_accuracy⟧ | `0.3333`⟦m;lora_greedy;v4c;row_accuracy⟧ | system |
-| a12_smalllm | `0.9539`⟦m;a12_smalllm;v3;action_match⟧ | `0.6221`⟦m;a12_smalllm;v4c;action_match⟧ | `1.0`⟦m;a12_smalllm;v3;row_accuracy⟧ | `0.3333`⟦m;a12_smalllm;v4c;row_accuracy⟧ | system |
-| a8_speculative | `0.9539`⟦m;a8_speculative;v3;action_match⟧ | `0.6221`⟦m;a8_speculative;v4c;action_match⟧ | `1.0`⟦m;a8_speculative;v3;row_accuracy⟧ | `0.3333`⟦m;a8_speculative;v4c;row_accuracy⟧ | system |
 | a10_speculative | `0.9539`⟦m;a10_speculative;v3;action_match⟧ | `0.6221`⟦m;a10_speculative;v4c;action_match⟧ | `1.0`⟦m;a10_speculative;v3;row_accuracy⟧ | `0.3333`⟦m;a10_speculative;v4c;row_accuracy⟧ | system |
+| a8_speculative | `0.9539`⟦m;a8_speculative;v3;action_match⟧ | `0.6221`⟦m;a8_speculative;v4c;action_match⟧ | `1.0`⟦m;a8_speculative;v3;row_accuracy⟧ | `0.3333`⟦m;a8_speculative;v4c;row_accuracy⟧ | system |
+| a12_smalllm | `0.9539`⟦m;a12_smalllm;v3;action_match⟧ | `0.6221`⟦m;a12_smalllm;v4c;action_match⟧ | `1.0`⟦m;a12_smalllm;v3;row_accuracy⟧ | `0.3333`⟦m;a12_smalllm;v4c;row_accuracy⟧ | system |
 | tfidf_logreg | `0.6221`⟦m;tfidf_logreg;v3;action_match⟧ | `0.6221`⟦m;tfidf_logreg;v4c;action_match⟧ | `0.75`⟦m;tfidf_logreg;v3;row_accuracy⟧ | `0.75`⟦m;tfidf_logreg;v4c;row_accuracy⟧ | system |
 | factorized_int4 | `0.6083`⟦m;factorized_int4;v3;action_match⟧ | `0.6175`⟦m;factorized_int4;v4c;action_match⟧ | `0.3426`⟦m;factorized_int4;v3;row_accuracy⟧ | `0.3611`⟦m;factorized_int4;v4c;row_accuracy⟧ | system |
 | tinybert | `0.576`⟦m;tinybert;v3;action_match⟧ | `0.5806`⟦m;tinybert;v4c;action_match⟧ | `0.3333`⟦m;tinybert;v3;row_accuracy⟧ | `0.3426`⟦m;tinybert;v4c;row_accuracy⟧ | system |
@@ -145,5 +145,5 @@ seen = middle/center (in every training set); unseen = back/front (in no trainin
 | lora_greedy | `0.3333`⟦m;lora_greedy;v4c;row_accuracy⟧ | `36/36`⟦m;lora_greedy;v4c;row_by_word_group#seen⟧ | `0/48`⟦m;lora_greedy;v4c;row_by_word_group#unseen⟧ | `0/24`⟦m;lora_greedy;v4c;row_by_word_group#mixed⟧ | `A<->C mirror 6; default-to-B 66`⟦m;lora_greedy;v4c;row_signature⟧ |
 | grpo_base | `0.5463`⟦m;grpo_base;v4c;row_accuracy⟧ | `36/36`⟦m;grpo_base;v4c;row_by_word_group#seen⟧ | `23/48`⟦m;grpo_base;v4c;row_by_word_group#unseen⟧ | `0/24`⟦m;grpo_base;v4c;row_by_word_group#mixed⟧ | `A<->C mirror 24; default-to-B 25`⟦m;grpo_base;v4c;row_signature⟧ |
 
-Reading: all three are perfect on the seen word and score 0 on the mixed commands. On the unseen words the LoRA answers row B for every grid command whose row it cannot read (default-to-B dominates its signature). The classifier does choose a far/near row, but its hits and its A<->C mirrors are equal in number: that is the rate of picking between A and C at random, not evidence it reads back/front. GRPO shows the same chance-level A/C pattern: RL converted the LoRA's systematic default-to-B error into a chance-level A/C error -- bias removal, not an understanding of back/front (H6; `METHODS_NOTES.md` item 17). Signature counts cover all 108 grid commands. [Certain on the counts; the reading is Likely]
+Reading: all three are perfect on the seen word and score 0 on the mixed commands. flat_gpu defaults to row C (43/48 on back/front; also on v3 upper/bottom); lora_greedy defaults to B; grpo_base splits A/C independently of the word; only cascade_cloud_always maps back/front (46/48). The classifier's v4c row advantage is mostly its C default coinciding with 'front' (22 of lora_greedy's 24 row losses are front commands). Sources: `thesis2/out/final/row_confusion_by_word.csv` (per-word predicted rows) and `thesis2/out/final/draft_verifier_gh.csv` (gain/harm by field); `METHODS_NOTES.md` items 17, 21-23. Signature counts cover all 108 grid commands. [Certain on the counts; the reading is Likely]
 
