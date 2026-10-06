@@ -52,3 +52,5 @@ bridge/
 # thesis2 checkpoints - too large for GitHub; keep an off-machine copy
 thesis2/models/
 !thesis2/out/
+
+thesis3/out/
