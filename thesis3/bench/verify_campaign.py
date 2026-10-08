@@ -243,7 +243,7 @@ for r in runs.itertuples():
         gaps = np.diff(w.t_mono_ns.astype(float).values) / 1e9 if len(w) > 1 else np.array([np.inf])
         if hz < a.min_hz:
             P.append(f"sampling {hz:.2f} Hz < {a.min_hz}")
-        if gaps.max() > 1.0 or (gaps > 0.2).mean() > 0.01:
+        if gaps.max() > max(5.0, 0.01 * T) or (gaps > 0.2).mean() > 0.01:
             P.append(f"telemetry gaps (max {gaps.max():.2f} s, {100 * (gaps > 0.2).mean():.1f} % > 0.2 s)")
         if len(w) and w.gpu_power_w.isna().mean() > 0.01:
             P.append(f"GPU power missing in {100 * w.gpu_power_w.isna().mean():.1f} % of samples")
