@@ -1,0 +1,249 @@
+﻿{
+  "commit": "3c844ece8b681a091903214300bb94215b9961bc",
+  "source_counts": {
+    "asr": [
+      3,
+      300
+    ],
+    "audit": [
+      29,
+      4095
+    ],
+    "bench": [
+      22,
+      5756
+    ],
+    "ft": [
+      5,
+      1196
+    ],
+    "(root)": [
+      20,
+      1043
+    ],
+    "llm": [
+      12,
+      1549
+    ],
+    "schema": [
+      3,
+      229
+    ],
+    "sim": [
+      18,
+      3319
+    ],
+    "thesis2": [
+      72,
+      18904
+    ]
+  },
+  "syntax_errors": [],
+  "datasets": {
+    "seen_v2": {
+      "rows": 290,
+      "duplicate_commands": 0,
+      "invalid_truth": 0
+    },
+    "train_v2": {
+      "rows": 230,
+      "duplicate_commands": 0,
+      "invalid_truth": 0
+    },
+    "dev_v2": {
+      "rows": 57,
+      "duplicate_commands": 0,
+      "invalid_truth": 0
+    },
+    "held_out_v2": {
+      "rows": 132,
+      "duplicate_commands": 0,
+      "invalid_truth": 0
+    },
+    "held_out_v3": {
+      "rows": 217,
+      "duplicate_commands": 0,
+      "invalid_truth": 0
+    },
+    "held_out_v4b": {
+      "rows": 217,
+      "duplicate_commands": 0,
+      "invalid_truth": 0
+    },
+    "held_out_v4c": {
+      "rows": 217,
+      "duplicate_commands": 0,
+      "invalid_truth": 0
+    }
+  },
+  "exact_overlap": {
+    "train_v2/dev_v2": 0,
+    "train_v2/held_out_v3": 0,
+    "train_v2/held_out_v4c": 0,
+    "dev_v2/held_out_v3": 0
+  },
+  "prediction_files": 60,
+  "prediction_rows": 16492,
+  "duplicate_prediction_keys": [],
+  "stored_score_mismatches": [],
+  "stored_truth_mismatches": [],
+  "invalid_predictions": {
+    "pred_a10_speculative_held_out_v3.csv": 1,
+    "pred_a10_speculative_held_out_v4c.csv": 1,
+    "pred_a12_smalllm_held_out_v3.csv": 1,
+    "pred_a12_smalllm_held_out_v4c.csv": 1,
+    "pred_a8_speculative_held_out_v3.csv": 1,
+    "pred_a8_speculative_held_out_v4c.csv": 1,
+    "pred_flant5_held_out_v3.csv": 7,
+    "pred_flant5_held_out_v4c.csv": 7,
+    "pred_grpo_base_held_out_v3.csv": 3,
+    "pred_grpo_base_held_out_v4c.csv": 3,
+    "pred_grpo_sft_held_out_v3.csv": 1,
+    "pred_grpo_sft_held_out_v4c.csv": 1,
+    "pred_lora_greedy_held_out_v3.csv": 1,
+    "pred_lora_greedy_held_out_v4c.csv": 1
+  },
+  "schema_validity_overcount_rows": 28,
+  "schema_validity_examples": [
+    [
+      "pred_a10_speculative_held_out_v3.csv",
+      "139",
+      {
+        "action": "pick_place",
+        "target": "toy_car",
+        "location": "near",
+        "modifiers": []
+      }
+    ],
+    [
+      "pred_a10_speculative_held_out_v4c.csv",
+      "139",
+      {
+        "action": "pick_place",
+        "target": "toy_car",
+        "location": "near",
+        "modifiers": []
+      }
+    ],
+    [
+      "pred_a12_smalllm_held_out_v3.csv",
+      "139",
+      {
+        "action": "pick_place",
+        "target": "toy_car",
+        "location": "near",
+        "modifiers": []
+      }
+    ],
+    [
+      "pred_a12_smalllm_held_out_v4c.csv",
+      "139",
+      {
+        "action": "pick_place",
+        "target": "toy_car",
+        "location": "near",
+        "modifiers": []
+      }
+    ],
+    [
+      "pred_a8_speculative_held_out_v3.csv",
+      "139",
+      {
+        "action": "pick_place",
+        "target": "toy_car",
+        "location": "near",
+        "modifiers": []
+      }
+    ],
+    [
+      "pred_a8_speculative_held_out_v4c.csv",
+      "139",
+      {
+        "action": "pick_place",
+        "target": "toy_car",
+        "location": "near",
+        "modifiers": []
+      }
+    ],
+    [
+      "pred_flant5_held_out_v3.csv",
+      "143",
+      {
+        "action": "hold",
+        "target": "bottle",
+        "location": "grid_B2",
+        "modifiers": []
+      }
+    ],
+    [
+      "pred_flant5_held_out_v3.csv",
+      "171",
+      {
+        "action": "hold",
+        "target": "toy_remote",
+        "modifiers": []
+      }
+    ]
+  ],
+  "v5_cells": {
+    "results_v5cells_held_out_v3.csv": {
+      "rows": 12152,
+      "duplicates": 0,
+      "cells": 36,
+      "stages": {
+        "validated": 9629,
+        "schema_failed": 2166,
+        "extract_failed": 357
+      }
+    },
+    "results_v5cells_held_out_v4c.csv": {
+      "rows": 12152,
+      "duplicates": 0,
+      "cells": 36,
+      "stages": {
+        "validated": 9632,
+        "schema_failed": 2155,
+        "extract_failed": 365
+      }
+    }
+  },
+  "probes": {
+    "prose_json_with_quoted_closing_brace": {
+      "ok": false,
+      "data": null,
+      "reason": "no_valid_json"
+    },
+    "invalid_modifiers_accepted": {
+      "ok": true,
+      "reasons": []
+    },
+    "strict_normalized_false_modifier": {
+      "strict_match": true,
+      "normalized_match": false,
+      "category": "other_field_mismatch"
+    },
+    "full_grid_nearest_free": "grid_C2",
+    "isaac_demo_grid_mapping": [
+      false,
+      "KeyError: \"unknown schema name: 'grid_A1'\""
+    ],
+    "isaac_demo_invalid_stop_extra_field": [
+      true,
+      "{\"ok\": true, \"reason\": \"no motion for stop\"}"
+    ],
+    "census_accepts_duplicate_repeat_keys": [
+      true,
+      4,
+      2,
+      "exactly 4 rows over 2 command_ids"
+    ],
+    "sampling_field_collapse": {
+      "0": {
+        "command_id": "0",
+        "repeat": "0",
+        "correct": true,
+        "row_correct": "False"
+      }
+    }
+  }
+}
