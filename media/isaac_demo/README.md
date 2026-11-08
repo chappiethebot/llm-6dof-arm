@@ -11,7 +11,7 @@ gitignored); they are attached to GitHub release **v1.0**.
 | `gpt4omini_fewshot.mp4` | gpt-4o-mini, few-shot prompt (`few_shot`) |
 | `gpt4omini_rag.mp4` | gpt-4o-mini, retrieval-augmented prompt (`rag`) |
 | `gpt4omini_rolebased.mp4` | gpt-4o-mini, role-based prompt (`role_based`) |
-| `qwen25_3b_zeroshot.mp4` | Qwen2.5-3B, zero-shot prompt (`zero_shot`) |
+| `qwen25_3b_zeroshot.mp4` | LoRA fine-tuned Qwen2.5-3B (`ollama:qwen2.5-3b-lora`), zero-shot prompt (`zero_shot`) |
 
 These are demonstrations, not measurements: no number in the thesis comes from them
 (see the demo/measurement firewall in `docs/REPO_MAP.md`). Original file names are
