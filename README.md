@@ -78,7 +78,7 @@ and `requirements.lock.txt` are older (audit of 27 Aug 2026) and describe the `t
 | `qwen2.5:3b`, `qwen2.5:0.5b`, `llama3.2:3b`, `deepseek-r1:7b` | `ollama pull <name>`; the digests that were measured are in `audit/MODEL_PROVENANCE.txt` |
 | `qwen2.5-3b-lora`, `qwen2.5-0.5b-lora` | not downloadable: built from the LoRA adapters, see [Ollama LoRA models](#ollama-lora-models) |
 | Qwen2.5-0.5B/3B-Instruct, distilbert-base-uncased, flan-t5-base, TinyBERT, all-MiniLM-L6-v2 | downloaded from Hugging Face on first use (revisions in `thesis2/out/final/METHODS_NOTES.md` item 6) |
-| fine-tuned weights (DistilBERT classifier, LoRA adapters, thesis2 arms) | not in git; GitHub release v1.0 assets, see [Files not in git](#files-not-in-git) |
+| fine-tuned weights (DistilBERT classifier, LoRA adapters and their GGUFs) | not in git; GitHub release v1.0 assets, see [Files not in git](#files-not-in-git). The frozen thesis2 arms (`thesis2/models`) are not released. |
 
 ## Installation
 
@@ -104,16 +104,22 @@ If conda asks you to accept the Terms of Service for the defaults channel, run
 ### Files not in git
 
 Model weights and the raw thesis3 campaign data are too large for git. They are attached to
-GitHub release v1.0; unpack each to the path shown.
+GitHub release v1.0 with `SHA256SUMS.txt` and `RELEASE_NOTES.md`. Every zip holds
+repository-relative paths, so unpack it at the root of the clone
+(`Expand-Archive <asset>.zip -DestinationPath .`); put the two `.gguf` files into `ft\export\`.
 
-| release asset (contents) | unpack to | size | needed for |
+| release asset | gives | size | needed for |
 |---|---|---|---|
-| DistilBERT classifier `epoch_09/` | `ft/runs/distilbert_cls/epoch_09/` | 255 MB | Tier 2, Tier 3, demo |
-| LoRA adapters `checkpoint-87/` (3B and 0.5B) | `ft/runs/qwen3b_lora/checkpoint-87/`, `ft/runs/qwen0.5b_lora/checkpoint-87/` | 354 MB + 112 MB | Tier 3, rebuilding the GGUFs |
-| LoRA GGUFs and Modelfiles | `ft/export/` | 1.93 GB + 0.40 GB | Ollama LoRA models |
-| thesis2 frozen arms | `thesis2/models/` | 4.0 GB | Tier 3 |
-| thesis3 campaign `c1/` | `thesis3/out/c1/` | 957 MB | Tier 1 (thesis3) |
-| Isaac demo videos | `media/isaac_demo/` | 267 MB | watching the demo |
+| `distilbert_cls_epoch_09.zip` | `ft/runs/distilbert_cls/epoch_09/` | 266 MB | Tier 2, Tier 3, demo |
+| `qwen3b_lora_checkpoint-87.zip` | `ft/runs/qwen3b_lora/checkpoint-87/` | 362 MB | Tier 3, rebuilding the 3B GGUF |
+| `qwen0.5b_lora_checkpoint-87.zip` | `ft/runs/qwen0.5b_lora/checkpoint-87/` | 108 MB | Tier 3, rebuilding the 0.5B GGUF |
+| `qwen3b-lora-Q4_K_M.gguf`, `qwen0.5b-lora-Q4_K_M.gguf` | `ft/export/` | 1,930 MB, 398 MB | Ollama LoRA models |
+| `modelfiles.zip` | `ft/export/Modelfile.qwen2.5-3b-lora`, `...-0.5b-lora` | 1 KB | Ollama LoRA models |
+| `qwen3b_LICENSE_NOTICE.zip`, `qwen0.5b_LICENSE_NOTICE.zip` | licence, notice and change notice for the GGUFs | 4 KB each | keep with the GGUFs |
+| `thesis3_c1.zip` | `thesis3/out/c1/` | 684 MB (957 MB unpacked) | Tier 1 (thesis3) |
+| `isaac_demo_videos.zip` | `media/isaac_demo/*.mp4` | 267 MB | watching the demo |
+
+`thesis2/models` (4.0 GB): not released; available on request (Tier 3 only, machine-bound).
 
 SHA-256 of the main weight files:
 
@@ -131,8 +137,8 @@ the thesis2 and thesis3 runners refuse to run on a mismatch.
 ### Ollama LoRA models
 
 The two LoRA models were merged, converted to GGUF and quantised to Q4_K_M (the same level as
-the stock Qwen2.5 models) by `ft/merge_and_export.py`. With the GGUFs and Modelfiles from the
-release in `ft/export/`, edit the `FROM` line of each Modelfile to point at its `.gguf`, then:
+the stock Qwen2.5 models) by `ft/merge_and_export.py`. With the two GGUFs and `modelfiles.zip`
+from the release unpacked into `ft/export/` (the Modelfiles point at `./<file>.gguf`):
 
 ```powershell
 ollama create qwen2.5-3b-lora -f ft\export\Modelfile.qwen2.5-3b-lora
@@ -211,8 +217,8 @@ every CSV and all six figures in `thesis2/figures/final/` come out identical to 
 ones. In the `thesis` env the numbers are also identical, but the PNG bytes differ
 (matplotlib 3.11.0 instead of 3.11.2). Ignore the new files in `thesis2/out/final/logs/`.
 
-**thesis3** (the unified bench: latency, energy, accuracy of all 66 systems; needs the `c1`
-release asset in `thesis3\out\c1`; about 2 min):
+**thesis3** (the unified bench: latency, energy, accuracy of all 66 systems; needs the release
+asset `thesis3_c1.zip` unpacked at the repo root, giving `thesis3\out\c1`; about 2 min):
 
 ```powershell
 conda activate thesis3meter
