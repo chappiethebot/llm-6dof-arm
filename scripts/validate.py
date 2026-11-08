@@ -8,8 +8,8 @@ follows the schema rules. It is used two ways:
   2. Later, by the eval harness, to score whether an LLM's output is valid.
 
 Usage:
-    python validate.py schema/schema.json data/seen.jsonl
-    python validate.py schema/schema.json data/seen.jsonl data/held_out.jsonl
+    python scripts/validate.py schema/schema.json data/seen.jsonl
+    python scripts/validate.py schema/schema.json data/seen.jsonl data/held_out.jsonl
 
 If you pass two data files, it also checks that no command string appears in
 both — the "sealed" discipline for the held-out set.
@@ -107,7 +107,7 @@ def report(path, errors, verb_counts, commands):
 
 def main():
     if len(sys.argv) < 3:
-        print("Usage: python validate.py schema.json data1.jsonl [data2.jsonl]")
+        print("Usage: python scripts/validate.py schema.json data1.jsonl [data2.jsonl]")
         sys.exit(2)
 
     schema_path = sys.argv[1]

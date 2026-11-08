@@ -213,7 +213,7 @@ asr/  - voice input (Phase 4), offline Whisper via faster-whisper
 
 data/  - command datasets (JSONL), versioned v1 -> v4
     seen.jsonl / held_out.jsonl        v1
-    seen_v2.jsonl                       split via make_split.py into:
+    seen_v2.jsonl                       split via scripts/make_split.py into:
         train_v2.jsonl    LoRA/RAG training corpus
         dev_v2.jsonl      checkpoint/epoch selection only
     held_out_v4b.jsonl    held_out_v3 with the ROW vocabulary aligned to
@@ -303,10 +303,35 @@ audit/  - the adversarial pass over everything above. Read-only over data/
                             on --out - append-only resume is safe against a
                             crashed run, not a concurrent one.
 
-vision/, rl/, real/  - placeholders (.gitkeep only). Vision (object
-    detection) and RL are explicitly deferred future work, not on the
-    critical path. real/ presumably for a future real igus ReBeL arm
-    backend (different base frame - see sim/workspace.py notes).
+thesis2/  - the final run: one arm registry (final/arms.py), the stage
+    scripts s0..s6, and every final number in out/final/ (metrics_final.csv,
+    METHODS_NOTES.md, FINAL_RUN_REPORT.md). Frozen: the thesis cites it.
+
+thesis3/  - the unified bench: every system re-measured on held_out_v3 and
+    held_out_v4c under one measurement protocol (bench/: registry, worker,
+    run_bench, analyze, verify_campaign). Raw data in thesis3/out/
+    (gitignored). Frozen.
+
+scripts/  - root-level scripts still in use, run from the repo root:
+    validate.py         schema-validates a dataset file; also checks no
+                        command string leaks between seen/held-out
+                        ("sealed" discipline)
+    smoke_test.py       environment sanity check (imports + cheap
+                        constructions only, no weight downloads); run on
+                        both dev machines first
+    make_split.py       carves train_v2/dev_v2 out of seen_v2.jsonl,
+                        stratified by (verb, ambiguity class)
+
+docs/  - this map, MOVED_PATHS.md (old path -> new path after the November
+    2026 cleanup), DEMO_PORTABLE.md (the portable Isaac demo) and a session log.
+
+archive/  - kept for provenance, not needed to reproduce any result:
+    scratch/            the one-off scratch_*.py checks and inspect_smoke.py
+    unused_phases/      vision/, rl/, real/ (placeholders of phases that
+                        were cut; see archive/README.md)
+
+media/isaac_demo/  - README only in git; the Isaac demo videos are
+    gitignored and attached to the GitHub release.
 
 Root-level files:
     README.md           one line. This file is the real README.
@@ -317,19 +342,6 @@ Root-level files:
                         (AUDIT_REPORT.md finding F-ENV). peft is the one
                         exception - pinned to what the checkpoints record.
     requirements.lock.txt   the full transitive closure
-    validate.py         schema-validates a dataset file; also checks no
-                        command string leaks between seen/held-out
-                        ("sealed" discipline)
-    smoke_test.py        environment sanity check (imports + cheap
-                        constructions only, no weight downloads); run on
-                        both dev machines first
-    make_split.py         carves train_v2/dev_v2 out of seen_v2.jsonl,
-                        stratified by (verb, ambiguity class)
-    inspect_smoke.py      inspects smoke-test / sample outputs
-    scratch_*.py           one-off analysis/integrity-check scripts (label
-                        space, modifiers, matrix integrity, gate checks,
-                        phrasing inventory); not part of the pipeline, kept
-                        for provenance of specific investigations
 
 
 THE TWO-PROCESS DEMO BRIDGE
