@@ -38,7 +38,7 @@ audit/backup_tokens_v3/
 !data/held_out_v4c.jsonl
 
 # Pre-gate backup of seen_v2 (203 rows, before the container-row expansion that
-# took held_out_v3 to 217). map.md calls it provenance; provenance that lives on
+# took held_out_v3 to 217). docs/REPO_MAP.md calls it provenance; provenance that lives on
 # one machine is not provenance. 31 KB, read by no code.
 !data/seen_v2_backup_203.jsonl
 audit/discarded/*.csv
@@ -54,3 +54,17 @@ thesis2/models/
 !thesis2/out/
 
 thesis3/out/
+
+# repository cleanup, November 2026
+# private thesis-writing material (kept outside the repo); never commit
+records/
+# Isaac demo videos: attached to the GitHub release, not committed
+media/**/*.mp4
+# model weights anywhere (none are tracked; checkpoints live in ignored folders)
+*.gguf
+*.safetensors
+*.pt
+*.bin
+# local editor and backup files
+.vscode/
+*.zip

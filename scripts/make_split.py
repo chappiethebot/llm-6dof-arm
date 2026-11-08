@@ -31,9 +31,9 @@ train and dev means dev accuracy is not moved by an accident of the draw.
 USAGE (PowerShell, from repo root)
 ----------------------------------
     conda activate thesis
-    python make_split.py
+    python scripts/make_split.py
 
-    python make_split.py --yes     skip the confirmation prompt
+    python scripts/make_split.py --yes     skip the confirmation prompt
 
 SAFETY
 ------

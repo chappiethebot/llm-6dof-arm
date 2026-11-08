@@ -63,7 +63,7 @@ Every tracked Python source was parsed. Summaries below come from module docstri
 | [ft/prep_data.py](../ft/prep_data.py) | 113 | ft/prep_data.py — build LoRA SFT data for rung 3. | read_jsonl, main |
 | [ft/train_classifier.py](../ft/train_classifier.py) | 359 | ft/train_classifier.py -- Rung 4. DistilBERT with three classification heads. | set_seed, load_jsonl, build_label_space, CommandDataset, MultiHeadClassifier, masked_ce, emit, dev_exact_match, main |
 | [ft/train_lora.py](../ft/train_lora.py) | 342 | ft/train_lora.py — Rung 3: LoRA fine-tuning on Qwen2.5 Instruct. | read_jsonl, SFTDataset, make_collator, dump_mask, _drop_empty_modifiers, dev_exact_match, DevEvalCallback, main |
-| [inspect_smoke.py](../inspect_smoke.py) | 15 | No module docstring | (script / package marker) |
+| [inspect_smoke.py](../archive/scratch/inspect_smoke.py) | 15 | No module docstring | (script / package marker) |
 | [llm/__init__.py](../llm/__init__.py) | 0 | No module docstring | (script / package marker) |
 | [llm/classifier_client.py](../llm/classifier_client.py) | 145 | llm/classifier_client.py — Rung 4. The DistilBERT classifier behind the same | DistilBertClassifierClient |
 | [llm/clients.py](../llm/clients.py) | 199 | llm/clients.py — Phase 3, step 1: one interface to all models. | LLMClient, OpenAIClient, OllamaClient, all_clients |
@@ -76,26 +76,26 @@ Every tracked Python source was parsed. Summaries below come from module docstri
 | [llm/retrieve.py](../llm/retrieve.py) | 246 | llm/retrieve.py -- Rung 2: retrieve few-shot examples from the training split. | Retrieved, Retriever, _smoke, main |
 | [llm/schema_json.py](../llm/schema_json.py) | 118 | Convert schema/schema_v2.json into real JSON Schema for constrained decoding. | to_flat_json_schema, to_json_schema, validates |
 | [llm/score.py](../llm/score.py) | 158 | llm/score.py -- Phase 3, step 3: grade ONE extracted object against ground truth. | ScoreResult, _apply_aliases, _canon_value, _normalize_repr, _canonical, _equal, _categorize, score |
-| [make_split.py](../make_split.py) | 199 | make_split.py -- carve train_v2 / dev_v2 out of seen_v2.jsonl. | load_rows_minus_exemplars, verb_of, ambiguity_of, write_jsonl, stratified_split, main |
+| [make_split.py](../scripts/make_split.py) | 199 | make_split.py -- carve train_v2 / dev_v2 out of seen_v2.jsonl. | load_rows_minus_exemplars, verb_of, ambiguity_of, write_jsonl, stratified_split, main |
 | [schema/__init__.py](../schema/__init__.py) | 0 | No module docstring | (script / package marker) |
 | [schema/gen_schema_v2.py](../schema/gen_schema_v2.py) | 138 | Generate schema/schema_v2.json from schema/grid_spec.json. | cell_id, classify, check_pitch, build, main |
 | [schema/validate_object.py](../schema/validate_object.py) | 91 | schema/validate_object.py — Phase 3, step 3: validate ONE command dict against schema.json. | ValidationResult, load_schema, validate_object |
-| [scratch_api.py](../scratch_api.py) | 59 | No module docstring | (script / package marker) |
-| [scratch_build_container_rows.py](../scratch_build_container_rows.py) | 85 | No module docstring | ld, skel |
-| [scratch_ckpt.py](../scratch_ckpt.py) | 20 | No module docstring | (script / package marker) |
-| [scratch_clscheck.py](../scratch_clscheck.py) | 15 | No module docstring | (script / package marker) |
-| [scratch_counts.py](../scratch_counts.py) | 13 | No module docstring | (script / package marker) |
-| [scratch_gatecheck.py](../scratch_gatecheck.py) | 16 | No module docstring | (script / package marker) |
-| [scratch_labelspace.py](../scratch_labelspace.py) | 14 | No module docstring | (script / package marker) |
-| [scratch_matrix_integrity.py](../scratch_matrix_integrity.py) | 43 | No module docstring | (script / package marker) |
-| [scratch_merge_check.py](../scratch_merge_check.py) | 39 | No module docstring | (script / package marker) |
-| [scratch_modifiers.py](../scratch_modifiers.py) | 10 | No module docstring | (script / package marker) |
-| [scratch_paths.py](../scratch_paths.py) | 31 | No module docstring | (script / package marker) |
-| [scratch_phrasing_inventory.py](../scratch_phrasing_inventory.py) | 57 | No module docstring | ld, skel |
-| [scratch_rung1_integrity.py](../scratch_rung1_integrity.py) | 19 | No module docstring | (script / package marker) |
-| [scratch_scored_table.py](../scratch_scored_table.py) | 108 | Results-chapter table over the four held_out_v3 scored CSVs. | null_padded_correct |
-| [scratch_smoke.py](../scratch_smoke.py) | 26 | No module docstring | (script / package marker) |
-| [scratch_tmpl.py](../scratch_tmpl.py) | 46 | No module docstring | (script / package marker) |
+| [scratch_api.py](../archive/scratch/scratch_api.py) | 59 | No module docstring | (script / package marker) |
+| [scratch_build_container_rows.py](../archive/scratch/scratch_build_container_rows.py) | 85 | No module docstring | ld, skel |
+| [scratch_ckpt.py](../archive/scratch/scratch_ckpt.py) | 20 | No module docstring | (script / package marker) |
+| [scratch_clscheck.py](../archive/scratch/scratch_clscheck.py) | 15 | No module docstring | (script / package marker) |
+| [scratch_counts.py](../archive/scratch/scratch_counts.py) | 13 | No module docstring | (script / package marker) |
+| [scratch_gatecheck.py](../archive/scratch/scratch_gatecheck.py) | 16 | No module docstring | (script / package marker) |
+| [scratch_labelspace.py](../archive/scratch/scratch_labelspace.py) | 14 | No module docstring | (script / package marker) |
+| [scratch_matrix_integrity.py](../archive/scratch/scratch_matrix_integrity.py) | 43 | No module docstring | (script / package marker) |
+| [scratch_merge_check.py](../archive/scratch/scratch_merge_check.py) | 39 | No module docstring | (script / package marker) |
+| [scratch_modifiers.py](../archive/scratch/scratch_modifiers.py) | 10 | No module docstring | (script / package marker) |
+| [scratch_paths.py](../archive/scratch/scratch_paths.py) | 31 | No module docstring | (script / package marker) |
+| [scratch_phrasing_inventory.py](../archive/scratch/scratch_phrasing_inventory.py) | 57 | No module docstring | ld, skel |
+| [scratch_rung1_integrity.py](../archive/scratch/scratch_rung1_integrity.py) | 19 | No module docstring | (script / package marker) |
+| [scratch_scored_table.py](../archive/scratch/scratch_scored_table.py) | 108 | Results-chapter table over the four held_out_v3 scored CSVs. | null_padded_correct |
+| [scratch_smoke.py](../archive/scratch/scratch_smoke.py) | 26 | No module docstring | (script / package marker) |
+| [scratch_tmpl.py](../archive/scratch/scratch_tmpl.py) | 46 | No module docstring | (script / package marker) |
 | [sim/full_grasp_backend.py](../sim/full_grasp_backend.py) | 202 | No module docstring | FullGraspBackend |
 | [sim/isaac_backend.py](../sim/isaac_backend.py) | 918 | sim/isaac_backend.py | classify_exception, cell_centre, box_centre, launch, _late_imports, IsaacBackend, _self_test |
 | [sim/isaac_bridge.py](../sim/isaac_bridge.py) | 162 | sim/isaac_bridge.py | _ensure_dirs, _pending, _read_action, _write_result, _handle_control, main |
@@ -114,7 +114,7 @@ Every tracked Python source was parsed. Summaries below come from module docstri
 | [sim/test_verbs.py](../sim/test_verbs.py) | 28 | No module docstring | (script / package marker) |
 | [sim/watch_full.py](../sim/watch_full.py) | 15 | No module docstring | (script / package marker) |
 | [sim/workspace.py](../sim/workspace.py) | 126 | sim/workspace.py -- the one place a location SYMBOL becomes a coordinate. | _load_spec, _lin, grid_cells, table_z, location_classes, resolve, describe_cell |
-| [smoke_test.py](../smoke_test.py) | 85 | smoke_test.py - proves the thesis environment before anything depends on it. | check, _mujoco, _gym_fetch, _sb3, _sb3_contrib, _ultra, _cv2, _whisper, _openai, _ollama, _numpy |
+| [smoke_test.py](../scripts/smoke_test.py) | 85 | smoke_test.py - proves the thesis environment before anything depends on it. | check, _mujoco, _gym_fetch, _sb3, _sb3_contrib, _ultra, _cv2, _whisper, _openai, _ollama, _numpy |
 | [thesis2/demo/parsers.py](../thesis2/demo/parsers.py) | 187 | thesis2/demo/parsers.py -- text -> action JSON, one entry per arm. | Parser, _registry_parser, _v5_ollama, get, names |
 | [thesis2/demo/run_isaac_demo.py](../thesis2/demo/run_isaac_demo.py) | 201 | thesis2/demo/run_isaac_demo.py -- the existing Isaac demo, with the parser swapped. | load_demo_commands, default_replay_ids, make_backend, execute, main |
 | [thesis2/demo/smoke_parsers.py](../thesis2/demo/smoke_parsers.py) | 174 | thesis2/demo/smoke_parsers.py -- every registered parser on the 10 demo | load_commands, verify_provenance, main |
@@ -187,4 +187,4 @@ Every tracked Python source was parsed. Summaries below come from module docstri
 | [thesis2/scripts/p7_massive.py](../thesis2/scripts/p7_massive.py) | 277 | thesis2/scripts/p7_massive.py -- PHASE 7, generalization beyond the robot arm. | set_seed, DS, Model, auroc, main |
 | [thesis2/scripts/p_energy.py](../thesis2/scripts/p_energy.py) | 196 | thesis2/scripts/p_energy.py -- GPU energy per command, per the stated protocol. | PowerLogger, measure, main |
 | [thesis2/scripts/salsa_row.py](../thesis2/scripts/salsa_row.py) | 170 | thesis2/scripts/salsa_row.py -- single-pass logit classification for the ROW factor. | build_prompt, SalsaRowScorer, selftest |
-| [validate.py](../validate.py) | 143 | validate.py — check a command dataset (.jsonl) against schema.json. | load_schema, validate_file, report, main |
+| [validate.py](../scripts/validate.py) | 143 | validate.py — check a command dataset (.jsonl) against schema.json. | load_schema, validate_file, report, main |
