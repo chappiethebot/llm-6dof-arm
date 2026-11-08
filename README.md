@@ -303,6 +303,7 @@ data come from:
 | Fig A.1 | V3/V4/V5 campaigns | `audit/figures/cell_stats.csv`; `audit/v4_cells.csv`; `thesis2/out/final/FINAL_RUN_REPORT.md` §4b |
 | Table B.1 | all V5 cells | `thesis2/out/final/FINAL_RUN_REPORT.md` §4b |
 | Fig C.1, Table C.1 | final run vs re-measurement; all 66 systems | `thesis2/out/final/metrics_final.csv`; `thesis3/out/c1/summary.csv` |
+| Table D.1 | frozen checkpoints | the ten frozen arms: `thesis2/out/final/frozen_checkpoints.csv`; DistilBERT flat (epoch 9) and the LoRA adapters (checkpoint-87): release assets `distilbert_cls_epoch_09.zip`, `qwen3b_lora_checkpoint-87.zip`, `qwen0.5b_lora_checkpoint-87.zip` |
 
 The thesis figures were redrawn from these files by the plotting scripts in the thesis LaTeX
 sources; `thesis2/figures/final/` holds the repository's own versions. The background on A8 and
