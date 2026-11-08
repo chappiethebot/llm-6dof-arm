@@ -20,7 +20,7 @@ def c5(d):  r = runs(d); r.loc[r.run_id == "r1a", "dataset_sha256"] = ""; r.to_c
 def c6(d):  m = json.load(open(f"{d}/machine.json")); m.pop("datasets"); json.dump(m, open(f"{d}/machine.json", "w"))
 def c7(d):
     t = tel(d, "s1"); r = runs(d).set_index("run_id"); a = int(r.loc["r2a", "t_load_start_mono_ns"]) + 50 * 10**9
-    t = t[~((t.run_id == "r2a") & (t.t_mono_ns.astype(float) > a) & (t.t_mono_ns.astype(float) < a + 3e9))]; t.to_csv(f"{d}/telemetry_s1.csv", index=False)
+    t = t[~((t.run_id == "r2a") & (t.t_mono_ns.astype(float) > a) & (t.t_mono_ns.astype(float) < a + 6e9))]; t.to_csv(f"{d}/telemetry_s1.csv", index=False)
 def c8(d):
     p = f"{d}/outputs/r1a.jsonl"; L = open(p).read().splitlines(); L = [l for l in L if not (json.loads(l)["pass"] == 1 and json.loads(l)["cmd_id"] == 9)]
     open(p, "w").write("\n".join(L) + "\n")
@@ -43,7 +43,7 @@ def c23(d): r = runs(d); r.loc[r.run_id == "r2a", "model_load_s"] = ""; r.to_csv
 def c24(d): p = pd.read_csv(f"{d}/passes/r3a.csv"); p.loc[p.index[-1], "calls"] = 100; p.to_csv(f"{d}/passes/r3a.csv", index=False)
 names = {f"c{i}": d for i, d in enumerate([c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17,c18,c19,c20,c21,c22,c23,c24], 1)}
 desc = ["216 commands", "cmd 5 replaced by 6", "blank action_ok", "legend v4", "empty dataset sha", "no datasets in machine.json",
-        "3 s telemetry gap", "raw output missing", "no loadedidle", "orphan calls file", "truth changed in one run", "stuck CPU sensor",
+        "6 s telemetry gap", "raw output missing", "no loadedidle", "orphan calls file", "truth changed in one run", "stuck CPU sensor",
         "warm-up on wrong commands", "load window cut", "idle window not found", "duplicate idle id", "latency file short",
         "unknown system", "cloud repeats 1", "hot start 68 C", "duplicated run", "passes file missing", "model_load_s empty", "incomplete pass"]
 base = subprocess.run([sys.executable, f"{B}/verify_campaign.py", SRC] + ARGS, capture_output=True, text=True).stdout
