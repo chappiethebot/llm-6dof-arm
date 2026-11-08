@@ -98,6 +98,9 @@ took 99 s to create on the measurement machine, where pip already had the packag
 a new machine expect longer, and the CUDA env downloads the CUDA build of torch (several GB).
 Create `thesis2rl`, `train` and `isaac6` only if you need them.
 
+If conda asks you to accept the Terms of Service for the defaults channel, run
+`conda tos accept`, or change the channel to conda-forge.
+
 ### Files not in git
 
 Model weights and the raw thesis3 campaign data are too large for git. They are attached to
@@ -386,7 +389,11 @@ of the demo commands were run for this README.
 
 ## Licence
 
-Licence: to be added.
+- **Code:** MIT, see [LICENSE](LICENSE).
+- **Data and results:** `data/` and the result files (`thesis2/out/`, `bench/results_v5_*.csv`,
+  `audit/` CSVs and figures, and the thesis3 campaign data in the release) are licensed under
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- **Models:** under their own licences, below.
 
 The models used have their own licences: Qwen2.5-0.5B-Instruct (Apache 2.0),
 Qwen2.5-3B-Instruct (Qwen Research Licence, non-commercial), Llama 3.2 (Llama 3.2 Community
@@ -403,11 +410,11 @@ hold intent labels and predictions derived from it, not its utterances.
 @mastersthesis{dhara2026llm6dof,
   author = {Ritayan Dhara},
   title  = {<thesis title>},
-  school = {<university>},
+  school = {Technische Universität Dresden},
   year   = {2026}
 }
 ```
 
 ## Contact
 
-Ritayan Dhara, <contact to be added>.
+Ritayan Dhara, via GitHub issues on this repository.
