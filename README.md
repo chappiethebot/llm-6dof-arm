@@ -10,6 +10,8 @@ The registered thesis title includes a vision pipeline with real-time object det
 was not carried out; Section 1.4 of the thesis (Scope and deviations from the task description)
 explains why.
 
+Built with Qwen.
+
 ## Contents
 
 - [Repository layout](#repository-layout)
@@ -89,7 +91,7 @@ and `requirements.lock.txt` are older (audit of 27 Aug 2026) and describe the `t
 PowerShell, from the folder you want the repository in:
 
 ```powershell
-git clone <repository URL> llm-6dof-arm
+git clone https://github.com/chappiethebot/llm-6dof-arm.git
 cd llm-6dof-arm
 conda env create -n thesis -f envs\thesis.yml
 conda env create -n thesis2gpu -f envs\thesis2gpu.yml
