@@ -111,8 +111,8 @@ repository-relative paths, so unpack it at the root of the clone
 | release asset | gives | size | needed for |
 |---|---|---|---|
 | `distilbert_cls_epoch_09.zip` | `ft/runs/distilbert_cls/epoch_09/` | 266 MB | Tier 2, Tier 3, demo |
-| `qwen3b_lora_checkpoint-87.zip` | `ft/runs/qwen3b_lora/checkpoint-87/` | 362 MB | Tier 3, rebuilding the 3B GGUF |
-| `qwen0.5b_lora_checkpoint-87.zip` | `ft/runs/qwen0.5b_lora/checkpoint-87/` | 108 MB | Tier 3, rebuilding the 0.5B GGUF |
+| `qwen3b_lora_checkpoint-87.zip` | `ft/runs/qwen3b_lora/checkpoint-87/` (adapter, no training state) | 122 MB | Tier 3, rebuilding the 3B GGUF |
+| `qwen0.5b_lora_checkpoint-87.zip` | `ft/runs/qwen0.5b_lora/checkpoint-87/` (adapter, no training state) | 37 MB | Tier 3, rebuilding the 0.5B GGUF |
 | `qwen3b-lora-Q4_K_M.gguf`, `qwen0.5b-lora-Q4_K_M.gguf` | `ft/export/` | 1,930 MB, 398 MB | Ollama LoRA models |
 | `modelfiles.zip` | `ft/export/Modelfile.qwen2.5-3b-lora`, `...-0.5b-lora` | 1 KB | Ollama LoRA models |
 | `qwen3b_LICENSE_NOTICE.zip`, `qwen0.5b_LICENSE_NOTICE.zip` | licence, notice and change notice for the GGUFs | 4 KB each | keep with the GGUFs |
@@ -120,6 +120,13 @@ repository-relative paths, so unpack it at the root of the clone
 | `isaac_demo_videos.zip` | `media/isaac_demo/*.mp4` | 267 MB | watching the demo |
 
 `thesis2/models` (4.0 GB): not released; available on request (Tier 3 only, machine-bound).
+
+The LoRA zips hold the adapter, tokenizer and chat template only; the training state
+(`optimizer.pt`, `scheduler.pt`, `rng_state.pth`, `trainer_state.json`, `training_args.bin`) is not
+released. The thesis2 frozen-checkpoint check for `salsa_full_qwen2.5-3b-lora` and
+`salsa_full_qwen2.5-0.5b-lora` hashes the whole `checkpoint-87` folder, so it does not pass on the
+released adapters. The original checkpoint folders (all 11 files) are kept privately and are
+available on request for the frozen-checkpoint check.
 
 SHA-256 of the main weight files:
 
