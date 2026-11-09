@@ -26,19 +26,21 @@ Built with Qwen.
 | `thesis3/` | the unified benchmark of all 66 systems |
 | `scripts/` | installation check and dataset check |
 | `envs/` | the conda environment files |
-| `docs/` | `RESULTS_MAP.md` (which file each thesis figure and table comes from), `REPO_MAP.md` (detailed folder map), `DEMO_PORTABLE.md` (full demo setup) |
+| `docs/` | `RESULTS_MAP.md` (which file each thesis figure and table comes from), `REPO_MAP.md` (detailed folder map) |
 
 ## What you need
 
-- Windows 11 with Miniconda or Anaconda. Everything was run on one PC: AMD Ryzen 5 7600X,
-  31 GB RAM, NVIDIA RTX 4060 Ti 16 GB.
-- An NVIDIA GPU, only to re-run the classifier (step 5).
+- Windows 11 with [Git](https://git-scm.com) and Miniconda or Anaconda. Everything was run on
+  one PC: AMD Ryzen 5 7600X, 31 GB RAM, NVIDIA RTX 4060 Ti 16 GB.
+- An NVIDIA GPU, only to re-run the classifier (step 5) and for the Isaac Sim demo (RTX).
 - [Ollama](https://ollama.com), only for the local language models and the demo.
 - An OpenAI API key, only for the gpt-4o-mini systems.
 
 ## Install
 
-In PowerShell, from the folder you want the repository in:
+Open the "Anaconda PowerShell Prompt" from the Start menu (or a normal PowerShell window after
+running `conda init powershell` once; otherwise `conda activate` does not work). Then, from the
+folder you want the repository in:
 
 ```powershell
 git clone https://github.com/chappiethebot/llm-6dof-arm.git
@@ -48,18 +50,20 @@ conda env create -n thesis2gpu -f envs\thesis2gpu.yml
 conda env create -n thesis3meter -f envs\thesis3meter.yml
 ```
 
+These three environment files install every library the steps below need. (`requirements.txt`
+is an older record and is not needed.)
+
+If conda asks you to accept its Terms of Service, run `conda tos accept` and repeat the command.
+
 If you want to use gpt-4o-mini, run `Copy-Item .env.example .env` and put your OpenAI key in
 `.env`.
-
-Use the "Anaconda PowerShell Prompt" from the Start menu, or run `conda init powershell` once
-and open a new PowerShell window; otherwise `conda activate` does not work. If conda asks you to
-accept its Terms of Service, run `conda tos accept`.
 
 ## Downloads
 
 The trained models, the benchmark data and the demo videos are too large for git. Download
-them from the [v1.0 release](https://github.com/chappiethebot/llm-6dof-arm/releases/tag/v1.0).
-Unpack each zip in the repository folder; the files land in the right place:
+them from the [v1.0 release](https://github.com/chappiethebot/llm-6dof-arm/releases/tag/v1.0)
+(only the ones you need). Put the downloaded zips in the repository folder and unpack each one
+there; the files land in the right place:
 
 ```powershell
 Expand-Archive thesis3_c1.zip -DestinationPath .
@@ -175,7 +179,11 @@ ollama create qwen2.5-0.5b-lora -f ft\export\Modelfile.qwen2.5-0.5b-lora
 
 ## Demo
 
-Type a command and watch the arm carry it out in MuJoCo:
+Both demos need the Ollama models from the section above.
+
+### MuJoCo
+
+Type a command and watch the arm carry it out:
 
 ```powershell
 conda activate thesis
@@ -186,8 +194,37 @@ Choose `1` (keyboard), then type a command, for example
 `put the bottle in the far left corner of the table`. A simulator window opens and the arm
 moves the block. Press Enter on an empty line to stop.
 
-The same commands also drive the robot in Isaac Sim 6.0; the release file
-`isaac_demo_videos.zip` has six recordings, and `docs/DEMO_PORTABLE.md` has the setup.
+### Isaac Sim 6.0 (NVIDIA RTX GPU)
+
+Create the Isaac environment once (a large download):
+
+```powershell
+conda env create -n isaac6 -f envs\isaac6.yml
+```
+
+Terminal 1, the simulator. Wait until it prints `[bridge] watching` (3 to 4 minutes; red
+`[Error]` lines from Isaac Sim extensions during start-up are harmless):
+
+```powershell
+conda activate isaac6
+python sim\isaac_bridge.py
+```
+
+Terminal 2, the language side:
+
+```powershell
+conda activate thesis
+python bench\llm_client.py --backend isaac --model qwen2.5-3b-lora
+```
+
+Type a command, for example `put the rubiks cube in box 1`. The scene has a rubiks cube, a
+bottle and a toy car, and boxes 1 to 3. More things to type:
+
+- `model classifier:distilbert` switches to the DistilBERT classifier (needs step 5 run once)
+- `reset` puts every object back
+- `quit` stops the language side; press Ctrl+C in terminal 1 to close the simulator
+
+The release file `isaac_demo_videos.zip` has six recordings of this demo.
 
 ## Where the thesis results are
 

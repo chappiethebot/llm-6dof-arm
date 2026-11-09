@@ -1,5 +1,10 @@
 # Running the Isaac demo on another machine
 
+> **Old record, do not follow for installation.** This runbook was written for one visit in
+> September 2026, before the models were published. To install and run the demo, follow the
+> README (sections Install, Downloads, Local language models and Demo). The fine-tuned models
+> are now in the GitHub release v1.0.
+
 Written 7 September 2026, for the visit to the supervisor's PC (Windows, RTX 5090).
 
 **The one thing to understand first:** `git clone` gives you the code and nothing

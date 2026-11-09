@@ -1,4 +1,7 @@
-﻿# requirements.lock.txt -- exact contents of the thesis conda env
+﻿# NOT THE INSTALL FILE. To install, create the conda environments from envs/*.yml as the
+# README says. This file is an older record (27 Aug 2026) of the thesis env, kept for the audit.
+#
+# requirements.lock.txt -- exact contents of the thesis conda env
 # Captured 2026-08-27 by the implementation/validity audit.
 #
 # WARNING: this is the AUDIT-TIME environment, NOT the environment that

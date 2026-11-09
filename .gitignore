@@ -68,3 +68,6 @@ media/**/*.mp4
 # local editor and backup files
 .vscode/
 *.zip
+
+# written by Isaac Sim into the folder it is started from
+ucode.elf

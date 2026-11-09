@@ -1,3 +1,6 @@
+# NOT THE INSTALL FILE. To install, create the conda environments from envs/*.yml as the
+# README says. This file is an older record (27 Aug 2026) of the thesis env, kept for the audit.
+#
 # Direct dependencies, pinned 2026-08-27 to the versions present in the
 # `thesis` conda env at audit time. For the full transitive closure see
 # requirements.lock.txt.
