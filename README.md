@@ -119,14 +119,15 @@ repository-relative paths, so unpack it at the root of the clone
 | `thesis3_c1.zip` | `thesis3/out/c1/` | 684 MB (957 MB unpacked) | Tier 1 (thesis3) |
 | `isaac_demo_videos.zip` | `media/isaac_demo/*.mp4` | 267 MB | watching the demo |
 
-`thesis2/models` (4.0 GB): not released; available on request (Tier 3 only, machine-bound).
+`thesis2/models` (4.0 GB): not released. The final run's predictions are in
+`thesis2/out/final/pred_*.csv`, and Tiers 0 to 2 need nothing else. Re-running these arms is Tier
+3, which is tied to the measurement machine.
 
 The LoRA zips hold the adapter, tokenizer and chat template only; the training state
 (`optimizer.pt`, `scheduler.pt`, `rng_state.pth`, `trainer_state.json`, `training_args.bin`) is not
 released. The thesis2 frozen-checkpoint check for `salsa_full_qwen2.5-3b-lora` and
 `salsa_full_qwen2.5-0.5b-lora` hashes the whole `checkpoint-87` folder, so it does not pass on the
-released adapters. The original checkpoint folders (all 11 files) are kept privately and are
-available on request for the frozen-checkpoint check.
+released adapters. The full checkpoint folders (all 11 files) are not released.
 
 SHA-256 of the main weight files:
 
