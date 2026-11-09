@@ -125,9 +125,8 @@ repository-relative paths, so unpack it at the root of the clone
 
 The LoRA zips hold the adapter, tokenizer and chat template only; the training state
 (`optimizer.pt`, `scheduler.pt`, `rng_state.pth`, `trainer_state.json`, `training_args.bin`) is not
-released. The thesis2 frozen-checkpoint check for `salsa_full_qwen2.5-3b-lora` and
-`salsa_full_qwen2.5-0.5b-lora` hashes the whole `checkpoint-87` folder, so it does not pass on the
-released adapters. The full checkpoint folders (all 11 files) are not released.
+released. The full checkpoint folders (with training state) are not released, so the thesis2
+frozen-checkpoint check does not pass on the released adapters. This check is only part of Tier 3.
 
 SHA-256 of the main weight files:
 
