@@ -11,6 +11,7 @@ file was added or removed by the rewrite and no result changed; only the strings
 | author and committer of every commit | two identities with a personal e-mail address | `chappiethebot <42741718+chappiethebot@users.noreply.github.com>` |
 | the Windows user name in paths, in every file version | `C:\Users\<name>` in every spelling (single, doubled and quadrupled backslashes, forward slashes, any case) | the same spelling with `USER`, for example `C:\Users\USER\llm-6dof-arm` |
 | six lines naming the author by first name | `thesis2/RUN_ALL_TESTS.md` (2), `thesis3/bench/RUNBOOK.md`, `thesis3/bench/run_bench.py`, `docs/DEMO_PORTABLE.md`, `audit/PREREGISTRATION_v4.md` | "the author" ("the thesis author" in the preregistration's author line) |
+| co-author trailer lines in commit messages | 51 commits | removed; short commit hashes quoted in messages point to the new commits |
 
 The author's full name appears only in `README.md` (citation, contact) and `LICENSE`.
 
@@ -19,7 +20,7 @@ The author's full name appears only in `README.md` (citation, contact) and `LICE
 - **Every commit hash changed.** Hashes cited in the thesis or in documents written before the
   rewrite (for example `3000198`, the frozen scorer) refer to the old history. Look them up in
   [`COMMIT_MAP.md`](COMMIT_MAP.md): old `3000198` is `ea3d5984c2c2` now, and the tag
-  `thesis-results-v1` points at `63bfe8c0e342` (old `dfe8b83`).
+  `thesis-results-v1` points at `4e3df8343654` (old `dfe8b83`).
 - **Paths read `C:\Users\USER\...`.** Logs, result files and scripts recorded absolute paths of the
   measurement machine; they now name the user `USER`. Scripts that hard-code such a path
   (listed under Known limitations in the README) need it changed to the local one anyway.
