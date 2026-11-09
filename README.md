@@ -6,6 +6,10 @@ JSON action, and comparing 66 ways of doing it (rule baselines, small classifier
 and fine-tuned local LLMs, cloud gpt-4o-mini, cascades, speculative decoding) on accuracy,
 latency and energy. Actions are executed in MuJoCo (measured) and in Isaac Sim 6.0 (demo only).
 
+The registered thesis title includes a vision pipeline with real-time object detection. That part
+was not carried out; Section 1.4 of the thesis (Scope and deviations from the task description)
+explains why.
+
 ## Contents
 
 - [Repository layout](#repository-layout)
@@ -423,7 +427,7 @@ hold intent labels and predictions derived from it, not its utterances.
 ```bibtex
 @mastersthesis{dhara2026llm6dof,
   author = {Ritayan Dhara},
-  title  = {<thesis title>},
+  title  = {LLM-Driven Control and Vision-Based Manipulation for a 6-DoF Robotic Arm: Bridging Natural Language Commands with Real-Time Object Detection},
   school = {Technische Universität Dresden},
   year   = {2026}
 }
