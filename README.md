@@ -31,7 +31,7 @@ Built with Qwen.
 ## What you need
 
 - Windows 11 with [Git](https://git-scm.com) and Miniconda or Anaconda. Everything was run on
-  one PC: AMD Ryzen 5 7600X, 31 GB RAM, NVIDIA RTX 4060 Ti 16 GB.
+  one PC: AMD Ryzen 5 7600X, 32 GB RAM, NVIDIA RTX 4060 Ti 16 GB.
 - An NVIDIA GPU, only to re-run the classifier (step 5) and for the Isaac Sim demo (RTX).
 - [Ollama](https://ollama.com), only for the local language models and the demo.
 - An OpenAI API key, only for the gpt-4o-mini systems.
