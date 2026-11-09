@@ -51,7 +51,9 @@ conda env create -n thesis3meter -f envs\thesis3meter.yml
 If you want to use gpt-4o-mini, run `Copy-Item .env.example .env` and put your OpenAI key in
 `.env`.
 
-If conda asks you to accept its Terms of Service, run `conda tos accept`.
+Use the "Anaconda PowerShell Prompt" from the Start menu, or run `conda init powershell` once
+and open a new PowerShell window; otherwise `conda activate` does not work. If conda asks you to
+accept its Terms of Service, run `conda tos accept`.
 
 ## Downloads
 
@@ -111,8 +113,9 @@ conda activate thesis2gpu
 foreach ($s in "s2_metrics","s4_significance","s4_metrics_final","s5_extra_analysis","s4_figures","s6_report","make_defence_numbers","check_defence_numbers") { python thesis2\final\$s.py; if ($LASTEXITCODE -ne 0) { break } }
 ```
 
-Every script ends with `GATE PASS`. The tables and the six figures in `thesis2/figures/final/`
-come out identical to the stored ones.
+Each script ends with `GATE PASS`, except `make_defence_numbers`, which ends with
+`641 cited numbers`. The tables and the six figures in `thesis2/figures/final/` come out
+identical to the stored ones.
 
 ### 4. Rebuild the unified benchmark of 66 systems (about 2 min, no GPU)
 
