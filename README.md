@@ -7,7 +7,7 @@ compares 66 ways of doing this (rules, small classifiers, local and cloud langua
 accuracy, speed and energy.
 
 The registered thesis title includes a vision pipeline with real-time object detection. That part
-was not carried out; Section 1.4 of the thesis (Scope and deviations from the task description)
+was not carried out; Section 8.3 of the thesis (Scope and future work)
 explains why.
 
 Built with Qwen.
